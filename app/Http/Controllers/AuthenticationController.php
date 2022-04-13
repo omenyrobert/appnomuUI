@@ -99,7 +99,7 @@ class AuthenticationController extends BaseController
             }
 
             //Save The User 
-            $save = DB::table('sysusers')->insert([
+            $save = DB::table('SysUsers')->insert([
                 'name'=>$request['name'],
                 'user_id'=>$user_id,
                 'telephone'=>$request['telephone'],

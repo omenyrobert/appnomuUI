@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+    protected $table = 'sysusers';
 
     /**
      * The attributes that are mass assignable.
@@ -40,4 +41,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    //user can have many loans
+    public function loans(){
+        return $this->hasMany(Loan::class);
+    }
+    //a user can be a parent with many students
+    public function students(){
+        return $this->hasMany(Student::class,'user_id','id');
+    }
+    //user has many headteachers 
+    public function headteachers(){
+        return $this->hasManyThrough(Headteacher::class ,Student::class,'user_id','student_id','id','id');
+    }
 }

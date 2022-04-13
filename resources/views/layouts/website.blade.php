@@ -1,9 +1,9 @@
 
 <?php
-	$checkx = $auth::getpaycheck();
-	if($checkx!=1){
-    	echo "<script>document.location.href='/paycheck'</script>";
-    }
+	// $checkx = $auth::getpaycheck();
+	// if($checkx!=1){
+    // 	echo "<script>document.location.href='/paycheck'</script>";
+    // }
 ?>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
