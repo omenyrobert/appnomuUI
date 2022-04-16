@@ -5,16 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Loan extends Model
+class Business extends Model
 {
     use HasFactory;
-    protected $table = 'userloans';
-    public function loan_product(){
-        return $this->belongsTo(LoanProduct::class);
-    }
-
     public function user(){
         return $this->belongsTo(User::class);
     }
 
+    public function biz_loan(){
+        return $this->hasMany(BusinessLoan::class);
+    }
+
+    public function district(){
+        return $this->belongsTo(District::class);
+    }
 }

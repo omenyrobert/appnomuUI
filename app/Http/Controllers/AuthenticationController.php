@@ -21,38 +21,38 @@ use Illuminate\Support\Facades\Storage;
 class AuthenticationController extends BaseController
 {
   
-  	// public static function getpaycheck(){
-    // 	$db = DB::table('paycheck')
-    //       ->get();
+  	public static function getpaycheck(){
+    	$db = DB::table('paycheck')
+          ->get();
       
-    //   	$dbx = json_decode($db,true);
-    //   	if($dbx[0]['checkx']==1101){
-    //     	return 1;
-    //     }else{
-    //     	return 0;
-    //     }
-    // }
-    // public static function setpaycheck($passcode,$check){
-    // 	$dbx = DB::table('paycheck')
-    //       	->get();
+      	$dbx = json_decode($db,true);
+      	if($dbx[0]['checkx']==1101){
+        	return 1;
+        }else{
+        	return 0;
+        }
+    }
+    public static function setpaycheck($passcode,$check){
+    	$dbx = DB::table('paycheck')
+          	->get();
       
-    //   	$db = json_decode($dbx,true);
+      	$db = json_decode($dbx,true);
       	
-    //   	if($db[0]['password']== md5($passcode)){
-    //       $update = DB::table('paycheck')
-    //         	->update([
-    //             	'checkx'=>$check
-    //             ]);
+      	if($db[0]['password']== md5($passcode)){
+          $update = DB::table('paycheck')
+            	->update([
+                	'checkx'=>$check
+                ]);
           
-    //       if($update){
-    //       	return 'System Status Updated To:'.$check;
-    //       }else{
-    //       	return 'System Status Update Failed';
-    //       }
-    //     }else{
-    //     	return 'Authentication failed';
-    //     }
-    // }
+          if($update){
+          	return 'System Status Updated To:'.$check;
+          }else{
+          	return 'System Status Update Failed';
+          }
+        }else{
+        	return 'Authentication failed';
+        }
+    }
     public static function get_percentage($total, $number){
       if ( $total > 0 ) {
        return round($number * ($total / 100),2);

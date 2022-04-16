@@ -50,7 +50,29 @@ class User extends Authenticatable
         return $this->hasMany(Student::class,'user_id','id');
     }
     //user has many headteachers 
-    public function headteachers(){
-        return $this->hasManyThrough(Headteacher::class ,Student::class,'user_id','student_id','id','id');
+    // public function headteachers(){
+    //     return $this->hasManyThrough(Headteacher::class ,Student::class,'user_id','student_id','id','id');
+    // }
+
+    public function soma_loans(){
+        return $this->hasMany(SomaLoan::class);
     }
+
+    public function biz_loans(){
+        return $this->hasMany(BusinessLoan::class);
+    }
+
+    public function businesses(){
+        return $this->hasMany(Business::class);
+    }
+
+    public function identification(){
+        return $this->hasOne(Identification::class);
+    }
+
+    public function district(){
+        return $this->belongsTo(District::class);
+    }
+
+
 }

@@ -5,16 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Loan extends Model
+class SomaLoan extends Model
 {
     use HasFactory;
-    protected $table = 'userloans';
-    public function loan_product(){
-        return $this->belongsTo(LoanProduct::class);
+
+    public function repayments(){
+        return $this->morphMany(Repayment::class,'repaymentable');
     }
 
     public function user(){
         return $this->belongsTo(User::class);
     }
-
+    public function student(){
+        return $this->belongsTo(Student::class);
+    }
 }

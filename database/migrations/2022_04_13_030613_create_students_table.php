@@ -25,8 +25,9 @@ class CreateStudentsTable extends Migration
             $table->string('phone')->nullable();
             $table->string('school_report')->nullable();
             $table->string('school_receipt')->nullable();
-            $table->integer('parent_id')->unsigned();
-            $table->foreign('parent_id')->references('id')->on('sysusers')
+            $table->date('dob');
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('sysusers')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->timestamps();

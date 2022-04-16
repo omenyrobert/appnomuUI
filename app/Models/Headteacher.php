@@ -13,4 +13,8 @@ class Headteacher extends Model
     {
         return $this->belongsTo(Student::class);
     }
+
+    public function district(){
+        $this->belongsTo(District::class);
+    }
 }

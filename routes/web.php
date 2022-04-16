@@ -298,7 +298,7 @@ Route::post('/save_saving_sub_category',[AuthenticationController::class,'saveSa
 Route::post('/save_loan_category',[AuthenticationController::class,'saveLoanCategory']);
 Route::post('/pay', [FlutterwaveController::class, 'initialize'])->name('pay');
 Route::get('/rave/callback', [FlutterwaveController::class, 'callback'])->name('callback');
-Route::post('/request_loan',[AuthenticationController::class,'requestLoan']);
+Route::post('/request_loan',[AuthenticationController::class,'requestLoan']);  //request loan
 Route::post('/save-alliaces',[AuthenticationController::class,'saveAliases']);
 Route::post('/confirm-alliaces',[AuthenticationController::class,'confirmAlliances']);
 Route::post('/editProfile',[AuthenticationController::class,'editUserProfile']);
