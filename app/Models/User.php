@@ -66,6 +66,10 @@ class User extends Authenticatable
         return $this->hasMany(Business::class);
     }
 
+    public function alliances(){
+        return $this->hasMany(Alliance::class);
+    }
+
     public function identification(){
         return $this->hasOne(Identification::class);
     }

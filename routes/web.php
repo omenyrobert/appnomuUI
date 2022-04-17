@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\FlutterwaveController;
 use App\Http\Controllers\SmsController;
 /*
