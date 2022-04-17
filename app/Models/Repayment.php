@@ -10,7 +10,11 @@ class Repayment extends Model
     use HasFactory;
 
     public function repaymentable(){
-        $this->morphTo();
+        return $this->morphTo();
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 
 }

@@ -19,8 +19,8 @@ class CreateHeadteachersTable extends Migration
             $table->string('lname');
             $table->string('phone');
             $table->string('school_name');
-            $table->string('district_id');
-            $table->string('student_id');
+            $table->bigInteger('district_id')->unsigned();
+            $table->bigInteger('student_id')->unsigned();
             $table->foreign('student_id')->references('id')->on('students')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

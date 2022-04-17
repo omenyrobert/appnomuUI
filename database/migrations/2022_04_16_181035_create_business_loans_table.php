@@ -16,9 +16,10 @@ class CreateBusinessLoansTable extends Migration
         Schema::create('business_loans', function (Blueprint $table) {
             $table->id();
             $table->string('BLN_id')->unique();
-            $table->integer('user_id')->unsigned();
-            $table->integer('business_id')->unsigned();
-            $table->integer('approved_by')->unsigned()->nullable();
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('business_id')->unsigned();
+            $table->bigInteger('loan_category_id')->unsigned();
+            $table->bigInteger('approved_by')->unsigned()->nullable();
             $table->float('interest_rate',8,2,true);
             $table->integer('proposed_amount')->unsigned();
             $table->integer('principal')->unsigned()->nullable();
@@ -31,7 +32,10 @@ class CreateBusinessLoansTable extends Migration
             $table->foreign('user_id')->references('id')->on('sysusers')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('student_id')->references('id')->on('students')
+            $table->foreign('business_id')->references('id')->on('businesses')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreign('loan_category_id')->references('id')->on('loanchart')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->timestamps();

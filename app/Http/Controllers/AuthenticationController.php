@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmMail;
 use App\Mail\ContactForm;
@@ -155,14 +156,14 @@ class AuthenticationController extends BaseController
 
         $numcv = sizeof($dbxc);
 
-        // if ($numcv<2) {
-        //     # code...
-        //     return redirect()->back()->withErrors(['Errors'=>'You Dont Have enough Alliases to qualify For a loan,Add alliance and try again later']);
+        if ($numcv<2) {
+            # code...
+            return redirect()->back()->withErrors(['Errors'=>'You Dont Have enough Alliases to qualify For a loan,Add alliance and try again later']);
 
-        // }
+        }
             // dd($user[0]['loan_limit']);
         if($user[0]['loan_limit'] < $loan_cat[0]['loan_amount']){
-            return redirect()->back()->withErrors(['Errors'=>'Your loan limit is '.$user[0]['loan_limit'] .'you cannot borrow above your loan limit']);
+            return redirect()->back()->withErrors(['Errors'=>'Your loan limit is '.$user[0]['loan_limit'] .'/='.' you cannot borrow above your loan limit']);
         }
         $uloan = 'LN-'.rand(11111,99999);
         $pay = 0;
@@ -618,8 +619,14 @@ class AuthenticationController extends BaseController
             'email'=>'required',
             'password'=>'required|min:8'
         ]);
-
+        // $email = $request->email;
+        // $password = $request->password;
+        // dd($request);
+        // dd(Auth::attempt(['email' => $email, 'password' => $password]));
+        // $user = Auth::user();
+        // dd($user);
         $user = AuthenticationController::getUserByEmail($request['email']);
+        // dd($user);
         $num = sizeof($user);
 
         if ($num<1) {

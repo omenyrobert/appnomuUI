@@ -39,8 +39,10 @@
   <link rel="stylesheet" type="text/css" href="/assets/demo/demo.css" />
   <link rel="stylesheet" type="text/css" href="/assets/css/icons.css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
   <link rel="stylesheet" href="/maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <link href="/assets/css/material-dashboard.min6c54.css?v=2.2.2" rel="stylesheet" />
   <link href="/assets/demo/demo.css" rel="stylesheet" />
+  
   <!-- <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" /> -->
   <!-- Google Tag Manager -->
   <!-- End Google Tag Manager -->
@@ -211,6 +213,12 @@
                   <a class="nav-link" href="/loans">
                     <span class="sidebar-mini"> ML </span>
                     <span class="sidebar-normal"> My Loans </span>
+                  </a>
+                </li>
+                <li class="nav-item ">
+                  <a class="nav-link" href="{{route('soma.dashboard')}}">
+                    <span class="sidebar-mini"> ML </span>
+                    <span class="sidebar-normal"> Soma Loans </span>
                   </a>
                 </li>
                 <li class="nav-item ">

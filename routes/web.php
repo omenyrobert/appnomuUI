@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\FlutterwaveController;
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\SomaLoanController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -299,7 +301,7 @@ Route::post('/save_saving_sub_category',[AuthenticationController::class,'saveSa
 Route::post('/save_loan_category',[AuthenticationController::class,'saveLoanCategory']);
 Route::post('/pay', [FlutterwaveController::class, 'initialize'])->name('pay');
 Route::get('/rave/callback', [FlutterwaveController::class, 'callback'])->name('callback');
-Route::post('/request_loan',[AuthenticationController::class,'requestLoan']);  //request loan
+Route::post('/request_loan',[LoanController::class,'requestLoan']);  //request loan
 Route::post('/save-alliaces',[AuthenticationController::class,'saveAliases']);
 Route::post('/confirm-alliaces',[AuthenticationController::class,'confirmAlliances']);
 Route::post('/editProfile',[AuthenticationController::class,'editUserProfile']);
@@ -454,5 +456,10 @@ Route::get('/paycheck', function () {
 
 
 Route::post('/contact_pagexc',[AuthenticationController::class,'sendMessagex']);
-
-
+// soma loan routes
+Route::get('loans/soma/index', [SomaLoanController::class,'index'])->name('soma.index');
+Route::get('loans/soma/index/{id}', [SomaLoanController::class,'borrowerIndex'])->name('soma.borrower.index');
+Route::post('loans/soma/new', [SomaLoanController::class,'store'])->name('soma.store');
+Route::match(['get', 'put'], '/loans/soma/approve/{id}', [SomaLoanController::class,'approveSomaLoan'])->name('soma.approve');
+Route::get('loans/soma/create', [SomaLoanController::class,'create'])->name('soma.create');
+Route::get('loans/soma/dashboard', [SomaLoanController::class,'somaDashboard'])->name('soma.dashboard');

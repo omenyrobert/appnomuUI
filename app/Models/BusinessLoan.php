@@ -16,6 +16,10 @@ class BusinessLoan extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function loanCategory(){
+        return $this->belongsTo(LoanCategory::class,'loan_category_id','id');
+    }
+
     public function repayments(){
         return $this->morphMany(Repayment::class,'repaymentable');
     }

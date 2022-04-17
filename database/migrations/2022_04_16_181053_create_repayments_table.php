@@ -17,8 +17,13 @@ class CreateRepaymentsTable extends Migration
             $table->id();
             $table->enum('status',['pending','paid','late'])->default('pending');
             $table->date('due_date');
+            $table->bigInteger('user_id')->unsigned();
+            $table->integer('amount')->unsigned();
             $table->string('repaymentable_type');
-            $table->integer('repaymentable_id')->unsigned();
+            $table->bigInteger('repaymentable_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('sysusers')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

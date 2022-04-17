@@ -26,7 +26,7 @@ class CreateStudentsTable extends Migration
             $table->string('school_report')->nullable();
             $table->string('school_receipt')->nullable();
             $table->date('dob');
-            $table->integer('user_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('sysusers')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

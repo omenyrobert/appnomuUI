@@ -16,11 +16,12 @@ class CreateBusinessesTable extends Migration
         Schema::create('businesses', function (Blueprint $table) {
             $table->id();
             $table->string('name',255);
-            $table->integer('district_id')->unsigned();
-            $table->integer('user_id')->unsigned();
+            $table->bigInteger('district_id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->string('location',255);
-            $table->string('license',255);
-            $table->string('business_photo',255);
+            $table->string('license_photo',255)->nullable();
+            $table->string('premises_photo',255)->nullable();
+            $table->string('business_photo',255)->nullable();
             $table->foreign('district_id')->references('id')->on('districts')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

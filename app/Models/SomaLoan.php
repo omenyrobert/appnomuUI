@@ -16,6 +16,11 @@ class SomaLoan extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+    public function loanCategory(){
+        return $this->belongsTo(LoanCategory::class,'loan_category_id','id');
+    }
+
     public function student(){
         return $this->belongsTo(Student::class);
     }
