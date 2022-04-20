@@ -25,7 +25,7 @@ class CreateSomaLoansTable extends Migration
             $table->integer('principal')->unsigned()->nullable();
             $table->integer('payment_period')->unsigned()->nullable();
             $table->integer('installments')->unsigned()->nullable();
-            $table->integer('payment_amount')->unsigned();
+            $table->integer('payment_amount')->unsigned()->nullable();
             $table->integer('paid_amount')->unsigned()->default(0);
             $table->enum('status',['pending','approved','declined','held','late'])->default('pending');
             $table->date('due_date')->nullable();

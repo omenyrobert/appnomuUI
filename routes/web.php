@@ -6,6 +6,7 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\FlutterwaveController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\SomaLoanController;
+use App\Http\Controllers\AllianceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -301,9 +302,12 @@ Route::post('/save_saving_sub_category',[AuthenticationController::class,'saveSa
 Route::post('/save_loan_category',[AuthenticationController::class,'saveLoanCategory']);
 Route::post('/pay', [FlutterwaveController::class, 'initialize'])->name('pay');
 Route::get('/rave/callback', [FlutterwaveController::class, 'callback'])->name('callback');
-Route::post('/request_loan',[LoanController::class,'requestLoan']);  //request loan
-Route::post('/save-alliaces',[AuthenticationController::class,'saveAliases']);
-Route::post('/confirm-alliaces',[AuthenticationController::class,'confirmAlliances']);
+Route::post('/request_loan',[LoanController::class,'requestLoan'])->name('loan.request'); 
+// Route::post('/request_loan',[AuthenticationController::class,'requestLoan']);  //request loan
+// Route::post('/save-alliaces',[AuthenticationController::class,'saveAliases']);
+// Route::post('/confirm-alliaces',[AuthenticationController::class,'confirmAlliances']);
+Route::post('/save-alliaces',[AllianceController::class,'store'])->name('alliance->store');
+Route::post('/confirm-alliaces',[AllianceController::class,'confirmAlliance'])->name('alliance.confirm');
 Route::post('/editProfile',[AuthenticationController::class,'editUserProfile']);
 Route::post('/editPasswords',[AuthenticationController::class,'editPasswords']);
 Route::post('/webhook/rave', [FlutterwaveController::class, 'webhook'])->name('webhook');

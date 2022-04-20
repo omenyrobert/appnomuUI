@@ -121,72 +121,7 @@ class AuthenticationController extends BaseController
             return redirect()->back()->withErrors(['Errors'=>'Email or Phone Number Already Used, Please Login instead']);
         }
     }
-    public function requestLoan(Request $request){
-        $validated = $request->validate([
-            'category'=>'required'
-        ]);
-
-        $user = AuthenticationController::getUserById(session('user_id'));
-
-        if ($user[0]['NIN']==null || $user[0]['card_no']==null || $user[0]['address']==null) {
-            return redirect()->route('profile')->withErrors(['Errors'=>'Your Profile Is not Set Up fully ']);
-        }
-
-        $loans = AuthenticationController::getLoanHistory(session('user_id'));
-        $loan_cat = AuthenticationController::getLoanByCatID($request['category']);
-        $i = 0;
-
-        foreach ($loans as $key) {
-            # code...
-            if ($key['status']==6 || $key['status']==4 ) {
-                # code...
-                $i++;
-            }
-        }
-
-        if ($i>0) {
-            return redirect()->back()->withErrors(['Errors'=>'You Have an Outstanding Loan ']);
-        }
-
-        $db = DB::table('alliases')
-            ->where('refferer','=',session('user_id'))
-            ->get();
-        
-        $dbxc = json_decode($db,true);
-
-        $numcv = sizeof($dbxc);
-
-        if ($numcv<2) {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'You Dont Have enough Alliases to qualify For a loan,Add alliance and try again later']);
-
-        }
-            // dd($user[0]['loan_limit']);
-        if($user[0]['loan_limit'] < $loan_cat[0]['loan_amount']){
-            return redirect()->back()->withErrors(['Errors'=>'Your loan limit is '.$user[0]['loan_limit'] .'/='.' you cannot borrow above your loan limit']);
-        }
-        $uloan = 'LN-'.rand(11111,99999);
-        $pay = 0;
-        $status = 5;
-        $db = DB::table('userloans')->insert([
-            'ULoan_Id'=>$uloan,
-            'user_id'=>session('user_id'),
-            'loan_amount'=>$loan_cat[0]['loan_amount'],
-            'amount_paid'=>$pay,
-            'status'=>$status,
-            'dueDate'=>time(),
-            'approved_by'=>' ',
-            'created_at'=>date('Y-m-d H:i:s',time())
-        ]);
-        
-        if ($db) {
-            # code...
-            return redirect()->back()->with('Success','Loan Request Sent');
-        }else {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'Loan Request Not Sent']);
-        }
-    }
+   
 
     public static function getUserById($user_id){
         $db = DB::table('sysusers')
@@ -1107,91 +1042,7 @@ class AuthenticationController extends BaseController
 
     }
 
-    public function saveAliases(Request $request){
-        $validated = $request->validate([
-            'relationship'=>'required',
-            'nin'=>'required',
-            'card_no'=>'required',
-            'telephone'=>'required',
-            'name'=>'required'
-        ]);
-
-        $userdf = AuthenticationController::getUserById(session('user_id'));
-
-        if ($userdf[0]['telephone']==$request['telephone']) {
-            return redirect()->back()->withErrors(['Errors'=>'You can not use your own phone number']);
-        }
-
-        if ($userdf[0]['NIN']==$request['nin']) {
-            return redirect()->back()->withErrors(['Errors'=>'You can not use your own NIN']);
-        }
-
-        $user_id = rand(111111,999999);
-        $code =rand(111111,999999);
-        session(['code'=>$user_id]);
-        $db = DB::table('alliases')->insert([
-            'user_id'=>$user_id,
-            'refferer'=>session('user_id'),
-            'relationship'=>$request['relationship'],
-            'created_at'=>date('Y-m-d H:i:s',time()),
-            'NIN'=>$request['nin'],
-            'Card_No'=>$request['card_no'],
-            'Phone_Number'=>$request['telephone'],
-            'name'=>$request['name'],
-            'sms_token'=>$code
-
-        ]);
-
-        if ($db) {
-            # code...
-            $ret = SmsController::verify_alliases_phone($request['telephone'],$code,session('user_id'),$userdf[0]['name'],$request['name']);
-            return redirect()->back()->with('Success','Alliance Saved Successfully');
-        }else {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'Alliance Saving failed']);
-        }
-    }
-
-    public function confirmAlliances(Request $request){
-        $db = DB::table('alliases')
-            ->where('user_id','=',session('code'))
-            ->get();
-
-        $dbx = json_decode($db,true);
-
-        if(sizeof($dbx)<1){
-            return redirect()->back()->withErrors(['Errors'=>'Unknown alliance']);
-        }
-
-        if ($dbx[0]['sms_token']!=$request['token']) {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'Wrong Token ']);
-        }
-
-        $dvf = DB::table('alliases')
-            ->where('user_id','=',session('code'))
-            ->update([
-                'sms_verified_at'=>time()
-            ]);
-
-        if ($dvf) {
-            # code...
-            session()->forget('code');
-            return redirect()->back()->with('Success','Alliance Successfully Confirmed');
-        }else {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Alliance Not Successfully Confirmed']);
-        }
-    }
-
-    public static function getAlliances($refferer){
-        $db = DB::table('alliases')
-            ->where('refferer','=',$refferer)
-            ->get();
-
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    
 
     public static function getloanInstalls($user_id){
         $db = DB::table('loanpaymentsinstallments')
@@ -1511,7 +1362,7 @@ class AuthenticationController extends BaseController
 
     public static function getIdentifications($user_id){
         $db = DB::table('identifications')
-            ->where('user_id','=',$user_id)
+            ->where('Uuser_id','=',$user_id)
             ->get();
         
         $dbx = json_decode($db,true);
@@ -1519,14 +1370,14 @@ class AuthenticationController extends BaseController
         if (sizeof($dbx)<1) {
             # code...
             $ins = DB::table('identifications')->insert([
-                'user_id'=>$user_id,
+                'Uuser_id'=>$user_id,
                 'created_at'=>date('Y-m-d H:i:s',time())
             ]);
 
             if ($ins) {
                 # code...
                 $db = DB::table('identifications')
-                    ->where('user_id','=',$user_id)
+                    ->where('Uuser_id','=',$user_id)
                     ->get();
                 
                 $dbx = json_decode($db,true);
@@ -1550,7 +1401,7 @@ class AuthenticationController extends BaseController
                 $url = Storage::url($image.".".$extension);
 
                 $db = DB::table('identifications')
-                    ->where('user_id','=',session('user_id'))
+                    ->where('Uuser_id','=',session('user_id'))
                     ->update([
                         'front_face'=>$url,
                         'updated_at'=>date('Y-m-d H:i:s',time())
@@ -1580,7 +1431,7 @@ class AuthenticationController extends BaseController
                 $url = Storage::url($image.".".$extension);
 
                 $db = DB::table('identifications')
-                    ->where('user_id','=',session('user_id'))
+                    ->where('Uuser_id','=',session('user_id'))
                     ->update([
                         'back_face'=>$url,
                         'updated_at'=>date('Y-m-d H:i:s',time())
@@ -1610,7 +1461,7 @@ class AuthenticationController extends BaseController
                 $url = Storage::url($image.".".$extension);
 
                 $db = DB::table('identifications')
-                    ->where('user_id','=',session('user_id'))
+                    ->where('Uuser_id','=',session('user_id'))
                     ->update([
                         'passport'=>$url,
                         'updated_at'=>date('Y-m-d H:i:s',time())
@@ -1845,5 +1696,161 @@ class AuthenticationController extends BaseController
         $dbx = json_decode($db,true);
         return $dbx;
     }
+
+     // public function saveAliases(Request $request){
+    //     $validated = $request->validate([
+    //         'relationship'=>'required',
+    //         'nin'=>'required',
+    //         'card_no'=>'required',
+    //         'telephone'=>'required',
+    //         'name'=>'required'
+    //     ]);
+
+    //     $userdf = AuthenticationController::getUserById(session('user_id'));
+
+    //     if ($userdf[0]['telephone']==$request['telephone']) {
+    //         return redirect()->back()->withErrors(['Errors'=>'You can not use your own phone number']);
+    //     }
+
+    //     if ($userdf[0]['NIN']==$request['nin']) {
+    //         return redirect()->back()->withErrors(['Errors'=>'You can not use your own NIN']);
+    //     }
+
+    //     $user_id = rand(111111,999999);
+    //     $code =rand(111111,999999);
+    //     session(['code'=>$user_id]);
+    //     $db = DB::table('alliases')->insert([
+    //         'user_id'=>$user_id,
+    //         'refferer'=>session('user_id'),
+    //         'relationship'=>$request['relationship'],
+    //         'created_at'=>date('Y-m-d H:i:s',time()),
+    //         'NIN'=>$request['nin'],
+    //         'Card_No'=>$request['card_no'],
+    //         'Phone_Number'=>$request['telephone'],
+    //         'name'=>$request['name'],
+    //         'sms_token'=>$code
+
+    //     ]);
+
+    //     if ($db) {
+    //         # code...
+    //         $ret = SmsController::verify_alliases_phone($request['telephone'],$code,session('user_id'),$userdf[0]['name'],$request['name']);
+    //         return redirect()->back()->with('Success','Alliance Saved Successfully');
+    //     }else {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Errors'=>'Alliance Saving failed']);
+    //     }
+    // }
+
+    
+    // public function confirmAlliances(Request $request){
+
+        
+    //     $db = DB::table('alliases')
+    //         ->where('user_id','=',session('code'))
+    //         ->get();
+
+    //     $dbx = json_decode($db,true);
+
+    //     if(sizeof($dbx)<1){
+    //         return redirect()->back()->withErrors(['Errors'=>'Unknown alliance']);
+    //     }
+
+    //     if ($dbx[0]['sms_token']!=$request['token']) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Errors'=>'Wrong Token ']);
+    //     }
+
+    //     $dvf = DB::table('alliases')
+    //         ->where('user_id','=',session('code'))
+    //         ->update([
+    //             'sms_verified_at'=>time()
+    //         ]);
+
+    //     if ($dvf) {
+    //         # code...
+    //         session()->forget('code');
+    //         return redirect()->back()->with('Success','Alliance Successfully Confirmed');
+    //     }else {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Alliance Not Successfully Confirmed']);
+    //     }
+    // }
+
+    // public static function getAlliances($refferer){
+    //     $db = DB::table('alliases')
+    //         ->where('refferer','=',$refferer)
+    //         ->get();
+
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
+
+    // public function requestLoan(Request $request){
+    //     $validated = $request->validate([
+    //         'category'=>'required'
+    //     ]);
+
+    //     $user = AuthenticationController::getUserById(session('user_id'));
+
+    //     if ($user[0]['NIN']==null || $user[0]['card_no']==null || $user[0]['address']==null) {
+    //         return redirect()->route('profile')->withErrors(['Errors'=>'Your Profile Is not Set Up fully ']);
+    //     }
+
+    //     $loans = AuthenticationController::getLoanHistory(session('user_id'));
+    //     $loan_cat = AuthenticationController::getLoanByCatID($request['category']);
+    //     $i = 0;
+
+    //     foreach ($loans as $key) {
+    //         # code...
+    //         if ($key['status']==6 || $key['status']==4 ) {
+    //             # code...
+    //             $i++;
+    //         }
+    //     }
+
+    //     if ($i>0) {
+    //         return redirect()->back()->withErrors(['Errors'=>'You Have an Outstanding Loan ']);
+    //     }
+
+    //     $db = DB::table('alliases')
+    //         ->where('refferer','=',session('user_id'))
+    //         ->get();
+        
+    //     $dbxc = json_decode($db,true);
+
+    //     $numcv = sizeof($dbxc);
+
+    //     if ($numcv<2) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Errors'=>'You Dont Have enough Alliases to qualify For a loan,Add alliance and try again later']);
+
+    //     }
+    //         // dd($user[0]['loan_limit']);
+    //     if($user[0]['loan_limit'] < $loan_cat[0]['loan_amount']){
+    //         return redirect()->back()->withErrors(['Errors'=>'Your loan limit is '.$user[0]['loan_limit'] .'/='.' you cannot borrow above your loan limit']);
+    //     }
+    //     $uloan = 'LN-'.rand(11111,99999);
+    //     $pay = 0;
+    //     $status = 5;
+    //     $db = DB::table('userloans')->insert([
+    //         'ULoan_Id'=>$uloan,
+    //         'user_id'=>session('user_id'),
+    //         'loan_amount'=>$loan_cat[0]['loan_amount'],
+    //         'amount_paid'=>$pay,
+    //         'status'=>$status,
+    //         'dueDate'=>time(),
+    //         'approved_by'=>' ',
+    //         'created_at'=>date('Y-m-d H:i:s',time())
+    //     ]);
+        
+    //     if ($db) {
+    //         # code...
+    //         return redirect()->back()->with('Success','Loan Request Sent');
+    //     }else {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Errors'=>'Loan Request Not Sent']);
+    //     }
+    // }
 
 }

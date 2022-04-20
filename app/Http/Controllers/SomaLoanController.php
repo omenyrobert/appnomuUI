@@ -11,6 +11,9 @@ use App\Models\ParentDetail;
 use App\Models\Repayment;
 use App\Models\Student;
 use Carbon\Carbon;
+use AfricasTalking\SDK\AfricasTalking;
+use App\Models\Grade;
+use App\Models\Identification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -58,11 +61,28 @@ class SomaLoanController extends Controller
     public function create(){
         try {
             $users = AuthenticationController::getUserById(session('user_id'));
+            // dd($users[0]['id']);
             $districts = District::all();
-            $user  = User::findOfFail($users[0]['id']);
-            return view('soma.create',['districts'=>$districts,'user'=>$user])->with('title','Soma Loan Application');
+            $user  = User::findOrFail($users[0]['id']);
+    //todo:artisan console        
+            // $identifications = Identification::all();
+            // foreach ($identifications as $id) {
+            //     $id_user = User::where('user_id',$id->Uuser_id)->first();
+            //     if($id_user){
+            //         // $id->user()->associate($id_user);
+            //         // dd($id_user);
+            //         $id->user_id = $id_user->id;
+            //         $id->save();
+            //     }
+               
+            // }
+           
+            $grades = Grade::all();
+            $loan_categories = LoanCategory::where('loan_amount','>=',100000)->Where('loan_amount','<=',2000000)->get();
+            // dd($user);
+            return view('soma.create',['districts'=>$districts,'user'=>$user,'grades'=>$grades,'categories'=>$loan_categories])->with('page','Soma Loan Application');
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -85,28 +105,37 @@ class SomaLoanController extends Controller
                 $student = new Student();
                 $student->fname = $request->student_fname;
                 $student->lname = $request->student_lname;
+                $student->user()->associate($user);
                 $student->gender = $request->student_gender;
                 $student->class_name = $request->student_class;
                 $student->dob = $request->student_dob;
                 $student->phone = $request->student_phone;
                 $student->school_name = $request->student_school_name;
                 $student->school_id_card = $request->student_id_card;
-                $student->school_report = $request->student_report;
-                $student->school_receipt = $request->student_receipt;
+                $student->sch_admission_num = $request->sch_admin_num;
+                if($request->radio_receipt_report == 'report'){
+                    $student->school_report = $request->receipt_report;
+                }else{
+                    $student->school_receipt = $request->receipt_report;
+
+                }
+                
+                $student->class_name = $request->student_class;
                 $student->save();
                 if($student){
                     $hm_district = District::find($request->hm_district);
                     $headteacher = new Headteacher();
                     $headteacher->fname = $request->hm_fname;
                     $headteacher->lname = $request->hm_lname;
-                    $headteacher->school_name = $request->hm_school_name;
-                    $headteacher->phone = $request->hm_phone;
+                    $headteacher->school_name = $request->sch_name;
+                    $headteacher->phone = $request->hm_contact;
                     $headteacher->district()->associate($hm_district);
                     $headteacher->student()->associate($student);
                     $headteacher->save();
 
                 }
-                if($request->same_parent == 1){
+                // dd(typeof $request->chk_parent_applicant);
+                if($request->chk_parent_applicant == true){
                     $parent = new ParentDetail();
                     $parent->name = $user->name;
                     $parent->phone = $user->telephone;
@@ -115,15 +144,16 @@ class SomaLoanController extends Controller
                 }else{
                     $parent = new ParentDetail();
                     $parent->name = $request->parent_name;
-                    $parent->phone = $request->parent_phone;
+                    $parent->phone = $request->nok_contact;
                     $parent->id_photo = $request->parent_id_card;
                     $parent->save();
                 }
-                $parent->students()->attach($student->id,['relationship'=>$request->parent_relationship]);
-                $loan_category = LoanCategory::find($request->loan_chart);
+                $parent->students()->attach($student->id,['relationship'=>$request->relationship]);
+                $loan_category = LoanCategory::find($request->loan_category);
                 $soma = new SomaLoan();
                 $soma->user()->associate($user);
                 $soma->student()->associate($student);
+                $soma->loanCategory()->associate($loan_category);
                 $soma->principal = $loan_category->loan_amount;
                 $soma->interest_rate = $loan_category->interest_rate;
                 $soma->payment_period = $loan_category->loan_period;
@@ -145,6 +175,13 @@ class SomaLoanController extends Controller
                         break;
                 }
                 $soma->save();
+                // dd($soma);
+                if($soma){
+                    
+                    // $message = 'Dear '. $user->name .', Your '.$soma->SLN_id .' of '.$soma->principal .' has been requested pending approval';
+                    
+                    // $smsStatus = $this->sendSMS($message,$user->telephone);
+                }
                 return redirect()->route('soma.show');
             }
             return redirect()->back()->withErrors('you have to loggin to do this operation');
@@ -174,10 +211,18 @@ class SomaLoanController extends Controller
                    $installment->repaymentable_id = $soma->id;
                    $installment->repaymentable_type = 'App/Models/SomaLoan';
                    $installment->amount = $installment_amount;
-                   $last_date = $soma->repayments()->latest()->get()->due_date;
+                   $last_date = $soma->latestRepayment->due_date;
                    $installment->due_date = $last_date ? $last_date->addDays($installment_period) : $soma->approved_at->addDays($installment_period);
                    $installment->save();
 
+                }
+                if($soma){
+                    $message = 'Dear '. $user->name .', Your '.$soma->SLN_id .' of '.$soma->principal .' has been '.$soma->status .' and credited to your appnomu account';
+                    
+                    $smsStatus = $this->sendSMS($message,$user->telephone);
+                    for(;$smsStatus != 'success';){
+                        $smsStatus = $this->sendSMS($message,$user->telephone);
+                    }
                 }
 
                 return redirect()->back();
@@ -191,6 +236,36 @@ class SomaLoanController extends Controller
     }
 
     public function payInstallment($id){
+
+    }
+
+    //showa particular soma loan
+    public function show($id){
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function sendSMS($message,$phone){
+        try {
+            if(substr($phone,0,1)=='0'){
+                //0754024461
+                $tel = '+256'.substr($phone,1,9);
+            }elseif (substr($phone,0,1)=='+') {
+                # code...
+                $tel = $phone;
+            }
+    
+            $sms = new AfricasTalking(env('AFRICASTALKING_USERNAME') ,env('AFRICASTALKING_APIKEY'));
+            $result = $sms->sms()->send(['to'=>$tel,'message'=>$message,'from'=>'Appnomu']);
+            return $result['status'];
+        } catch (\Throwable $th) {
+            //throw $th;
+            return 'failed';
+        }
+        
 
     }
 
