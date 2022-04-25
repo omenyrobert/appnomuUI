@@ -7,7 +7,8 @@ use App\Http\Controllers\FlutterwaveController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\SomaLoanController;
 use App\Http\Controllers\AllianceController;
-
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,15 +26,9 @@ use App\Http\Controllers\AllianceController;
 $auth = new AuthenticationController();
 view()->share('auth',$auth);
 
-Route::get('/dashboard', function () {
-    if (session('dashboard')==null) {
-        return redirect()->route('login');
-    }else {
-        view()->share('page','Dashboard');
-        return view('view.index');
-    }
-})->name('dashboard');
-
+Route::get('/dashboard',[HomeController::class,'dashboard'])->name('dashboard');
+Route::get('/dashboard/admin',[HomeController::class,'adminDashboard'])->name('dashboard.admin');
+Route::get('/dashboard/client',[HomeController::class,'clientDashboard'])->name('dashboard.client');
 Route::get('/login', function () {
     view()->share('page','Login');
     return view('view.login');
@@ -97,7 +92,7 @@ Route::get('/withdraws', function () {
   	if($sand==1){
       	return redirect()->route('dashboard')->withErrors(['Errors'=>'System Withdraws Under Review Contact Support For More Information']);
     }else{
-    	view()->share('page','Make Withdraw');
+        view()->share('page','Make Withdraw');
     	return view('view.withdraws');
     }
     
@@ -293,18 +288,28 @@ Route::get('/loan-view', function () {
     return redirect()->back()->withErrors(['Errors'=>'No Loan Selected']);
 });
 
-Route::post('/register_user',[AuthenticationController::class,'signUpUser']);
 Route::post('/sendSms',[SmsController::class,'sendBulks']);
 Route::post('/verification',[AuthenticationController::class,'verifyphone']);
-Route::post('/loginty',[AuthenticationController::class,'loginUserx']);
 Route::post('/save_saving_category',[AuthenticationController::class,'saveSavingCate']);
 Route::post('/save_saving_sub_category',[AuthenticationController::class,'saveSavingSubCate']);
 Route::post('/save_loan_category',[AuthenticationController::class,'saveLoanCategory']);
 Route::post('/pay', [FlutterwaveController::class, 'initialize'])->name('pay');
 Route::get('/rave/callback', [FlutterwaveController::class, 'callback'])->name('callback');
 Route::post('/request_loan',[LoanController::class,'requestLoan'])->name('loan.request'); 
+Route::post('/loginty',[LoginController::class,'authenticate'])->name('user.login');
+Route::post('/register_user',[LoginController::class,'register'])->name('user.register');
+// Route::post('/register_user',[AuthenticationController::class,'signUpUser']);
+// Route::post('/loginty',[AuthenticationController::class,'loginUserx']);
 // Route::post('/request_loan',[AuthenticationController::class,'requestLoan']);  //request loan
 // Route::post('/save-alliaces',[AuthenticationController::class,'saveAliases']);
+// Route::get('/dashboard', function () {
+//     if (session('dashboard')==null) {
+//         return redirect()->route('login');
+//     }else {
+//         view()->share('page','Dashboard');
+//         return view('view.index');
+//     }
+// })->name('dashboard');
 // Route::post('/confirm-alliaces',[AuthenticationController::class,'confirmAlliances']);
 Route::post('/save-alliaces',[AllianceController::class,'store'])->name('alliance->store');
 Route::post('/confirm-alliaces',[AllianceController::class,'confirmAlliance'])->name('alliance.confirm');

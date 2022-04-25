@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Savings;
 
 class User extends Authenticatable
 {
@@ -41,10 +42,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    //user can have many loans
-    public function loans(){
-        return $this->hasMany(Loan::class);
-    }
+  
     //a user can be a parent with many students
     public function students(){
         return $this->hasMany(Student::class,'user_id','id');
@@ -73,7 +71,9 @@ class User extends Authenticatable
     public function identification(){
         return $this->hasOne(Identification::class);
     }
-
+    public function account(){
+        return $this->hasOne(Account::class);
+    }
     public function district(){
         return $this->belongsTo(District::class);
     }
@@ -81,6 +81,19 @@ class User extends Authenticatable
     public function repayments(){
         return $this->hasMany(Repayment::class);
     }
+
+    public function loans(){
+        return $this->hasMany(Loan::class);
+    }
+
+    public function savings(){
+        return $this->hasMany(Save::class);
+    }
+    
+    public function withdraws(){
+        return $this->hasMany(Withdraw::class);
+    }
+
 
 
 }

@@ -1,18 +1,5 @@
 
-<?php
-  if (session('user_id')==null) {
-    echo "<script> document.location.href='/'</script>";
-  }
 
-  if (session('role')!=='admin') {
-    $arr = $auth::onLogin(session('dashboard')['User']['email']);
-    session(['dashboard'=> $arr]);
-    $ready_savings = $auth::getAllDueSavings(session('user_id'));
-} else {
-    $arr = $auth::onLoginAdmin();
-    session(['dashboard'=>$arr]);
-}
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,8 +27,8 @@
   <link rel="stylesheet" type="text/css" href="/assets/css/icons.css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
   <link rel="stylesheet" href="/maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-  <!-- <link href="/assets/css/material-dashboard.min6c54.css?v=2.2.2" rel="stylesheet" />
-  <link href="/assets/demo/demo.css" rel="stylesheet" /> -->
+  <link href="/assets/css/material-dashboard.min6c54.css?v=2.2.2" rel="stylesheet" />
+  <!-- <link href="/assets/demo/demo.css" rel="stylesheet" /> -->
   <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
   
   <!-- <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" /> -->
@@ -71,12 +58,10 @@
           </div>
           <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="username">
-              <?php
-                $user_details = $auth::getUserById(session('user_id'));
-              ?>
+             
               <span>
-                {{$user_details[0]['name']}}</br>
-                {{session('user_id')?? 'User ID'}}
+                {{$user->name}}</br>
+                {{$user->user_id }}
                 <b class="caret"></b>
               </span>
             </a>
@@ -100,7 +85,7 @@
         </div>
         <ul class="nav">
           <li class="nav-item active ">
-            <a class="nav-link" href="/dashboard">
+            <a class="nav-link" href="{{route('dashboard')}}">
               <i class="material-icons">dashboard</i>
               <p> Dashboard </p>
             </a>
@@ -114,21 +99,17 @@
             </a>
             <div class="collapse" id="pagesExamples">
               <ul class="nav">
-                <?php
-                  if (session('role')==null) {
+                
+                  @if($user->role != 'admin') 
                   
-                ?>
+                
                 <li class="nav-item ">
                   <a class="nav-link" href="/savings">
                     <span class="sidebar-mini"> AS </span>
                     <span class="sidebar-normal"> My Savings </span>
                   </a>
                 </li>
-                <?php
-                  }else {
-                    # code...
-                  
-                ?>
+                @else
                 <li class="nav-item ">
                   <a class="nav-link" href="/allSavings">
                     <span class="sidebar-mini"> AS </span>
@@ -147,9 +128,7 @@
                     <span class="sidebar-normal"> Sub Categories </span>
                   </a>
                 </li>
-                <?php
-                  }
-                ?>
+                @endif
               </ul>
             </div>
           </li>
@@ -162,31 +141,22 @@
             </a>
             <div class="collapse" id="componentsExamples">
               <ul class="nav">
-                <?php
-                  if (session('role')==null) {
-                    # code...
-                  
-                ?>
+                @if($user->role != 'admin')
                 <li class="nav-item ">
                   <a class="nav-link" href="/withdraws">
                     <span class="sidebar-mini"> AW </span>
                     <span class="sidebar-normal"> Withdraw  </span>
                   </a>
                 </li>
-                <?php
-                  }else {
-                    # code...
-                  
-                ?>
+                
+                 @else
                 <li class="nav-item ">
                   <a class="nav-link" href="/all-withdraws">
                     <span class="sidebar-mini"> SW </span>
                     <span class="sidebar-normal">All Withdraws  </span>
                   </a>
                 </li>
-                <?php
-                  }
-                ?>
+               @endif
                 <!-- <li class="nav-item ">
                   <a class="nav-link" href="/withdraw">
                     <span class="sidebar-mini"> WC </span>
@@ -205,35 +175,28 @@
             </a>
             <div class="collapse" id="formsExamples">
               <ul class="nav">
-                <?php
-                  if (session('role')==null) {
-                    # code...
-                  
-                ?>
+                @if($user->role != 'admin')
                 <li class="nav-item ">
                   <a class="nav-link" href="/loans">
                     <span class="sidebar-mini"> ML </span>
                     <span class="sidebar-normal"> My Loans </span>
                   </a>
                 </li>
+                @endif
                 <li class="nav-item ">
                   <a class="nav-link" href="{{route('soma.dashboard')}}">
                     <span class="sidebar-mini"> ML </span>
                     <span class="sidebar-normal"> Soma Loans </span>
                   </a>
                 </li>
+                @if($user->role != 'admin')
                 <li class="nav-item ">
                   <a class="nav-link" href="/loan-installments">
                     <span class="sidebar-mini"> ML </span>
                     <span class="sidebar-normal"> My Loans Installements </span>
                   </a>
                 </li>
-                <?php
-                  }else {
-                    # code...
-                  
-                
-                ?>
+              @else
                 <li class="nav-item ">
                   <a class="nav-link" href="/loan-chart">
                     <span class="sidebar-mini"> RL </span>
@@ -246,17 +209,11 @@
                     <span class="sidebar-normal"> User Loans</span>
                   </a>
                 </li>
-                <?php
-                  }
-                ?>
+                @endif
               </ul>
             </div>
           </li>
-          <?php
-            if (session('role')==null) {
-              # code...
-            
-          ?>
+          @if($user->role != 'admin')
           <li class="nav-item ">
             <a class="nav-link" data-toggle="collapse" href="#reffer">
               <i class="material-icons">group_add</i>
@@ -299,11 +256,7 @@
               </ul>
             </div>
           </li>
-          <?php
-            }
-            if (session('role')=='admin') {
-              # code...
-          ?>
+         @else
           <li class="nav-item ">
             <a class="nav-link" data-toggle="collapse" href="#users">
               <i class="material-icons">people</i>
@@ -322,6 +275,7 @@
               </ul>
             </div>
           </li>
+          @endif
           <li class="nav-item ">
             <a class="nav-link" data-toggle="collapse" href="#knowledge">
               <i class="material-icons">assignment</i>
@@ -425,9 +379,7 @@
             </div>
           </li> -->
 
-          <?php
-            }
-          ?>
+        
         </ul>
       </div>
       <div class="sidebar-background"></div>
@@ -524,46 +476,10 @@
       @endif
             <h4>
         <marquee>Dear Valued Client, Please note these;
-         , All new clients start with a loan of UGX15,000, Please upload your national ID both sides,Upload selfie/passport photos, Add alliances before requesting for a loan, Repay your loan on time to qualify for bigger loans. We are open for support from Monday to Friday 8.30 AM to 5.30 PM, Email help@appnou.net, Whatsapp +256775383963, join our telegram channel for news and updates, self guides >> blog.appnomu.com.Thank You for choosing us !</marquee>
+         , All new clients start with a loan of UGX20,000, Please upload your national ID both sides,Upload selfie/passport photos, Add alliances before requesting for a loan, Repay your loan on time to qualify for bigger loans. We are open for support from Monday to Friday 8.30 AM to 5.30 PM, Email help@appnou.net, Whatsapp +256775383963, join our telegram channel for news and updates, self guides >> blog.appnomu.com.Thank You for choosing us !</marquee>
       </h4>
       @yield('content')
-      <script>
-        // @media screen and (min-width: 300px) {
-        //   .footer {
-        //     display: none;
-        //   }
-        // }
-      </script>
-      <!-- <footer class="footer">
-        <div class="container">
-          <nav class="float-left">
-            <ul>
-              <li>
-                <a href="{{ env('APP_URL','https://www.appnomu.com/dashboard/') }}">
-                {{ env('APP_NAME','Sern Savings') }}
-                </a>
-              </li>
-              <li>
-                <a href="{{ env('APP_URL','https://www.appnomu.co/abous') }}/about-us">
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a href="{{ env('APP_URL','https://www.appnou.net') }}/applications">
-                  Applications
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>, made with <i class="material-icons">favorite</i> by
-            <a href="https://www.softhostings.com" target="_blank">Soft Hostings Limited</a>
-          </div>
-        </div>
-      </footer> -->
+     
     </div>
   </div>
   <div class="fixed-plugin">

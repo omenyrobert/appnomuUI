@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-8 ml-auto mr-auto">
-            <form class="form" method="post" action="/register_user">
+            <form class="form" method="post" action="{{route('user.register')}}">
                 @csrf
                 <div class="card card-login card-hidden">
                 <div class="card-header card-header-rose text-center">

@@ -15,7 +15,7 @@
                             <i class="material-icons">person</i>
                             </div>
                             <p class="card-category">All</br>Users</p>
-                            <h3 class="card-title">{{ session('dashboard')['users'] }}</h3>
+                            <h3 class="card-title">{{ $users}}</h3>
                         </div>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                             <i class="material-icons">credit_score</i>
                             </div>
                             <p class="card-category">Loan</br>Categories</p>
-                            <h3 class="card-title">{{ session('dashboard')['loans_cate'] }}</h3>
+                            <h3 class="card-title">{{ $loans_cate }}</h3>
                         </div>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                             <i class="material-icons">savings</i>
                             </div>
                             <p class="card-category">Saving</br>Categories</p>
-                            <h3 class="card-title">{{ session('dashboard')['savingcategories'] }}</h3>
+                            <h3 class="card-title">{{ $savingcategories}}</h3>
                         </div>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                             <i class="material-icons">account_balance</i>
                             </div>
                             <p class="card-category">Savings</br>Available</p>
-                            <h3 class="card-title">{{ number_format(session('dashboard')['savings']) }}</h3>
+                            <h3 class="card-title">{{ $savings }}</h3>
                         </div>
                         </div>
                     </div>
@@ -62,11 +62,11 @@
                             <i class="material-icons">equalizer</i>
                             </div>
                             <p class="card-category">Loans</br>Running</p>
-                            <h3 class="card-title">{{ number_format(session('dashboard')['Running_loans']['loans']) }}</h3>
+                            <h3 class="card-title">{{ $Running_loans}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
-                            <i class="material-icons">date_range</i> {{ session('dashboard')['Running_loans']['number'] }} Loans
+                            <i class="material-icons">date_range</i> {{ $Running_loans_count }} Loans
                             </div>
                         </div>
                         </div>
@@ -78,11 +78,11 @@
                             <i class="material-icons">store</i>
                             </div>
                             <p class="card-category">Loan</br>Requests</p>
-                            <h3 class="card-title">{{ session('dashboard')['loan_requests']['loans'] }}</h3>
+                            <h3 class="card-title">{{ $loan_requests}}</h3>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
-                            <i class="material-icons">date_range</i> {{ session('dashboard')['loan_requests']['number'] }} Loans
+                            <i class="material-icons">date_range</i> {{ $loan_requests_count}} Loans
                             </div>
                         </div>
                         </div>
@@ -364,7 +364,7 @@
                                                         <tbody>
                                                             <?php
                                                                 $i = 0;
-                                                                foreach (session('dashboard')['user-loans'] as $key) {
+                                                                foreach ($user->loans as $key) {
                                                                 # code...
                                                                     $i++;
                                                                     #Statues 7 paid 6 approved 5 requested 4 overdue 3 Denied 2 Waiting

@@ -14,7 +14,7 @@ class SomaLoan extends Model
     }
 
     public function latestRepayment(){
-        return $this->morphOne(Repayment::class)->latestOfMany();
+        return $this->morphOne(Repayment::class,'repaymentable')->latestOfMany();
     }
 
     public function user(){

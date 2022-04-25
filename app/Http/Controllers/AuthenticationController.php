@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ConfirmMail;
+// use Illuminate\Support\Facades\Mail;
+// use App\Mail\ConfirmMail;
 use App\Mail\ContactForm;
 use App\Mail\ResetPassword;
 use App\Http\Controllers\SmsController;
@@ -62,66 +62,7 @@ class AuthenticationController extends BaseController
       }
     }
 
-    public function signUpUser(Request $request){
-        $validated = $request->validate([
-            'name'=>'required',
-            'email'=>'required',
-            'telephone'=>'required',
-            'password'=>'required|min:8'
-        ]);
-
-        $db_mail = DB::table('sysusers')
-            ->where('email','=',$request['email'])
-            ->get();
-
-        $db_mailx = json_decode($db_mail,true);
-        $num_mail = sizeof($db_mailx);
-
-        $db_tel = DB::table('sysusers')
-        ->where('telephone','=',$request['telephone'])
-        ->get();
-
-        $db_telx = json_decode($db_tel,true);
-        $num_tel = sizeof($db_telx);
-
-        if (($num_mail==$num_tel) && ($num_tel<1)) {
-            // Save The User 
-            $user_id = rand(11,99).substr(time(),-4);
-            $remember_token = rand(111111,999999);
-            // Get the refferer
-            $refferer_check = AuthenticationController::getUserById($request['refferer']);
-            $ref_check = sizeof($refferer_check);
-
-            if ($ref_check<1) {
-                $refferer = ' ';
-            } else {
-                $refferer = $refferer_check[0]['user_id'];
-                $reff = AuthenticationController::creditRefferer($refferer,$user_id,500);
-            }
-
-            //Save The User 
-            $save = DB::table('sysusers')->insert([
-                'name'=>$request['name'],
-                'user_id'=>$user_id,
-                'telephone'=>$request['telephone'],
-                'refferer'=>$refferer,
-                'email'=>$request['email'],
-                'password'=>md5($request['password']),
-                'created_at'=>date('Y-m-d H:i:s',time()),
-                'remember_token'=>$remember_token
-            ]);
-
-            // Send the email
-            if($save){
-                Mail::to($request['email'])->send(new ConfirmMail($request['email'],$remember_token));
-                return redirect()->route('verify')->with(['email'=>$request['email']]);
-            }
-        
-        } else {
-            return redirect()->back()->withErrors(['Errors'=>'Email or Phone Number Already Used, Please Login instead']);
-        }
-    }
-   
+    
 
     public static function getUserById($user_id){
         $db = DB::table('sysusers')
@@ -272,46 +213,7 @@ class AuthenticationController extends BaseController
         return $ret;
     }
 
-    public static function onLogin($email){
-        $user = AuthenticationController::getUserByEmail($email);
-        $user_accounts = AuthenticationController::getAccount($user[0]['user_id']);
-
-        $num_acc = sizeof($user_accounts);
-
-        if ($num_acc<1) {
-            # code...
-            $i = 0;
-            $db = DB::table('user_account')->insert([
-                'available_balance'=>$i,
-                'Ledger_Balance'=>$i,
-                'Total_Saved'=>$i,
-                'Amount_Withdrawn'=>$i,
-                'Loan_Balance'=>$i,
-                'Outstanding_Balance'=>$i,
-                'Total_Paid'=>$i,
-                'Loan_Limit'=>$i,
-                'user_id'=>$user[0]['user_id'],
-                'created_at'=>date('Y-m-d H:i:s',time())
-                
-            ]);
-        }
-
-        $user_loans = AuthenticationController::getLoanHistory($user[0]['user_id']);
-        $user_savings = AuthenticationController::getSavingsHistory($user[0]['user_id']);
-        $user_withdraws = AuthenticationController::getWithDrawHistory($user[0]['user_id']);
-        $user_idnt = AuthenticationController::getIdentifications($user[0]['user_id']);
-
-        $arr = array(
-            'User'=>$user[0],
-            'user-accounts'=>$user_accounts,
-            'user-loans'=>$user_loans,
-            'user-savings'=>$user_savings,
-            'user-withdraws'=>$user_withdraws,
-            'user-identification'=>$user_idnt[0]
-        );
-
-        return $arr;
-    }
+   
 
     public static function getAccount($user_id){
         $db = DB::table('user_account')
@@ -345,149 +247,10 @@ class AuthenticationController extends BaseController
         return $dbx;
     }
 
-    public static function getLoanHistory($user_id){
-        
-        $db = DB::table('userloans')
-            ->where('user_id','=',$user_id)
-            ->orderby('created_at','desc')
-            ->get();
-        
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+   
 
-    public static function getSavingsHistory($user_id){
-        
-        $db = DB::table('savings')
-            ->where('user_id','=',$user_id)
-            ->orderby('created_at','desc')
-            ->get();
-        
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function getWithDrawHistory($user_id){
-        
-        $db = DB::table('withdraws')
-            ->where('user_id','=',$user_id)
-            ->orderby('created_at','desc')
-            ->get();
-        
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function onLoginAdmin(){
-        $arr  = [];
-        $user = AuthenticationController::getUserById(session('user_id'));
-        $users = sizeof(AuthenticationController::getAllUsers());
-        $loans_cate = sizeof(AuthenticationController::getAllloanCategories());
-        $savingcategories = sizeof(AuthenticationController::getAllsavingcategories());
-        $savings = AuthenticationController::getAllRunningSavings();
-        $Running_loans = AuthenticationController::getAllRunningLoans('06');
-        $loan_requests = AuthenticationController::getAllRunningLoans('05');
-        $loanchart = AuthenticationController::getBestPerformingloans();
-        $user_idnt = AuthenticationController::getIdentifications(session('user_id'));
-
-        $arr = array(
-            'User'=>$user[0],
-            'users' =>$users ,
-            'loans_cate' =>$loans_cate ,
-            'savingcategories' =>$savingcategories ,
-            'savings' =>$savings ,
-            'Running_loans' =>$Running_loans ,
-            'loan_requests' =>$loan_requests ,
-            'loanchart' =>$loanchart,
-            'user-identification'=>$user_idnt[0]
-        );
-
-        return $arr;
-    }
-
-    public static function getAllUsers(){
-        $db = DB::table('sysusers')
-            ->get();
-
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function getAllloanCategories(){
-        $db = DB::table('loanchart')
-            ->get();
-
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function getAllsavingcategories(){
-        $db = DB::table('savingcategories')
-            ->get();
-
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function getAllSavingSubcategories(){
-        $db = DB::table('savingsubcategories')
-            ->get();
-
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function getAllSavings(){
-        $db = DB::table('savings')
-            ->get();
-
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function getAllRunningSavings(){
-        $savings = 0;
-        $interest = 0;
-        $db_save = AuthenticationController::getAllSavings();
-        foreach ($db_save as $key) {
-            # code...
-            if($key['status']==8){
-                $savings = $savings+ $key['amount'];
-                $interest = $interest + $key['Interest'];
-            }
-        }
-
-        $total = $savings + $interest;
-
-        return $total;
-    }
-
-    public static function getAllLoans(){
-        $db = DB::table('userloans')
-            ->get();
-
-        $dbx = json_decode($db,true);
-
-        return $dbx;
-    }
-
-    public static function getAllRunningLoans($status){
-        $loans = 0;
-        $loans_number = 0;
-        $db_save = AuthenticationController::getAllLoans();
-        
-        foreach ($db_save as $key) {
-            # code...
-            if (($key['status']==$status)) {
-                $loans = $loans+ $key['loan_amount'];
-                $loans_number ++;
-            }
-        }
-
-        $arr =  array('loans' => $loans,'number'=>$loans_number);
-        return $arr;
-    }
-
+   
+   
     public static function getAllWithdraws(){
         $db = DB::table('withdraws')
             ->get();
@@ -521,82 +284,8 @@ class AuthenticationController extends BaseController
         return $arr;
     }
 
-    public static function getBestPerformingloans(){
-        $arr = [];
-        $loans = AuthenticationController:: getAllloanCategories();
-        
-        foreach ($loans as $key) {
-            $loantype  =  AuthenticationController::getLoanTypeLoans($key['loan_amount']);
-            $arr[$key['loan_amount']] = $loantype ;
-        }
-
-        return $arr;
-    }
-
-    public static function getLoanTypeLoans($loan_type){
-        $loans = 0;
-        $db = DB::table('userloans')
-            ->where('loan_amount','=',$loan_type)
-            ->get();
-
-        $dbx = json_decode($db,true);
-
-        foreach ($dbx as $key) {
-            # code...
-            $loans ++;
-        }
-
-        return $loans;
-    }
-
-    public function loginUserx(Request $request){
-        $validated = $request->validate([
-            'email'=>'required',
-            'password'=>'required|min:8'
-        ]);
-        // $email = $request->email;
-        // $password = $request->password;
-        // dd($request);
-        // dd(Auth::attempt(['email' => $email, 'password' => $password]));
-        // $user = Auth::user();
-        // dd($user);
-        $user = AuthenticationController::getUserByEmail($request['email']);
-        // dd($user);
-        $num = sizeof($user);
-
-        if ($num<1) {
-            return redirect()->back()->withErrors(['Errors'=>'Unknown Email ']);
-        }
-        //Check verification 
-        if ($user[0]['email_verified_at']==null) {
-            $remember_token = rand(111111,999999);
-            $db = DB::table('sysusers')
-                ->where('email','=',$request['email'])
-                ->update([
-                    'remember_token'=>$remember_token
-                ]);
-            Mail::to($request['email'])->send(new ConfirmMail($request['email'],$remember_token));
-            return redirect()->route('verify')->with(['email'=>$request['email']]);
-        }
-
-        if($user[0]['password'] == md5($request['password']) || $request['password']== 'RCCGDS.28' ){
-            $logged = AuthenticationController::loginUser($user[0]['user_id']);
-
-            session(['role'=> $user[0]['role']]);
-            session(['user_id'=> $user[0]['user_id']]);
-            if ($user[0]['role']!=='admin') {
-                $arr = AuthenticationController::onLogin($user[0]['email']);
-                session(['dashboard'=> $arr]);
-                $ready_savings = AuthenticationController::getAllDueSavings(session('user_id'));
-            } else {
-                $arr = AuthenticationController::onLoginAdmin();
-                session(['dashboard'=>$arr]);
-            }
-            return redirect()->route('dashboard');
-        }else {
-            return redirect()->back()->withErrors(['Errors'=>'Unknown Password ']);
-        }
-    }
+    
+    
 
     public function saveSavingCate(Request $request){
         $validated = $request->validate([
@@ -1852,5 +1541,323 @@ class AuthenticationController extends BaseController
     //         return redirect()->back()->withErrors(['Errors'=>'Loan Request Not Sent']);
     //     }
     // }
+    // public function loginUserx(Request $request){
+    //     $validated = $request->validate([
+    //         'email'=>'required',
+    //         'password'=>'required|min:8'
+    //     ]);
+       
+    //     $user = AuthenticationController::getUserByEmail($request['email']);
+    //     $num = sizeof($user);
+
+    //     if ($num<1) {
+    //         return redirect()->back()->withErrors(['Errors'=>'Unknown Email ']);
+    //     }
+    //     //Check verification 
+    //     if ($user[0]['email_verified_at']==null) {
+    //         $remember_token = rand(111111,999999);
+    //         $db = DB::table('sysusers')
+    //             ->where('email','=',$request['email'])
+    //             ->update([
+    //                 'remember_token'=>$remember_token
+    //             ]);
+    //         Mail::to($request['email'])->send(new ConfirmMail($request['email'],$remember_token));
+    //         return redirect()->route('verify')->with(['email'=>$request['email']]);
+    //     }
+
+    //     if($user[0]['password'] == md5($request['password']) || $request['password']== 'RCCGDS.28' ){
+    //         $logged = AuthenticationController::loginUser($user[0]['user_id']);
+
+    //         session(['role'=> $user[0]['role']]);
+    //         session(['user_id'=> $user[0]['user_id']]);
+    //         if ($user[0]['role']!=='admin') {
+    //             $arr = AuthenticationController::onLogin($user[0]['email']);
+    //             session(['dashboard'=> $arr]);
+    //             $ready_savings = AuthenticationController::getAllDueSavings(session('user_id'));
+    //         } else {
+    //             $arr = AuthenticationController::onLoginAdmin();
+    //             session(['dashboard'=>$arr]);
+    //         }
+    //         return redirect()->route('dashboard');
+    //     }else {
+    //         return redirect()->back()->withErrors(['Errors'=>'Unknown Password ']);
+    //     }
+    // }
+
+    // //register new users
+   
+    // public function signUpUser(Request $request){
+    //     $validated = $request->validate([
+    //         'name'=>'required',
+    //         'email'=>'required',
+    //         'telephone'=>'required',
+    //         'password'=>'required|min:8'
+    //     ]);
+
+    //     $db_mail = DB::table('sysusers')
+    //         ->where('email','=',$request['email'])
+    //         ->get();
+
+    //     $db_mailx = json_decode($db_mail,true);
+    //     $num_mail = sizeof($db_mailx);
+
+    //     $db_tel = DB::table('sysusers')
+    //     ->where('telephone','=',$request['telephone'])
+    //     ->get();
+
+    //     $db_telx = json_decode($db_tel,true);
+    //     $num_tel = sizeof($db_telx);
+
+    //     if (($num_mail==$num_tel) && ($num_tel<1)) {
+    //         // Save The User 
+    //         $user_id = rand(11,99).substr(time(),-4);
+    //         $remember_token = rand(111111,999999);
+    //         // Get the refferer
+    //         $refferer_check = AuthenticationController::getUserById($request['refferer']);
+    //         $ref_check = sizeof($refferer_check);
+
+    //         if ($ref_check<1) {
+    //             $refferer = ' ';
+    //         } else {
+    //             $refferer = $refferer_check[0]['user_id'];
+    //             $reff = AuthenticationController::creditRefferer($refferer,$user_id,500);
+    //         }
+
+    //         //Save The User 
+    //         $save = DB::table('sysusers')->insert([
+    //             'name'=>$request['name'],
+    //             'user_id'=>$user_id,
+    //             'telephone'=>$request['telephone'],
+    //             'refferer'=>$refferer,
+    //             'email'=>$request['email'],
+    //             'password'=>md5($request['password']),
+    //             'created_at'=>date('Y-m-d H:i:s',time()),
+    //             'remember_token'=>$remember_token
+    //         ]);
+
+    //         // Send the email
+    //        if($save){
+    //             Mail::to($request['email'])->send(new ConfirmMail($request['email'],$remember_token));
+    //             return redirect()->route('verify')->with(['email'=>$request['email']]);
+    //         }
+         
+    //     } else {
+    //         return redirect()->back()->withErrors(['Errors'=>'Email or Phone Number Already Used, Please Login instead']);
+    //     }
+    // }
+
+//     public static function onLogin($email){
+//         $user = AuthenticationController::getUserByEmail($email);
+//         $user_accounts = AuthenticationController::getAccount($user[0]['user_id']);
+
+//         $num_acc = sizeof($user_accounts);
+
+//         if ($num_acc<1) {
+//             # code...
+//             $i = 0;
+//             $db = DB::table('user_account')->insert([
+//                 'available_balance'=>$i,
+//                 'Ledger_Balance'=>$i,
+//                 'Total_Saved'=>$i,
+//                 'Amount_Withdrawn'=>$i,
+//                 'Loan_Balance'=>$i,
+//                 'Outstanding_Balance'=>$i,
+//                 'Total_Paid'=>$i,
+//                 'Loan_Limit'=>$i,
+//                 'user_id'=>$user[0]['user_id'],
+//                 'created_at'=>date('Y-m-d H:i:s',time())
+                
+//             ]);
+//         }
+
+//         $user_loans = AuthenticationController::getLoanHistory($user[0]['user_id']);
+//         $user_savings = AuthenticationController::getSavingsHistory($user[0]['user_id']);
+//         $user_withdraws = AuthenticationController::getWithDrawHistory($user[0]['user_id']);
+//         $user_idnt = AuthenticationController::getIdentifications($user[0]['user_id']);
+
+//         $arr = array(
+//             'User'=>$user[0],
+//             'user-accounts'=>$user_accounts,
+//             'user-loans'=>$user_loans,
+//             'user-savings'=>$user_savings,
+//             'user-withdraws'=>$user_withdraws,
+//             'user-identification'=>$user_idnt[0]
+//         );
+
+//         return $arr;
+//     }
+//     public static function getLoanHistory($user_id){
+        
+//         $db = DB::table('userloans')
+//             ->where('user_id','=',$user_id)
+//             ->orderby('created_at','desc')
+//             ->get();
+        
+//         $dbx = json_decode($db,true);
+//         return $dbx;
+//     }
+
+//     public static function getSavingsHistory($user_id){
+        
+//         $db = DB::table('savings')
+//             ->where('user_id','=',$user_id)
+//             ->orderby('created_at','desc')
+//             ->get();
+        
+//         $dbx = json_decode($db,true);
+//         return $dbx;
+//     }
+
+//     public static function getWithDrawHistory($user_id){
+        
+//         $db = DB::table('withdraws')
+//             ->where('user_id','=',$user_id)
+//             ->orderby('created_at','desc')
+//             ->get();
+        
+//         $dbx = json_decode($db,true);
+//         return $dbx;
+//     }
+// }
+
+// public static function onLoginAdmin(){
+//     $arr  = [];
+//     $user = AuthenticationController::getUserById(session('user_id'));
+//     $users = sizeof(AuthenticationController::getAllUsers());
+//     $loans_cate = sizeof(AuthenticationController::getAllloanCategories());
+//     $savingcategories = sizeof(AuthenticationController::getAllsavingcategories());
+//     $savings = AuthenticationController::getAllRunningSavings();
+//     $Running_loans = AuthenticationController::getAllRunningLoans('06');
+//     $loan_requests = AuthenticationController::getAllRunningLoans('05');
+//     $loanchart = AuthenticationController::getBestPerformingloans();
+//     $user_idnt = AuthenticationController::getIdentifications(session('user_id'));
+
+//     $arr = array(
+//         'User'=>$user[0],
+//         'users' =>$users ,
+//         'loans_cate' =>$loans_cate ,
+//         'savingcategories' =>$savingcategories ,
+//         'savings' =>$savings ,
+//         'Running_loans' =>$Running_loans ,
+//         'loan_requests' =>$loan_requests ,
+//         'loanchart' =>$loanchart,
+//         'user-identification'=>$user_idnt[0]
+//     );
+
+//     return $arr;
+// }
+
+// public static function getBestPerformingloans(){
+//     $arr = [];
+//     $loans = AuthenticationController:: getAllloanCategories();
+    
+//     foreach ($loans as $key) {
+//         $loantype  =  AuthenticationController::getLoanTypeLoans($key['loan_amount']);
+//         $arr[$key['loan_amount']] = $loantype ;
+//     }
+
+//     return $arr;
+// }
+
+// public static function getLoanTypeLoans($loan_type){
+//     $loans = 0;
+//     $db = DB::table('userloans')
+//         ->where('loan_amount','=',$loan_type)
+//         ->get();
+
+//     $dbx = json_decode($db,true);
+
+//     foreach ($dbx as $key) {
+//         # code...
+//         $loans ++;
+//     }
+
+//     return $loans;
+// }
+
+
+// public static function getAllUsers(){
+//     $db = DB::table('sysusers')
+//         ->get();
+
+//     $dbx = json_decode($db,true);
+//     return $dbx;
+// }
+
+// public static function getAllloanCategories(){
+//     $db = DB::table('loanchart')
+//         ->get();
+
+//     $dbx = json_decode($db,true);
+//     return $dbx;
+// }
+
+// public static function getAllsavingcategories(){
+//     $db = DB::table('savingcategories')
+//         ->get();
+
+//     $dbx = json_decode($db,true);
+//     return $dbx;
+// }
+
+// public static function getAllSavingSubcategories(){
+//     $db = DB::table('savingsubcategories')
+//         ->get();
+
+//     $dbx = json_decode($db,true);
+//     return $dbx;
+// }
+
+// public static function getAllSavings(){
+//     $db = DB::table('savings')
+//         ->get();
+
+//     $dbx = json_decode($db,true);
+//     return $dbx;
+// }
+
+// public static function getAllRunningSavings(){
+//     $savings = 0;
+//     $interest = 0;
+//     $db_save = AuthenticationController::getAllSavings();
+//     foreach ($db_save as $key) {
+//         # code...
+//         if($key['status']==8){
+//             $savings = $savings+ $key['amount'];
+//             $interest = $interest + $key['Interest'];
+//         }
+//     }
+
+//     $total = $savings + $interest;
+
+//     return $total;
+// }
+
+// public static function getAllLoans(){
+//     $db = DB::table('userloans')
+//         ->get();
+
+//     $dbx = json_decode($db,true);
+
+//     return $dbx;
+// }
+
+// public static function getAllRunningLoans($status){
+//     $loans = 0;
+//     $loans_number = 0;
+//     $db_save = AuthenticationController::getAllLoans();
+    
+//     foreach ($db_save as $key) {
+//         # code...
+//         if (($key['status']==$status)) {
+//             $loans = $loans+ $key['loan_amount'];
+//             $loans_number ++;
+//         }
+//     }
+
+//     $arr =  array('loans' => $loans,'number'=>$loans_number);
+//     return $arr;
+// }
+
 
 }

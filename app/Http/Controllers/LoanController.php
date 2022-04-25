@@ -10,37 +10,19 @@ use App\Models\User;
 
 class LoanController extends Controller
 {
-    //change loan limit
-    public function updateLoanLimit(Request $request,$id){
-        try {
-            $users = AuthenticationController::getUserById(session('user_id'));
-            $user = $users[0];
-            // if(Auth::user()->role == 'Admin'){
-            if($user['role'] == 'Admin'){
-                $user = User::find($id);
+    
 
-                if($user){
-                    $user->loan_limit = (int)$request->loan_limit;
-                    $user->save();
-                }
-                return response('user does not exist',401);
-            }
-            return response('unathorized',401);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+
+    public function create(){
+
     }
-
-
     public function requestLoan(Request $request){
         try {
             $validated = $request->validate([
                 'category'=>'required'
             ]);
     
-            $users = AuthenticationController::getUserById(session('user_id'));
-            // $user = Auth::user();
-            $user = User::findOrFail($users[0]['id']);
+            $user = User::findOrFail(Auth::id());
             if ($user->NIN ==null || $user->card_no == null || $user->address == null) {
                 return redirect()->route('profile')->withErrors(['Errors'=>'Your Profile Is not Set Up fully ']);
             }
@@ -88,66 +70,84 @@ class LoanController extends Controller
     }
 
 
-    // public function requestLoan(Request $request){
-    //     $validated = $request->validate([
-    //         'category'=>'required'
-    //     ]);
+   //get all loans
+   public function index(){
+       try {
+           $user = User::find(Auth::id());
+           if($user->role == 'Admin'){
+               $loans = Loan::orderBy('created_at','DESC')->get();
+                return view('loans.index',['loans'=>$loans])->with('page','All Loans');
+           }
+       } catch (\Throwable $th) {
+           throw $th;
+       }
+   }
 
-    //     $user = AuthenticationController::getUserById(session('user_id'));
+   //get all pending loans
+   public function pendingLoans(){
+       try {
+        $user = User::find(Auth::id());
+        if($user->role == 'Admin'){
+            $loans = Loan::orderBy('created_at','DESC')->where('status',5)->get();
+             return view('loans.index',['loans'=>$loans])->with('page','All Loans');
+        }
+       } catch (\Throwable $th) {
+           throw $th;
+       }
+   }
 
-    //     if ($user[0]['NIN']==null || $user[0]['card_no']==null || $user[0]['address']==null) {
-    //         return redirect()->route('profile')->withErrors(['Errors'=>'Your Profile Is not Set Up fully ']);
-    //     }
+   //get all ongoing loans
+   public function ongoingLoans(){
+       try {
+        $user = User::find(Auth::id());
+        if($user->role == 'Admin'){
+            $loans = Loan::orderBy('created_at','DESC')->where('status','06')->get();
+             return view('loans.index',['loans'=>$loans])->with('page','All Loans');
+        }
+       } catch (\Throwable $th) {
+           throw $th;
+       }
+   }
 
-    //     $loans = AuthenticationController::getLoanHistory(session('user_id'));
-    //     $loan_cat = AuthenticationController::getLoanByCatID($request['category']);
-    //     $i = 0;
+   //get all overdue loans
+   public function overdueLoans(){
+       try {
+        $user = User::find(Auth::id());
+        if($user->role == 'Admin'){
+            $loans = Loan::orderBy('created_at','DESC')->where('status','04')->get();
+             return view('loans.index',['loans'=>$loans])->with('page','All Loans');
+        }
+       } catch (\Throwable $th) {
+           throw $th;
+       }
+   }
 
-    //     foreach ($loans as $key) {
-    //         # code...
-    //         if ($key['status']==6 || $key['status']==4 ) {
-    //             # code...
-    //             $i++;
-    //         }
-    //     }
-
-    //     if ($i>0) {
-    //         return redirect()->back()->withErrors(['Errors'=>'You Have an Outstanding Loan ']);
-    //     }
-
-    //     $db = DB::table('alliases')
-    //         ->where('refferer','=',session('user_id'))
-    //         ->get();
+   //get a users pending loans
+   public function userPendingLoans($id){
+       try {
+           
+        $user = User::find(Auth::id());
+            if($user->role == 'Admin' || $user->id = $id){
+                $loans = $user->loans()->orderBy('created_at','DESC')->where('status','05')->get();
+                return view('loans.user.index',['loans'=>$loans])->with('page','All Loans');
+            }
         
-    //     $dbxc = json_decode($db,true);
+       } catch (\Throwable $th) {
+           throw $th;
+       }
+   }
 
-    //     $numcv = sizeof($dbxc);
+   public function userIndex($id){
+    try {
+            $user = User::find(Auth::id());
+                if($user->role == 'Admin' || $user->id = $id){
+                    $loans = $user->loans()->orderBy('created_at','DESC')->get();
+                    return view('loans.user.index',['loans'=>$loans])->with('page','All Loans');
+                }            
+           } catch (\Throwable $th) {
+               throw $th;
+           }
+       }
 
-    //     if ($numcv<2) {
-    //         # code...
-    //         return redirect()->back()->withErrors(['Errors'=>'You Dont Have enough Alliases to qualify For a loan,Add alliance and try again later']);
 
-    //     }
-    //     $uloan = 'LN-'.rand(11111,99999);
-    //     $pay = 0;
-    //     $status = 5;
-    //     $db = DB::table('userloans')->insert([
-    //         'ULoan_Id'=>$uloan,
-    //         'user_id'=>session('user_id'),
-    //         'loan_amount'=>$loan_cat[0]['loan_amount'],
-    //         'amount_paid'=>$pay,
-    //         'status'=>$status,
-    //         'dueDate'=>time(),
-    //         'approved_by'=>' ',
-    //         'created_at'=>date('Y-m-d H:i:s',time())
-    //     ]);
-        
-    //     if ($db) {
-    //         # code...
-    //         return redirect()->back()->with('Success','Loan Request Sent');
-    //     }else {
-    //         # code...
-    //         return redirect()->back()->withErrors(['Errors'=>'Loan Request Not Sent']);
-    //     }
-    // }
 }
