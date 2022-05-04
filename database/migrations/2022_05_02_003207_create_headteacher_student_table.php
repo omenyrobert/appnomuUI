@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHeadteachersTable extends Migration
+class CreateHeadteacherStudentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,15 @@ class CreateHeadteachersTable extends Migration
      */
     public function up()
     {
-        Schema::create('headteachers', function (Blueprint $table) {
+        Schema::create('headteacher_student', function (Blueprint $table) {
             $table->id();
-            $table->string('fname');
-            $table->string('lname');
-            $table->string('phone');
-            $table->string('school_name');
-            $table->bigInteger('district_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
-            $table->foreign('district_id')->references('id')->on('districts')
+            $table->bigInteger('headteacher_id')->unsigned();
+            $table->bigInteger('student_id')->unsigned();
+            $table->string('student_admission_num');
+            $table->foreign('headteacher_id')->references('id')->on('headteachers')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('sysusers')
+            $table->foreign('student_id')->references('id')->on('students')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->timestamps();
@@ -38,6 +35,6 @@ class CreateHeadteachersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('headteachers');
+        Schema::dropIfExists('headteacher_student');
     }
 }

@@ -9,12 +9,20 @@ class Headteacher extends Model
 {
     use HasFactory;
 
-    public function student()
+    public function students()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsToMany(Student::class,'headteacher_student')->withPivot('student_admission_num')->withTimestamps();
     }
 
     public function district(){
         return $this->belongsTo(District::class);
+    }
+
+    public function somaLoan(){
+        return $this->belongsTo(SomaLoan::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

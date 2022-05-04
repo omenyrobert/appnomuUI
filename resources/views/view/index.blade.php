@@ -364,36 +364,36 @@
                                                         <tbody>
                                                             <?php
                                                                 $i = 0;
-                                                                foreach ($user->loans as $key) {
-                                                                # code...
-                                                                    $i++;
+                                                                foreach ($user->loans as $loan){
+                                                               # code...
+                                                                    // $i++;
                                                                     #Statues 7 paid 6 approved 5 requested 4 overdue 3 Denied 2 Waiting
-                                                                    if ($key['status']==7) {
+                                                                    if ($loan->status ==7) {
                                                                     # code...
                                                                     $status = 'Paid';
                                                                     $badge = 'badge-success';
                                                                     
-                                                                    }elseif ($key['status']==6) {
+                                                                    }elseif ($loan->status ==6) {
                                                                     # code...
                                                                     $status = 'Approved';
                                                                     $badge = 'badge-primary';
 
-                                                                    }elseif ($key['status']==5) {
+                                                                    }elseif ($loan->status ==5) {
                                                                     # code...
                                                                     $status = 'Requested';
                                                                     $badge = 'badge-secondary';
 
-                                                                    }elseif ($key['status']==4) {
+                                                                    }elseif ($loan->status ==4) {
                                                                     # code...
                                                                     $status = 'Overdued';
                                                                     $badge = 'badge-rose';
 
-                                                                    }elseif ($key['status']==3) {
+                                                                    }elseif ($loan->status ==3) {
                                                                     # code...
                                                                     $status = 'Denied';
                                                                     $badge = 'badge-danger';
 
-                                                                    }elseif ($key['status']==2) {
+                                                                    }elseif ($loan->status ==2) {
                                                                     # code...
                                                                     $status = 'Warning';
                                                                     $badge = 'badge-warning';

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Loan;
+use App\Models\LoanCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
@@ -74,10 +75,11 @@ class LoanController extends Controller
    public function index(){
        try {
            $user = User::find(Auth::id());
-           if($user->role == 'Admin'){
-               $loans = Loan::orderBy('created_at','DESC')->get();
-                return view('loans.index',['loans'=>$loans])->with('page','All Loans');
-           }
+           if($user->role == 'admin'){
+               $loans = Loan::orderBy('created_at','desc')->paginate(10);
+               $categories = LoanCategory::all();
+                return view('loans.index',['loans'=>$loans,'user'=>$user,'categories'=>$categories])->with('page','All Loans');
+            }
        } catch (\Throwable $th) {
            throw $th;
        }
@@ -141,8 +143,9 @@ class LoanController extends Controller
     try {
             $user = User::find(Auth::id());
                 if($user->role == 'Admin' || $user->id = $id){
-                    $loans = $user->loans()->orderBy('created_at','DESC')->get();
-                    return view('loans.user.index',['loans'=>$loans])->with('page','All Loans');
+                    $categories = LoanCategory::all();
+                    $loans = $user->loans()->orderBy('created_at','desc')->paginate(10);
+                    return view('loans.user.index',['loans'=>$loans,'user'=>$user,'categories'=>$categories])->with('page','All Loans');
                 }            
            } catch (\Throwable $th) {
                throw $th;

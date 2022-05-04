@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUserIdColumnToUserAccountTable extends Migration
+class AddAccountIdToWithdrawsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddUserIdColumnToUserAccountTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_account', function (Blueprint $table) {
-            $table->bigInteger('user_id')->unsigned()->unique();
+        Schema::table('withdraws', function (Blueprint $table) {
+            $table->bigInteger('account_id')->unsigned();
         });
     }
 
@@ -25,8 +25,8 @@ class AddUserIdColumnToUserAccountTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_account', function (Blueprint $table) {
-            $table->dropColumn('user_id');
+        Schema::table('withdraws', function (Blueprint $table) {
+            $table->dropColumn('account_id');
         });
     }
 }

@@ -26,10 +26,8 @@
   <link rel="stylesheet" type="text/css" href="/assets/demo/demo.css" />
   <link rel="stylesheet" type="text/css" href="/assets/css/icons.css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
   <link rel="stylesheet" href="/maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-  <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <link href="/assets/css/material-dashboard.min6c54.css?v=2.2.2" rel="stylesheet" />
-  <!-- <link href="/assets/demo/demo.css" rel="stylesheet" /> -->
-  <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
+  <link href="/assets/demo/demo.css" rel="stylesheet" />
   
   <!-- <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" /> -->
   <!-- Google Tag Manager -->
@@ -58,6 +56,7 @@
           </div>
           <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="username">
+             
              
               <span>
                 {{$user->name}}</br>
@@ -167,7 +166,7 @@
             </div>
           </li>
           <li class="nav-item ">
-            <a class="nav-link" data-toggle="collapse" href="#formsExamples">
+            <a class="nav-link" data-toggle="collapse" href="{{$user->role == 'admin' ? route('loan.index') : route('loan.user.index',['id'=>$user->id])}}">
               <i class="material-icons">credit_score</i>
               <p> Loans
                 <b class="caret"></b>
@@ -330,56 +329,16 @@
               </ul>
             </div>
           </li>
-          <!-- <li class="nav-item ">
-            <a class="nav-link" data-toggle="collapse" href="#sets">
-              <i class="material-icons">settings_suggest</i>
-              <p> System Settings
+          <li class="nav-item ">
+            <a class="nav-link" data-toggle="collapse" href="{{route('user.logout')}}">
+              <i class="material-icons">chat</i>
+              <p> Log Out
                 <b class="caret"></b>
               </p>
             </a>
-            <div class="collapse" id="sets">
-              <ul class="nav">
-                <li class="nav-item ">
-                  <a class="nav-link" href="/general">
-                    <span class="sidebar-mini"> GS </span>
-                    <span class="sidebar-normal"> General Settings </span>
-                  </a>
-                </li>
-                <li class="nav-item ">
-                  <a class="nav-link" href="/api-settings">
-                    <span class="sidebar-mini"> APS </span>
-                    <span class="sidebar-normal">API Settings</span>
-                  </a>
-                </li>
-                <li class="nav-item ">
-                  <a class="nav-link" href="/loan-settings">
-                    <span class="sidebar-mini"> LS </span>
-                    <span class="sidebar-normal"> Loan Settings </span>
-                  </a>
-                </li>
-                <li class="nav-item ">
-                  <a class="nav-link" href="/loan-settings">
-                    <span class="sidebar-mini"> ES </span>
-                    <span class="sidebar-normal"> Email Settings </span>
-                  </a>
-                </li>
-                <li class="nav-item ">
-                  <a class="nav-link" href="/loan-settings">
-                    <span class="sidebar-mini"> SMS </span>
-                    <span class="sidebar-normal"> SMS Settings </span>
-                  </a>
-                </li>
-                <li class="nav-item ">
-                  <a class="nav-link" href="/loan-settings">
-                    <span class="sidebar-mini"> PS </span>
-                    <span class="sidebar-normal"> Payment Settings </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li> -->
-
-        
+            
+          </li>
+         
         </ul>
       </div>
       <div class="sidebar-background"></div>

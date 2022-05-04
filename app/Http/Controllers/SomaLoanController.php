@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Traits\SMSTrait;
 use App\Models\SomaLoan;
 use App\Models\User;
 use App\Models\District;
@@ -19,10 +19,10 @@ use Illuminate\Http\Request;
 
 class SomaLoanController extends Controller
 {
+    use SMSTrait;
     //dashboard access
     public function somaDashboard(){
-        $users = AuthenticationController::getUserById(session('user_id'));
-        $user = User::findOrFail($users[0]['id']);
+        $user = User::findOrFail(Auth::getUuser()->id);
         if($user->role== 'Admin'){
             return redirect()->route('soma.index');
         }
@@ -60,27 +60,13 @@ class SomaLoanController extends Controller
     //create a soma loan
     public function create(){
         try {
-            $users = AuthenticationController::getUserById(session('user_id'));
+            $user  = User::findOrFail(Auth::id());
             // dd($users[0]['id']);
             $districts = District::all();
-            $user  = User::findOrFail($users[0]['id']);
-    //todo:artisan console        
-            // $identifications = Identification::all();
-            // foreach ($identifications as $id) {
-            //     $id_user = User::where('user_id',$id->Uuser_id)->first();
-            //     if($id_user){
-            //         // $id->user()->associate($id_user);
-            //         // dd($id_user);
-            //         $id->user_id = $id_user->id;
-            //         $id->save();
-            //     }
-               
-            // }
-           
             $grades = Grade::all();
             $loan_categories = LoanCategory::where('loan_amount','>=',100000)->Where('loan_amount','<=',2000000)->get();
-            // dd($user);
-            return view('soma.create',['districts'=>$districts,'user'=>$user,'grades'=>$grades,'categories'=>$loan_categories])->with('page','Soma Loan Application');
+            $students = $user->students;
+            return view('soma.create',['districts'=>$districts,'user'=>$user,'grades'=>$grades,'categories'=>$loan_categories,'students'=>$students])->with('page','Soma Loan Application');
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -89,9 +75,7 @@ class SomaLoanController extends Controller
     //store the soma loan
     public function store(Request $request){
         try {
-            // $user = Auth::user();
-            $users = AuthenticationController::getUserById(session('user_id'));
-            $user = User::findOrFail($users[0]['id']);
+            $user = User::findOrFail(Auth::id());
             if($user){
                 $outstanding_loans = $user->loans()->where('status',6)->orWhere('status',4)->count();
                 $outstanding_soma = $user->soma_loans()->where('status',6)->orWhere('status',4)->count();
@@ -191,82 +175,52 @@ class SomaLoanController extends Controller
         
     }
 
-    public function approveSomaLoan(Request $request,$id){
+    public function loanStatusChange(Request $request,$id){
         try {
-            $users = AuthenticationController::getUserById(session('user_id'));
-            // $user = Auth::user();
-            $user = User::findOrFail($users[0]['id']);
-            if($user && $user->role == 'Admin'){
-                $soma = SomaLoan::findOrFail($id);
-                $soma->approved_at = Carbon::now();
-                $soma->due_date = Carbon::now()->addDays($soma->payment_period);                
-                $soma->status = 'approved';
-                $soma->interest = $soma->principal /$soma->interest_rate;
-                $soma->payment_amount = $soma->interest + $soma->principal + $soma->loan_category->processing_fees;
-                $soma->save();
-                $installment_amount = $soma->payment_amount /$soma->installments;
-                $installment_period = $soma->payment_period/$soma->installments;
-                for ($i=1; $i <= $soma->installments ; $i++) { 
-                   $installment = new Repayment();
-                   $installment->repaymentable_id = $soma->id;
-                   $installment->repaymentable_type = 'App/Models/SomaLoan';
-                   $installment->amount = $installment_amount;
-                   $last_date = $soma->latestRepayment->due_date;
-                   $installment->due_date = $last_date ? $last_date->addDays($installment_period) : $soma->approved_at->addDays($installment_period);
-                   $installment->save();
-
-                }
-                if($soma){
-                    $message = 'Dear '. $user->name .', Your '.$soma->SLN_id .' of '.$soma->principal .' has been '.$soma->status .' and credited to your appnomu account';
-                    
-                    $smsStatus = $this->sendSMS($message,$user->telephone);
-                    for(;$smsStatus != 'success';){
-                        $smsStatus = $this->sendSMS($message,$user->telephone);
+            if(Auth::check()){
+                $loan_n_string = $this->changeStatus($request,$id,'business');
+                if($loan_n_string){
+                    $loan = $loan_n_string['loan'];
+                    $user = $loan->user; 
+                    $last_message_string = $loan_n_string['last_message_string'];
+                    $message = 'Dear '. $user->name .', Your '.$loan->SLN_id .' of '.$loan->principal .' has been '.$loan->status .$last_message_string;                    
+                    $sms_status = $this->sendSMS($message,$user->telephone);
+                    for(;$sms_status != 'success';){
+                        $sms_status = $this->sendSMS($message,$user->telephone);
                     }
                 }
 
                 return redirect()->back();
 
             }
-            return redirect()->back()->withErrors('you are unathorised to do this operation!');
+            return redirect()->route('login')->withErrors('Errors','you are unathorised to do this operation!');
         } catch (\Throwable $th) {
             throw $th;
             // return redirect()->back()->withErrors($th->getMessage());
         }
     }
 
+   
+
     public function payInstallment($id){
 
     }
 
-    //showa particular soma loan
+    //show a particular soma loan
     public function show($id){
         try {
-            //code...
+            $loan = SomaLoan::findOrFail($id);
+            $repayments = $loan->repayments;
+            $student = $loan->student;
+            $school = $loan->headTeacher;
+            return view('soma.show',['loan'=>$loan,'repayments'=>$repayments,'student'=>$student,'school'=>$school])
+                ->with('page','Soma Loan | Show');
+
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function sendSMS($message,$phone){
-        try {
-            if(substr($phone,0,1)=='0'){
-                //0754024461
-                $tel = '+256'.substr($phone,1,9);
-            }elseif (substr($phone,0,1)=='+') {
-                # code...
-                $tel = $phone;
-            }
     
-            $sms = new AfricasTalking(env('AFRICASTALKING_USERNAME') ,env('AFRICASTALKING_APIKEY'));
-            $result = $sms->sms()->send(['to'=>$tel,'message'=>$message,'from'=>'Appnomu']);
-            return $result['status'];
-        } catch (\Throwable $th) {
-            //throw $th;
-            return 'failed';
-        }
-        
-
-    }
 
 }

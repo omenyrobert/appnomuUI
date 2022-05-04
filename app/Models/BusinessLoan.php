@@ -23,5 +23,12 @@ class BusinessLoan extends Model
     public function repayments(){
         return $this->morphMany(Repayment::class,'repaymentable');
     }
+    public function account(){
+        return $this->belongsTo(Account::class);
+    }
+
+    public function latestRepayment(){
+        return $this->morphOne(Repayment::class,'repaymentable')->latestOfMany();
+    }
 
 }

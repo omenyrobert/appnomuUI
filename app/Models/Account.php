@@ -26,4 +26,12 @@ class Account extends Model
     public function withdraws(){
         return $this->hasMany(Withdraw::class);
     }
+
+    public function somaLoans(){
+        return $this->hasMany(SomaLoan::class);
+    }
+
+    public function BusinessLoans(){
+        return $this->hasMany(BusinessLoan::class);
+    }
 }

@@ -53,8 +53,8 @@ class HomeController extends Controller
                 $savings = Save::where('status',8)->sum('amount');
                 $savings = Save::where('status',8)->count('amount');
                 $Running_loans_count = Loan::where('status','06')->count();
-                $Running_loans = Loan::where('status','06')->sum('loan_amount');
-                $loan_requests =Loan::where('status','05')->sum('loan_amount');
+                $Running_loans = Loan::where('status','06')->sum('principal');
+                $loan_requests =Loan::where('status','05')->sum('principal');
                 $loan_requests =Loan::where('status','05')->count();
                 $identification = $user->identification ? $user->identification : "";
                 return view('view.index',['users'=>$users,'user'=>$user,

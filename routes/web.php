@@ -113,10 +113,10 @@ Route::get('/all-withdraws', function () {
     return view('view.all-withdraws');
 });
 
-Route::get('/loans', function () {
-    view()->share('page','Loans');
-    return view('view.loans');
-});
+// Route::get('/loans', function () {
+//     view()->share('page','Loans');
+//     return view('view.loans');
+// });
 
 Route::get('/my-refferals', function () {
     view()->share('page','My Refferals');
@@ -288,6 +288,12 @@ Route::get('/loan-view', function () {
     return redirect()->back()->withErrors(['Errors'=>'No Loan Selected']);
 });
 
+// loan routes
+Route::post('/request_loan',[LoanController::class,'requestLoan'])->name('loan.request'); 
+Route::get('/loans',[LoanController::class,'index'])->name('loan.index');
+Route::get('/loan/user/{id}',[LoanController::class,'userIndex'])->name('loan.user.index');
+
+// =========================end loan routes
 Route::post('/sendSms',[SmsController::class,'sendBulks']);
 Route::post('/verification',[AuthenticationController::class,'verifyphone']);
 Route::post('/save_saving_category',[AuthenticationController::class,'saveSavingCate']);
@@ -295,9 +301,9 @@ Route::post('/save_saving_sub_category',[AuthenticationController::class,'saveSa
 Route::post('/save_loan_category',[AuthenticationController::class,'saveLoanCategory']);
 Route::post('/pay', [FlutterwaveController::class, 'initialize'])->name('pay');
 Route::get('/rave/callback', [FlutterwaveController::class, 'callback'])->name('callback');
-Route::post('/request_loan',[LoanController::class,'requestLoan'])->name('loan.request'); 
 Route::post('/loginty',[LoginController::class,'authenticate'])->name('user.login');
 Route::post('/register_user',[LoginController::class,'register'])->name('user.register');
+Route::get('/logout',[LoginController::class,'logout'])->name('user.logout');
 // Route::post('/register_user',[AuthenticationController::class,'signUpUser']);
 // Route::post('/loginty',[AuthenticationController::class,'loginUserx']);
 // Route::post('/request_loan',[AuthenticationController::class,'requestLoan']);  //request loan

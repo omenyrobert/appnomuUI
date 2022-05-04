@@ -17,7 +17,7 @@ class Student extends Model
 
     public function headteachers()
     {
-        return $this->hasMany(Headteacher::class);
+        return $this->belongsToMany(Headteacher::class,'headteacher_student')->withPivot('student_admission_num')->withTimestamps();
     }
 
     public function parents(){

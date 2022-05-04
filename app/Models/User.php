@@ -52,11 +52,11 @@ class User extends Authenticatable
     //     return $this->hasManyThrough(Headteacher::class ,Student::class,'user_id','student_id','id','id');
     // }
 
-    public function soma_loans(){
+    public function somaLoans(){
         return $this->hasMany(SomaLoan::class);
     }
 
-    public function biz_loans(){
+    public function businessLoans(){
         return $this->hasMany(BusinessLoan::class);
     }
 
@@ -92,6 +92,10 @@ class User extends Authenticatable
     
     public function withdraws(){
         return $this->hasMany(Withdraw::class);
+    }
+
+    public function headteachers(){
+        return $this->hasMany(Headteacher::class);
     }
 
 

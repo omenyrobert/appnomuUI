@@ -28,6 +28,8 @@ class Loan extends Model
         return $this->morphMany(Repayment::class,'repaymentable');
     }
 
-    
+    public function latestRepayment(){
+        return $this->morphOne(Repayment::class,'repaymentable')->latestOfMany();
+    }
 
 }

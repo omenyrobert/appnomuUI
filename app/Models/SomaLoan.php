@@ -28,4 +28,11 @@ class SomaLoan extends Model
     public function student(){
         return $this->belongsTo(Student::class);
     }
+
+    public function account(){
+        return $this->belongsTo(Account::class);
+    }
+    public function headTeacher(){
+        return $this->hasOne(Headteacher::class);
+    }
 }
