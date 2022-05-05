@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Loan;
 use App\Models\LoanCategory;
+use App\Models\Repayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
@@ -73,55 +74,95 @@ class LoanController extends Controller
 
    //get all loans
    public function index(){
-       try {
-           $user = User::find(Auth::id());
-           if($user->role == 'admin'){
-               $loans = Loan::orderBy('created_at','desc')->paginate(10);
-               $categories = LoanCategory::all();
-                return view('loans.index',['loans'=>$loans,'user'=>$user,'categories'=>$categories])->with('page','All Loans');
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $categories = LoanCategory::all();
+                $repayments = $user->role == 'admin' ? Repayment::where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->limit(15)->get() :
+                $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->get();
+                $loans = $user->role == 'admin' ? Loan::latest()->get() :
+                    $user->loans()->latest()->get();
+                return view('loans.index',['repayments'=> $repayments,'categories'=>$categories,'user'=>$user,'loans'=>$loans])->with('page','Loans | All Loans');
             }
-       } catch (\Throwable $th) {
-           throw $th;
-       }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
    }
 
    //get all pending loans
-   public function pendingLoans(){
-       try {
-        $user = User::find(Auth::id());
-        if($user->role == 'Admin'){
-            $loans = Loan::orderBy('created_at','DESC')->where('status',5)->get();
-             return view('loans.index',['loans'=>$loans])->with('page','All Loans');
+   public function pending(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $loans = $user->role == 'admin' ? Loan::where('status','pending')->latest()->get() :
+                    $user->loans()->where('status','pending')->latest()->get();
+                return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Pending');
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
         }
-       } catch (\Throwable $th) {
-           throw $th;
-       }
    }
 
    //get all ongoing loans
-   public function ongoingLoans(){
-       try {
+   public function approved(){
+    try {
         $user = User::find(Auth::id());
-        if($user->role == 'Admin'){
-            $loans = Loan::orderBy('created_at','DESC')->where('status','06')->get();
-             return view('loans.index',['loans'=>$loans])->with('page','All Loans');
+        if($user){
+            $loans = $user->role == 'admin' ? Loan::where('status','approved')->latest()->get() :
+                $user->loans()->where('status','approved')->latest()->get();
+            return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Loans | Approved');
         }
-       } catch (\Throwable $th) {
-           throw $th;
-       }
+        return redirect()->route('login');
+    } catch (\Throwable $th) {
+        throw $th;
+    }
    }
 
    //get all overdue loans
-   public function overdueLoans(){
-       try {
+   public function late(){
+    try {
         $user = User::find(Auth::id());
-        if($user->role == 'Admin'){
-            $loans = Loan::orderBy('created_at','DESC')->where('status','04')->get();
-             return view('loans.index',['loans'=>$loans])->with('page','All Loans');
+        if($user){
+            $loans = $user->role == 'admin' ? Loan::where('status','late')->latest()->get() :
+                $user->loans()->where('status','late')->latest()->get();
+            return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Loans | Over Due');
         }
-       } catch (\Throwable $th) {
-           throw $th;
-       }
+        return redirect()->route('login');
+    } catch (\Throwable $th) {
+        throw $th;
+    }
+   }
+
+   //declined loans
+   public function declined(){
+    try {
+        $user = User::find(Auth::id());
+        if($user){
+            $loans = $user->role == 'admin' ? Loan::where('status','declined')->latest()->get() :
+                $user->loans()->where('status','declined')->latest()->get();
+            return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Loans | Denied');
+        }
+        return redirect()->route('login');
+    } catch (\Throwable $th) {
+        throw $th;
+    }
+   }
+
+   //loans on hold
+   public function held(){
+    try {
+        $user = User::find(Auth::id());
+        if($user){
+            $loans = $user->role == 'admin' ? Loan::where('status','held')->latest()->get() :
+                $user->loans()->where('status','held')->latest()->get();
+            return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Loans | On Hold');
+        }
+        return redirect()->route('login');
+    } catch (\Throwable $th) {
+        throw $th;
+    }
    }
 
    //get a users pending loans
@@ -129,7 +170,7 @@ class LoanController extends Controller
        try {
            
         $user = User::find(Auth::id());
-            if($user->role == 'Admin' || $user->id = $id){
+            if($user->role == 'admin' || $user->id = $id){
                 $loans = $user->loans()->orderBy('created_at','DESC')->where('status','05')->get();
                 return view('loans.user.index',['loans'=>$loans])->with('page','All Loans');
             }
@@ -142,7 +183,7 @@ class LoanController extends Controller
    public function userIndex($id){
     try {
             $user = User::find(Auth::id());
-                if($user->role == 'Admin' || $user->id = $id){
+                if($user->role == 'admin' || $user->id = $id){
                     $categories = LoanCategory::all();
                     $loans = $user->loans()->orderBy('created_at','desc')->paginate(10);
                     return view('loans.user.index',['loans'=>$loans,'user'=>$user,'categories'=>$categories])->with('page','All Loans');

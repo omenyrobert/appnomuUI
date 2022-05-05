@@ -44,7 +44,7 @@
                       <label class="col-sm-4 col-form-label">Installments</label>
                       <div class="col-sm-8">
                         <div class="form-group">
-                          <input type="number" name="installements" class="form-control">
+                          <input type="number" name="installments" class="form-control">
                           <span class="bmd-help">Enter the valid Payment Installments</span>
                         </div>
                       </div>
@@ -102,36 +102,36 @@
                       </tfoot>
                       <tbody>
                         <?php
-                            $cates = $auth::getAllloanCategories();
-                            foreach ($cates as $key) {
+                            
+                            foreach ($categories as $category){
                               # code...
 
-                              if ($key['loan_period']<7) {
+                              if ($category->loan_period<7) {
                                 $mea = 'Days';
-                                $value = $key['loan_period'];
-                              }elseif ($key['loan_period']>6 && $key['loan_period']<30) {
+                                $value = $category->loan_period;
+                              }elseif ($category->loan_period>6 && $category->loan_period<30) {
                                 $mea = 'Weeks';
                                 $mea2 = 'Days';
-                                $value = intdiv($key['loan_period'],7);
-                                $remainder = $key['loan_period'] % 7;
-                              }elseif ($key['loan_period']>29 && $key['loan_period']<365) {
+                                $value = intdiv($category->loan_period,7);
+                                $remainder = $category->loan_period % 7;
+                              }elseif ($category->loan_period>29 && $category->loan_period<365) {
                                 $mea = 'Months';
                                 $mea2 = 'days';
-                                $value = intdiv($key['loan_period'],30);
-                                $remainder = $key['loan_period'] % 30;
+                                $value = intdiv($category->loan_period,30);
+                                $remainder = $category->loan_period % 30;
                               }else {
                                 $mea = 'Years';
                                 $mea2 = 'days';
-                                $value = intdiv($key['loan_period'],365);
-                                $remainder = $key['loan_period'] % 365;
+                                $value = intdiv($category->loan_period,365);
+                                $remainder = $category->loan_period % 365;
                               }
 
-                              if ($key['status']==7) {
+                              if ($category->status==7) {
                                 # code...
                                 $status = 'Active';
                                 $but = 'badge-success';
                                 $route = 'deactivate';
-                              }elseif ($key['status']==5) {
+                              }elseif ($category->status==5) {
                                 # code...
                                 $status = 'Not Active';
                                 $but = 'badge-danger';
@@ -146,9 +146,9 @@
                         ?>
                         <tr>
                           <!-- <td>CAT001</td> -->
-                          <td>{{$key['loan_amount']}}</td>
-                          <td>{{$key['interest_rate']}}%</td>
-                          <td>{{$key['processing_fees']}}</td>
+                          <td>{{$category->loan_amount}}</td>
+                          <td>{{$category->interest_rate}}%</td>
+                          <td>{{$category->processing_fees}}</td>
                           <td>{{ $value }} {{ $mea ?? ' '}} {{ $remainder ?? ' '}} {{ $mea2 ?? ' ' }}</td>
                           <td><span class="badge {{$but}}">{{$status}}</span></td>
                         </tr>

@@ -1,8 +1,12 @@
 @extends('layouts.header')
 @section('content')
           <div class="row">
-          <div class="col-md-5">
+          <div class="col-md-3">
+              <!-- <div class="card ">
+                
+              </div> -->
               <div class="card ">
+                @if($user->role != 'admin')
                 <div class="card-header card-header-rose card-header-text">
                   <div class="card-text">
                     <h4 class="card-title">Get Loan</h4>
@@ -35,22 +39,26 @@
                   </form>
                 </div>
               </div>
-              <div class="card ">
+            <!-- </div> -->
+                @endif
                 <div class="card-header card-header-rose card-header-text">
                   <div class="card-text">
                     <h4 class="card-title">Get Loan</h4>
                   </div>
-                </div>
+                <!-- </div> -->
                 <div class="card-body ">
                 <ul class="nav flex-column  bg-light">
+                    @if($user->role != 'admin')
                     <li class="nav-item">
-                      <a class="nav-link active" href="/loan-chart">Loan Categories</a>
+                      <a class="nav-link" href="{{route('soma.create')}}">Profile</a>
+                    </li>
+                    @endif
+                    
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Alliances</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Soma Loans</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="/loans">Business Loans</a>
+                      <a class="nav-link" href="#">Head Masters</a>
                     </li>
                     
                    
@@ -61,26 +69,49 @@
                 <ul class="nav flex-column  bg-light">
                     
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Pending Loans</a>
+                      <a class="nav-link" href="{{route('loan.pending')}}">Pending Loans</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Approved Loans</a>
+                      <a class="nav-link" href="{{route('loan.approved')}}">Approved Loans</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Declined Loans</a>
+                      <a class="nav-link" href="{{route('loan.declined')}}">Declined Loans</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Loans On Hold</a>
+                      <a class="nav-link" href="{{route('loan.held')}}">Loans On Hold</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Late Loans</a>
+                      <a class="nav-link" href="{{route('loan.late')}}">Late Loans</a>
                     </li>
                     
                 </ul>
                 </div>
               </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-9">
+              <!-- repayments -->
+              <div class="card">
+                <div class="card-header card-header-primary card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">assignment</i>
+                  </div>
+                  
+                  <div class="float-left">
+                    <h4 class="card-title">UpComing Repayments</h4>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="toolbar">
+                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                  </div>
+                  
+                  @if(!empty($loans))
+                    @include('loans.partials.tables.loanstable')
+                 @endif
+                </div>
+                <!-- end content-->
+              </div>
+              <!-- end repayments -->
               <div class="card">
                 <div class="card-header card-header-primary card-header-icon">
                   <div class="card-icon">
@@ -95,7 +126,10 @@
                   <div class="toolbar">
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                   </div>
-                 @include('loans.partials.tables.loanstable')
+
+                  @if(!empty($loans))
+                    @include('loans.partials.tables.loanstable')
+                 @endif
                 </div>
                 <!-- end content-->
               </div>

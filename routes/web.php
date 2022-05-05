@@ -8,6 +8,7 @@ use App\Http\Controllers\SmsController;
 use App\Http\Controllers\SomaLoanController;
 use App\Http\Controllers\AllianceController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoanCategoryController;
 use App\Http\Controllers\LoginController;
 /*
 |--------------------------------------------------------------------------
@@ -128,10 +129,12 @@ Route::get('/users', function () {
     return view('view.users');
 });
 
-Route::get('/loan-chart', function () {
-    view()->share('page','Loan Categories');
-    return view('view.loan-categories');
-});
+// Route::get('/loan-chart', function () {
+//     view()->share('page','Loan Categories');
+//     return view('view.loan-categories');
+// });
+//loan categories=======
+Route::get('/loan-chart',[LoanCategoryController::class,'index'])->name('loan.categories.index');
 
 Route::get('/user-loans', function () {
     view()->share('page','User Loans');
@@ -290,7 +293,12 @@ Route::get('/loan-view', function () {
 
 // loan routes
 Route::post('/request_loan',[LoanController::class,'requestLoan'])->name('loan.request'); 
-Route::get('/loans',[LoanController::class,'index'])->name('loan.index');
+Route::get('/loans/index',[LoanController::class,'index'])->name('loan.index');
+Route::get('/loans/pending',[LoanController::class,'pending'])->name('loan.pending');
+Route::get('/loans/approved',[LoanController::class,'approved'])->name('loan.approved');
+Route::get('/loans/late',[LoanController::class,'late'])->name('loan.late');
+Route::get('/loans/declined',[LoanController::class,'declined'])->name('loan.declined');
+Route::get('/loans/held',[LoanController::class,'held'])->name('loan.held');
 Route::get('/loan/user/{id}',[LoanController::class,'userIndex'])->name('loan.user.index');
 
 // =========================end loan routes
@@ -473,6 +481,11 @@ Route::get('/paycheck', function () {
 Route::post('/contact_pagexc',[AuthenticationController::class,'sendMessagex']);
 // soma loan routes
 Route::get('loans/soma/index', [SomaLoanController::class,'index'])->name('soma.index');
+Route::get('loans/soma/pending', [SomaLoanController::class,'pending'])->name('soma.pending');
+Route::get('loans/soma/declined', [SomaLoanController::class,'declined'])->name('soma.declined');
+Route::get('loans/soma/held', [SomaLoanController::class,'somaOnHold'])->name('soma.held');
+Route::get('loans/soma/approved', [SomaLoanController::class,'approved'])->name('soma.approved');
+Route::get('loans/soma/late', [SomaLoanController::class,'late'])->name('soma.late');
 Route::get('loans/soma/index/{id}', [SomaLoanController::class,'borrowerIndex'])->name('soma.borrower.index');
 Route::post('loans/soma/new', [SomaLoanController::class,'store'])->name('soma.store');
 Route::match(['get', 'put'], '/loans/soma/approve/{id}', [SomaLoanController::class,'approveSomaLoan'])->name('soma.approve');

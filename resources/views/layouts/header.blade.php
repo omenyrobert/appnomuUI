@@ -56,7 +56,12 @@
           </div>
           <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="username">
-             
+             <?php
+
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+                $user = User::find(Auth::id()); 
+             ?>
              
               <span>
                 {{$user->name}}</br>
@@ -166,7 +171,10 @@
             </div>
           </li>
           <li class="nav-item ">
-            <a class="nav-link" data-toggle="collapse" href="{{$user->role == 'admin' ? route('loan.index') : route('loan.user.index',['id'=>$user->id])}}">
+            <a class="nav-link" data-toggle="collapse"  href="{{route('loan.index') }}">
+              <?php
+              // href="{{$user->role == 'admin' ? route('loan.index') : route('loan.user.index',['id'=>$user->id])}}"
+              ?>
               <i class="material-icons">credit_score</i>
               <p> Loans
                 <b class="caret"></b>
@@ -183,7 +191,7 @@
                 </li>
                 @endif
                 <li class="nav-item ">
-                  <a class="nav-link" href="{{route('soma.dashboard')}}">
+                  <a class="nav-link" href="{{route('soma.index')}}">
                     <span class="sidebar-mini"> ML </span>
                     <span class="sidebar-normal"> Soma Loans </span>
                   </a>

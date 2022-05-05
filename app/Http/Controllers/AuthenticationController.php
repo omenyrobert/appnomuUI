@@ -1792,29 +1792,29 @@ class AuthenticationController extends BaseController
 //     return $dbx;
 // }
 
-// public static function getAllsavingcategories(){
-//     $db = DB::table('savingcategories')
-//         ->get();
+public static function getAllsavingcategories(){
+    $db = DB::table('savingcategories')
+        ->get();
 
-//     $dbx = json_decode($db,true);
-//     return $dbx;
-// }
+    $dbx = json_decode($db,true);
+    return $dbx;
+}
 
-// public static function getAllSavingSubcategories(){
-//     $db = DB::table('savingsubcategories')
-//         ->get();
+public static function getAllSavingSubcategories(){
+    $db = DB::table('savingsubcategories')
+        ->get();
 
-//     $dbx = json_decode($db,true);
-//     return $dbx;
-// }
+    $dbx = json_decode($db,true);
+    return $dbx;
+}
 
-// public static function getAllSavings(){
-//     $db = DB::table('savings')
-//         ->get();
+public static function getAllSavings(){
+    $db = DB::table('savings')
+        ->get();
 
-//     $dbx = json_decode($db,true);
-//     return $dbx;
-// }
+    $dbx = json_decode($db,true);
+    return $dbx;
+}
 
 // public static function getAllRunningSavings(){
 //     $savings = 0;

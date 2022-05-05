@@ -20,14 +20,14 @@
                       </tfoot>
                       <tbody>
                         
-                          @foreach ($loans as $loan ) 
+                          @foreach ($repayments as $repayment ) 
                            
                             <tr>
-                              <td>{{ $loan->due_date}}</td>
-                              <td>{{$loan->ULoan_Id}}</td>
-                              <td>{{$loan->principal}}</td>
-                              <td>{{$loan->amount_paid}} </td>
-                              <td><span class="badge  ">{{ $loan->status }}</span></td>
+                              <td>{{ $repayment->due_date}}</td>
+                              <td>{{$repayment->ULoan_Id}}</td>
+                              <td>{{$repayment->principal}}</td>
+                              <td>{{$repayment->amount_paid}} </td>
+                              <td><span class="badge  ">{{ $repayment->status }}</span></td>
                             </tr>
                             @endforeach
                        

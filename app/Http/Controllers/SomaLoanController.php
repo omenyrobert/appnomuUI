@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Traits\SMSTrait;
+use App\Http\traits\SMSTrait;
 use App\Models\SomaLoan;
 use App\Models\User;
 use App\Models\District;
@@ -22,8 +22,8 @@ class SomaLoanController extends Controller
     use SMSTrait;
     //dashboard access
     public function somaDashboard(){
-        $user = User::findOrFail(Auth::getUuser()->id);
-        if($user->role== 'Admin'){
+        $user = User::findOrFail(Auth::id());
+        if($user->role== 'admin'){
             return redirect()->route('soma.index');
         }
         return redirect()->route('soma.borrower.index',['id'=>$user->id]);
@@ -31,15 +31,15 @@ class SomaLoanController extends Controller
     //get all soma loans
     public function index(){
         try {
-            $pending = SomaLoan::orderBy('created_at','DESC')->where('status','pending')->get();
-            $approved = SomaLoan::orderBy('created_at','DESC')->where('status','approved')->get();
-            $denied = SomaLoan::orderBy('created_at','DESC')->where('status','declined')->get();
-            $held = SomaLoan::orderBy('created_at','DESC')->where('status','held')->get();
-            $late = SomaLoan::orderBy('created_at','DESC')->where('status','late')->get();
-            return view('soma.index',['pending'=>$pending,'approved'=>$approved,'denied'=>$denied,'hold'=>$held,'late'=>$late])->with('title','Soma Loans');
+            $user = User::find(Auth::id());
+            if($user){
+                $loans = $user->role == 'admin' ? SomaLoan::latest()->get() :
+                    $user->somaLoans()->latest()->get();
+                return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | All ');
+            }
+            return redirect()->route('login');
         } catch (\Throwable $th) {
-            //throw $th;
-            return redirect()->back()->withErrors($th->getMessage());
+            throw $th;
         }
         
     }
@@ -55,6 +55,77 @@ class SomaLoanController extends Controller
             return redirect()->back()->withErrors($th->getMessage());
         }
         
+    }
+
+    //pending soma loans
+    public function pending(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $loans = $user->role == 'admin' ? SomaLoan::where('status','pending')->latest()->get() :
+                    $user->somaLoans()->where('status','pending')->latest()->get();
+                return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Pending');
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function late(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $loans = $user->role == 'admin' ? SomaLoan::where('status','late')->latest()->get() :
+                    $user->somaLoans()->where('status','late')->latest()->get();
+                return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Late');
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function approved(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $loans = $user->role == 'admin' ? SomaLoan::where('status','approved')->latest()->get() :
+                    $user->somaLoans()->where('status','approved')->latest()->get();
+                return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Approved');
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function declined(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $loans = $user->role == 'admin' ? SomaLoan::where('status','declined')->latest()->get() :
+                    $user->somaLoans()->where('status','declined')->latest()->get();
+                return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Declined');
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function somaOnHold(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $loans = $user->role == 'admin' ? SomaLoan::where('status','on hold')->latest()->get() :
+                    $user->somaLoans()->where('status','on hold')->latest()->get();
+                return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | On Hold');
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     //create a soma loan
