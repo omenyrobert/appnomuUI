@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Loan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,6 +45,59 @@ class AccountController extends Controller
             'withdraws'=>$withdraws,'savings'=>$savings,
             'loans'=>$loans,'soma_loans'=>$soma_loans,
             'business_loans'=>$business_loans])->with('page','Account | Show');
+        }
+
+    }
+
+    public function accountOperation($operation,$type,$id){
+        //operation = credit or debit
+        //type = loan,soma,business,saving,transaction
+        try {
+            //code...
+            switch ($operation) {
+                case 'credit':
+                    switch ($type) {
+                        case 'loan':
+                            $loan = Loan::findOrFail($id);
+                            $account = $loan->account;
+                            $account = 
+                            break;
+                        
+                        default:
+                            # code...
+                            break;
+                    }    
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
+    }
+    // create a new account
+    public function store($id){
+        try {
+            $user = User::findOrfail($id);
+            $account = new Account();
+            $account->user()->associate($user);
+            $account->Loan_Limit = 20000;
+            $account->Outstanding_Balance = 0;
+            $account->Loan_Balance = 0;
+            $account->available_balance = 0;
+            $account->Ledger_Balance=0;
+            $account->Total_Saved=0;
+            $account->Amount_Withdrawn=0;
+            $account->save();
+            // if($account) return;
+            return;
+            
+            
+        } catch (\Throwable $th) {
+            throw $th;
         }
 
     }
