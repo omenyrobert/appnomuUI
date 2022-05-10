@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Http\traits\SMSTrait;
+use App\Http\traits\RepaymentsTrait;
 use App\Models\SomaLoan;
 use App\Models\User;
 use App\Models\District;
@@ -19,7 +20,7 @@ use Illuminate\Http\Request;
 
 class SomaLoanController extends Controller
 {
-    use SMSTrait;
+    use SMSTrait,RepaymentsTrait;
     //dashboard access
     public function somaDashboard(){
         $user = User::findOrFail(Auth::id());
@@ -249,7 +250,7 @@ class SomaLoanController extends Controller
     public function loanStatusChange(Request $request,$id){
         try {
             if(Auth::check()){
-                $loan_n_string = $this->changeStatus($request,$id,'business');
+                $loan_n_string = $this->changeStatus($request,$id,'soma');
                 if($loan_n_string){
                     $loan = $loan_n_string['loan'];
                     $user = $loan->user; 

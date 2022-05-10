@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Alliance;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AllianceController extends Controller
 {
@@ -22,8 +23,7 @@ class AllianceController extends Controller
             ]);
     
             if($validated){
-                $users = AuthenticationController::getUserById(session('user_id'));
-                $user = User::find($users[0]['id']);
+                $user = User::find(Auth::id());
     
                 if($user->telephone == $request->telephone){
                     return redirect()->back()->withErrors(['Errors'=>'You can not use your own phone number']);
@@ -35,7 +35,7 @@ class AllianceController extends Controller
                 $sms_code = rand(111111,999999);
                 $alliance = new Alliance();
                 $alliance->user()->associate($user);
-                $alliance->refferer = $user->Uuser_id;
+                $alliance->refferer = $user->user_id;
                 $alliance->relationship = $request->relationship;
                 $alliance->NIN =  $request->nin;
                 $alliance->Card_No =$request->card_no;
@@ -46,13 +46,14 @@ class AllianceController extends Controller
                 $alliance->save();
                 if ($alliance) {
                     # code...
-                    $ret = SmsController::verify_alliases_phone($alliance->telephone,$sms_code,session('user_id'),$user->name,$alliance->name);
+                    $ret = SmsController::verify_alliases_phone($alliance->Phone_Number,$sms_code,session('user_id'),$user->name,$alliance->name);
                     return redirect()->back()->with('Success','Alliance Saved Successfully');
                 }else {
                     # code...
                     return redirect()->back()->withErrors(['Errors'=>'Alliance Saving failed']);
                 }
             }
+            return redirect()->back()->withErrors(['Errors'=>'Enter all the required fields correctly']);
         } catch (\Throwable $th) {
             throw $th;
         }       
@@ -62,8 +63,7 @@ class AllianceController extends Controller
 
     public function confirmAlliance(Request $request){
         try {
-            $users = AuthenticationController::getUserById(session('user_id'));
-            $user = User::find($users[0]['id']);
+            $user = User::find(Auth::id());
             $alliance = $user->alliances()->where('sms_token',$request->token)->first();
             if($alliance)  {
                $alliance->sms_verified_at = Carbon::now();
@@ -77,10 +77,11 @@ class AllianceController extends Controller
        
     }
 
-    public function getAlliances($id){
+    public function index(){
         try {
-            $user = User::find($id);
-            return $user->alliances;
+            $user = User::find(Auth::id());
+            $alliances = $user->alliances;           
+            return view('alliances.index',['user'=>$user,'alliances'=>$alliances])->with('page','alliances');
         } catch (\Throwable $th) {
             throw $th;
         }

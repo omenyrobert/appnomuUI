@@ -55,7 +55,7 @@ class RefactorStructure extends Command
             $this->error($ident);
         }
 
-        $this->info('updating alliancess table');
+        $this->info('updating alliances table');
         $res = $this->updateAlliances();
         if($res == 'success'){
             $this->info('finished updating alliances table');
@@ -163,11 +163,33 @@ class RefactorStructure extends Command
             $loans = Loan::all();
             foreach($loans as $loan){
                 $user = User::where('user_id',$loan->Uuser_id)->first();
-                $cat = LoanCategory::where('loan_amount',$loan->loan_amount)->first();
+                $cat = LoanCategory::where('loan_amount',$loan->principal)->first();
                 if ($user) {
                     $loan->user()->associate($user);
                     $loan->loanCategory()->associate($cat);
                     $loan->account()->associate($user->account);
+                    $loan->approved_at = Carbon::createFromTimestamp($loan->approved_at_time);
+                    $loan->due_date = Carbon::createFromTimestamp($loan->due_date_time);
+                    switch ($loan->status_num) {
+                        case 7:
+                            $loan->status = 'Paid';
+                            break;
+                        case 6:
+                            $loan->status = 'Approved';
+                            break;
+                        case 5:
+                            $loan->status = 'Requested';
+                            break;
+                        case 4:
+                            $loan->status = 'Over Due';
+                            break;
+                        case 3:
+                            $loan->status = 'Denied';
+                            break;
+                        case 2:
+                            $loan->status = 'On Hold';
+                            break;
+                    }
                     $loan->save();
                 }else{
                     $loan->delete();
@@ -219,27 +241,27 @@ class RefactorStructure extends Command
                         $payment->repaymentable()->associate($loan);
                         $payment->created_at = $installment->created_at;
                         $payment->updated_at = $installment->updated_at;
-                        $payment->due_date = $installment->updated_at ? $installment->updated_at : Carbon::now();
+                        $payment->due_date = $installment->pay_day ? Carbon::createFromTimestamp($installment->pay_day ): Carbon::now();
                         switch ($installment->status) {
                             case 7:
-                                $payment->status = 'paid';
+                                $payment->status = 'Paid';
                                 break;
                             case 6:
-                                $payment->status = 'approved';
+                                $payment->status = 'Pending';
                                 break;
                             case 3:
-                                $payment->status = 'denied';
+                                $payment->status = 'Denied';
                                 break;
                             case 4:
-                                $payment->status = 'overdue';
+                                $payment->status = 'Over Due';
                                 break;
                             case 2:
-                                $payment->status = 'waiting';
-                                break;
-                                    
+                                $payment->status = 'On Hold';
+                                break;                              
                             
                            
                         }
+                        $payment->loan_id = $installment->ULoan_Id;
                         $payment->save();
                         if($payment){
                             $this->info('payment saved');

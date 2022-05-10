@@ -1,4 +1,4 @@
-@extends('layouts.header')
+@extends('layouts.master')
 @section('content')
 <div class="row">
     <a href="{{route('soma.create')}}" class="btn btn-primary col-md-4" style="background-color: blue;">Request A Loan</a>

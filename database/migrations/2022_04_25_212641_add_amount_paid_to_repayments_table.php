@@ -14,7 +14,7 @@ class AddAmountPaidToRepaymentsTable extends Migration
     public function up()
     {
         Schema::table('repayments', function (Blueprint $table) {
-            $table->integer('amount_paid')->nullable();
+            $table->integer('amount_paid')->default(0);
         });
     }
 

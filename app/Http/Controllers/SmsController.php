@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmMail;
+use AfricasTalking\SDK\AfricasTalking;
 
 class SmsController extends BaseController
 {
@@ -81,7 +82,6 @@ class SmsController extends BaseController
         }elseif (substr($phone,0,1)=='+') {
             $tel = $phone;
         }
-
         $AT = SmsServer::insta(env('AFRICASTALKING_USERNAME') ,env('AFRICASTALKING_APIKEY'));
         $message = 'Hello '. $all_name . ' '.$refferer . ' Has Listed YOu as His/Her Alliance on Appnomu For a loan verification, to Approve please send him/her this verification code: '.$code;
         $sms      = $AT->sms();
@@ -89,7 +89,6 @@ class SmsController extends BaseController
             'to'      => $tel,
             'message' => $message
         ]);
-
         if($result['status']=='success'){
             $ret = SmsController::saveSms($tel,'Alliace Telephone Verification',$message,$result['status'],$userid);
         }else {
@@ -98,6 +97,26 @@ class SmsController extends BaseController
 
         return $ret;
         
+    }
+    public static function sendSMS($message,$phone){
+        try {
+            if(substr($phone,0,1)=='0'){
+                //0754024461
+                $tel = '+256'.substr($phone,1,9);
+            }elseif (substr($phone,0,1)=='+') {
+                # code...
+                $tel = $phone;
+            }
+    
+            $sms = new AfricasTalking(env('AFRICASTALKING_USERNAME') ,env('AFRICASTALKING_APIKEY'));
+            $result = $sms->sms()->send(['to'=>$tel,'message'=>$message,'from'=>'Appnomu']);
+            return $result['status'];
+        } catch (\Throwable $th) {
+            //throw $th;
+            return 'failed';
+        }
+        
+
     }
 
     public function sendBulks(Request $request){

@@ -25,4 +25,25 @@ trait SMSTrait{
         
 
     }
+
+    // public static function saveSms($to,$title,$message,$status,$userid){
+    //     $sms = 'SMS-'.rand(1111,9999);
+
+    //     $db = DB::table('smssent')->insert([
+    //         'Sms_Id'=>$sms,
+    //         'user_Id'=>$userid,
+    //         'To'=>$to,
+    //         'Title'=>$title,
+    //         'Message'=>$message,
+    //         'Status'=>$status,
+    //         'created_at'=>date('Y-m-d H:i:s', time())
+
+    //     ]);
+
+    //     if($db){
+    //         return 1;
+    //     }else{
+    //         return 0;
+    //     }
+    // }
 }

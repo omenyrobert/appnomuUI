@@ -57,7 +57,7 @@ class HomeController extends Controller
                 $loan_requests =Loan::where('status','05')->sum('principal');
                 $loan_requests =Loan::where('status','05')->count();
                 $identification = $user->identification ? $user->identification : "";
-                return view('view.index',['users'=>$users,'user'=>$user,
+                return view('dashboard',['users'=>$users,'user'=>$user,
                 'loans_cate'=>$categories,'savingcategories'=>$saving_categories,
                 'Running_loans'=>$Running_loans,'loan_requests'=>$loan_requests,
                 'savings'=>$savings,'user_idnt'=>$identification,''])

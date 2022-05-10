@@ -300,6 +300,8 @@ Route::get('/loans/late',[LoanController::class,'late'])->name('loan.late');
 Route::get('/loans/declined',[LoanController::class,'declined'])->name('loan.declined');
 Route::get('/loans/held',[LoanController::class,'held'])->name('loan.held');
 Route::get('/loan/user/{id}',[LoanController::class,'userIndex'])->name('loan.user.index');
+Route::get('/loan/show/{id}',[LoanController::class,'show'])->name('loan.show');
+Route::get('/loan/change-status/{action}/{id}',[LoanController::class,'loanStatusChange'])->name('loan.status');
 
 // =========================end loan routes
 Route::post('/sendSms',[SmsController::class,'sendBulks']);
@@ -325,8 +327,9 @@ Route::get('/logout',[LoginController::class,'logout'])->name('user.logout');
 //     }
 // })->name('dashboard');
 // Route::post('/confirm-alliaces',[AuthenticationController::class,'confirmAlliances']);
-Route::post('/save-alliaces',[AllianceController::class,'store'])->name('alliance->store');
+Route::post('/save-alliaces',[AllianceController::class,'store'])->name('alliance.store');
 Route::post('/confirm-alliaces',[AllianceController::class,'confirmAlliance'])->name('alliance.confirm');
+Route::get('alliances',[AllianceController::class,'index'])->name('alliance.index');
 Route::post('/editProfile',[AuthenticationController::class,'editUserProfile']);
 Route::post('/editPasswords',[AuthenticationController::class,'editPasswords']);
 Route::post('/webhook/rave', [FlutterwaveController::class, 'webhook'])->name('webhook');

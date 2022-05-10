@@ -21,7 +21,7 @@ class Loan extends Model
         return $this->belongsTo(Account::class);
     }
     public function loanCategory(){
-        return $this->belongsTo(loanCategory::class,'loan_category_id','id');
+        return $this->belongsTo(LoanCategory::class,'loan_category_id','id');
     }
 
     public function repayments(){

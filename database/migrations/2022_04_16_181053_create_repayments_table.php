@@ -15,10 +15,12 @@ class CreateRepaymentsTable extends Migration
     {
         Schema::create('repayments', function (Blueprint $table) {
             $table->id();
-            $table->enum('status',['pending','paid','late'])->default('pending');
+            $table->enum('status',['Pending','Paid','Over Due','On Hold'])->default('pending');
             $table->date('due_date');
+            $table->string('loan_id');
             $table->bigInteger('user_id')->unsigned();
             $table->integer('amount')->unsigned();
+            $table->integer('amount_paid')->default(0);
             $table->string('repaymentable_type');
             $table->bigInteger('repaymentable_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('sysusers')

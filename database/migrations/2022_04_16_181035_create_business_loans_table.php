@@ -30,7 +30,7 @@ class CreateBusinessLoansTable extends Migration
             $table->integer('installments')->unsigned()->nullable();
             $table->integer('payment_amount')->unsigned()->nullable();
             $table->integer('amount_paid')->unsigned()->default(0);
-            $table->enum('status',['pending','approved','denied','on hold','cancelled'])->default('pending');
+            $table->enum('status',['Paid','Approved','Requested','Over Due','Denied','Warning','On Hold','Cancelled']);
             $table->date('due_date')->nullable();
             $table->date('approved_at')->nullable();
             $table->date('declined_at')->nullable();

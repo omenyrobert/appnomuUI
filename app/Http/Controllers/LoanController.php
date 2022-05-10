@@ -9,11 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use App\Models\User;
+use App\Http\traits\RepaymentsTrait;
+use App\Http\traits\SMSTrait;
 
 class LoanController extends Controller
 {
     
-
+    use RepaymentsTrait,SMSTrait;
 
     public function create(){
 
@@ -30,8 +32,8 @@ class LoanController extends Controller
             }
     
             $outstanding_loan_count = $user->loans()->where('status',6)->orWhere('status',4)->count();
-            $loan_cat = AuthenticationController::getLoanByCatID($request['category']);
-    
+            // $loan_cat = AuthenticationController::getLoanByCatID($request['category']);
+            $category = LoanCategory::find($request->category);
             if ($outstanding_loan_count  > 0) {
                 return redirect()->back()->withErrors(['Errors'=>'You Have an Outstanding Loan ']);
             }
@@ -45,17 +47,19 @@ class LoanController extends Controller
             $uloan = 'LN-'.rand(11111,99999);
             $pay = 0;
             $status = 5;
-            if($user->loan_limit < $loan_cat[0]['loan_amount']){
+            if($user->account->Loan_Limit < $category->loan_amount){
                 return redirect()->back()->withErrors(['Errors'=>'Your loan limit is '.$user->loan_limit .'you cannot borrow above your loan limit']);
             }
     
             $loan = new Loan();
             $loan->user()->associate($user);
+            $loan->loanCategory()->associate($category);
+            $loan->Uuser_id = $user->user_id;
             $loan->ULoan_Id = $uloan;
-            $loan->loan_amount = $loan_cat[0]['loan_amount'];
-            $loan->amount_paid = $pay;
+            $loan->principal = $category->loan_amount;
+            $loan->amount_paid = 0;
             $loan->status = $status;
-            $loan->dueDate = time();
+            // $loan->due_date = tim;
             $loan->save();
             
             if ($loan) {
@@ -78,10 +82,10 @@ class LoanController extends Controller
             $user = User::find(Auth::id());
             if($user){
                 $categories = LoanCategory::all();
-                $repayments = $user->role == 'admin' ? Repayment::where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->limit(15)->get() :
-                $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->get();
-                $loans = $user->role == 'admin' ? Loan::latest()->get() :
-                    $user->loans()->latest()->get();
+                $repayments = $user->role == 'admin' ? Repayment::where('repaymentable_type','App\Models\Loan')->where('status','Pending')->latest()->paginate(10) :
+                $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','Pending')->latest()->paginate(10);
+                $loans = $user->role == 'admin' ? Loan::latest()->paginate(10) :
+                    $user->loans()->latest()->paginate(10);
                 return view('loans.index',['repayments'=> $repayments,'categories'=>$categories,'user'=>$user,'loans'=>$loans])->with('page','Loans | All Loans');
             }
             return redirect()->route('login');
@@ -95,9 +99,12 @@ class LoanController extends Controller
         try {
             $user = User::find(Auth::id());
             if($user){
-                $loans = $user->role == 'admin' ? Loan::where('status','pending')->latest()->get() :
-                    $user->loans()->where('status','pending')->latest()->get();
-                return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Pending');
+                $categories = LoanCategory::all();
+                $loans = $user->role == 'admin' ? Loan::where('status','Requested')->latest()->get() :
+                    $user->loans()->where('status','Requested')->latest()->get();
+                $repayments = $user->role == 'admin' ? Repayment::where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10) :
+                    $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10);
+                    return view('loans.index',['categories'=>$categories,'user'=>$user,'repayments'=>$repayments,'loans'=>$loans])->with('page','Soma Loans | Pending');
             }
             return redirect()->route('login');
         } catch (\Throwable $th) {
@@ -110,9 +117,11 @@ class LoanController extends Controller
     try {
         $user = User::find(Auth::id());
         if($user){
-            $loans = $user->role == 'admin' ? Loan::where('status','approved')->latest()->get() :
-                $user->loans()->where('status','approved')->latest()->get();
-            return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Loans | Approved');
+            $loans = $user->role == 'admin' ? Loan::where('status','Approved')->latest()->get() :
+                $user->loans()->where('status','Approved')->latest()->get();
+                $repayments = $user->role == 'admin' ? Repayment::where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10) :
+                $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10);
+            return view('loans.index',['user'=>$user,'repayments'=>$repayments,'loans'=>$loans])->with('page','Loans | Approved');
         }
         return redirect()->route('login');
     } catch (\Throwable $th) {
@@ -125,9 +134,11 @@ class LoanController extends Controller
     try {
         $user = User::find(Auth::id());
         if($user){
-            $loans = $user->role == 'admin' ? Loan::where('status','late')->latest()->get() :
-                $user->loans()->where('status','late')->latest()->get();
-            return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Loans | Over Due');
+            $loans = $user->role == 'admin' ? Loan::where('status','Over Due')->latest()->get() :
+                $user->loans()->where('status','Over Due')->latest()->get();
+            $repayments = $user->role == 'admin' ? Repayment::where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10) :
+                $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10);
+            return view('loans.index',['user'=>$user,'repayments'=>$repayments,'loans'=>$loans])->with('page','Loans | Over Due');
         }
         return redirect()->route('login');
     } catch (\Throwable $th) {
@@ -140,9 +151,11 @@ class LoanController extends Controller
     try {
         $user = User::find(Auth::id());
         if($user){
-            $loans = $user->role == 'admin' ? Loan::where('status','declined')->latest()->get() :
-                $user->loans()->where('status','declined')->latest()->get();
-            return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Loans | Denied');
+            $loans = $user->role == 'admin' ? Loan::where('status','Denied')->latest()->get() :
+                $user->loans()->where('status','Denied')->latest()->get();
+            $repayments = $user->role == 'admin' ? Repayment::where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10) :
+                $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10);
+            return view('loans.index',['user'=>$user,'repayments'=>$repayments,'loans'=>$loans])->with('page','Loans | Denied');
         }
         return redirect()->route('login');
     } catch (\Throwable $th) {
@@ -155,9 +168,11 @@ class LoanController extends Controller
     try {
         $user = User::find(Auth::id());
         if($user){
-            $loans = $user->role == 'admin' ? Loan::where('status','held')->latest()->get() :
-                $user->loans()->where('status','held')->latest()->get();
-            return view('loans.index',['user'=>$user,'loans'=>$loans])->with('page','Loans | On Hold');
+            $loans = $user->role == 'admin' ? Loan::where('status','On Hold')->latest()->get() :
+                $user->loans()->where('status','On Hold')->latest()->get();
+            $repayments = $user->role == 'admin' ? Repayment::where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10) :
+                $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','pending')->latest()->paginate(10);
+            return view('loans.index',['user'=>$user,'repayments'=>$repayments,'loans'=>$loans])->with('page','Loans | On Hold');
         }
         return redirect()->route('login');
     } catch (\Throwable $th) {
@@ -191,7 +206,57 @@ class LoanController extends Controller
            } catch (\Throwable $th) {
                throw $th;
            }
-       }
+    }
+
+    //show a loan
+    public function show($id){
+        try {
+            $loan = Loan::findOrFail($id);
+            $user = User::find(Auth::id());
+            // dd($loan->user == $user);
+            if($user){
+                if($loan->user == $user || $user->role == 'admin'){
+                    $repayments = $loan->repayments;
+                    if(count($repayments)== 0){
+                        $this->createInstallments($loan->id,'loan');
+                        $repayments = $loan->repayments;
+                    }
+                    // $identifications = $user->identifications;
+                    return view('loans.show',['loan'=>$loan,'user'=>$user,'repayments'=>$repayments])->with('page','View | '.$loan->ULoan_Id);
+                }
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    //approve,decline or change the status of a loan
+    public function loanStatusChange($action,$id){
+        try {
+            if(Auth::check()){
+                $loan_n_string = $this->changeStatus($action,$id,'loan');
+                if($loan_n_string){
+                    $loan = $loan_n_string['loan'];
+                    $user = $loan->user; 
+                    $last_message_string = $loan_n_string['last_message_string'];
+                    $message = 'Dear '. $user->name .', Your loan '.$loan->ULoan_Id .' of '.$loan->principal .' has been '.$loan->status .$last_message_string;                    
+                    // dd($message);
+        //   todo          // $sms_status = $this->sendSMS($message,$user->telephone);
+                    // for($i=5;$sms_status != 'success';$i++){
+                    //     $sms_status = $this->sendSMS($message,$user->telephone);
+                    // }
+                }
+
+                return redirect()->back();
+
+            }
+            return redirect()->route('login')->withErrors('Errors','you are unathorised to do this operation!');
+        } catch (\Throwable $th) {
+            throw $th;
+            // return redirect()->back()->withErrors($th->getMessage());
+        }
+    }
 
 
 }
