@@ -1,7 +1,5 @@
 <div class="p-5 bg-white card">
-<form id="loan_details" class="row g-3 ">
-    <h5>Loan Details</h5>
-    
+    <h5>Loan Details</h5>    
    
     <div class="col-md-6 form-group">
            <label for="student_class">Loan Category</label>
@@ -17,5 +15,4 @@
         <span>By Clicking button, u agree to the appnomu terms and conditions</span>
     </div>
     </div>
-</form>
 </div>

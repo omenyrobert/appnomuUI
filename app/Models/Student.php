@@ -20,6 +20,10 @@ class Student extends Model
         return $this->belongsToMany(Headteacher::class,'headteacher_student')->withPivot('student_admission_num')->withTimestamps();
     }
 
+    public function currentHM(){
+        return $this->hasOne(Headteacher::class)->latestOfMany();
+    }
+
     public function parents(){
         return $this->belongsToMany(ParentDetail::class,'parent_student','student_id','parent_id')
             ->withPivot('relationship')->withTimestamps();

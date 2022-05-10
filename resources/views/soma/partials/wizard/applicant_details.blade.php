@@ -1,12 +1,11 @@
-<div id="" class="p-5 bg-white card" >
-<form id="applicant_detailss" class="row g-3 ">
+<div id="applicant_details" class="p-5 bg-white card" >
     <h5>Parent/Applicant Details</h5>
     @if($user->identification && $user->identification->front_face)
-    <div class="form-group">
+       <div class="form-group">
            <h6>applicant same as Next Of Kin</h6>
            <input type="checkbox" name="chk_parent_applicant" value="true" id="chk_parent_applicant" class="form-control" >
            <label for="chk_parent_applicant">check if your student's next of Kin</label>
-    /div>
+       </div>
     
     @else
        <div class="col-md-6 form-group">
@@ -23,7 +22,7 @@
               <input type="file" name="parent_id_card" id="parent_id_card"  class="border border-primary"placeholder="national id" class="form-control" required>
        </div>
     @endif
-    <div class="col-md-6">
+       <div class="col-md-6">
             <select  name="relationship" class="form-control" required>
                  <option value="">---Relationship---</option>
                  <option value="Parent">Parent</option>
@@ -35,8 +34,8 @@
                  <option value="Neighbour">Neighbour</option>
                  <option value="Sponsor">Sponsor</option>
               </select>
-    </div>
-    <div class="col-md-6 ">
+       </div>
+       <div class="col-md-6 ">
               <label for="student_id_card">Upload Student ID</label>
               <input type="file" name="student_id_card" id="student_id_card" class="border border-primary" placeholder="student id" class="form-control" >
        </div>
@@ -51,7 +50,8 @@
               </select>
               </div>
        </div>
-    <div class="col-md-6" >
+       <div class="col-md-6" >
            <button type="button"id="btn-nxt-loan " class="btn btn-success">Next</button>
-    </div>
-                  </div>
+       </div>
+       </div>
+</div>

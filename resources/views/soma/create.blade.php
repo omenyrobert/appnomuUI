@@ -1,6 +1,15 @@
 @extends('layouts.master')
 @section('content')
-
+    <div class="row">
+    @include('soma.partials.wizard.cards')     
+    </div>
+    <div class="row">
+    <a href="{{route('soma.create.student')}}" class="btn btn-primary col-md-4" >Create New Student</a>
+    <a href="{{route('soma.create')}}" class="btn btn-primary col-md-4" >How to Applay</a>
+</div>
+<div class="row">
+  @include('students.partials.tables.studenttable')
+</div>
 <div class="border border-success">
 <hr>
  <!-- <form id="wizard-vertical" method="POST"
@@ -23,10 +32,10 @@
       div>
   @endif
 
-  @include('soma.partials.wizard.student_details')
+  <!-- @include('soma.partials.wizard.student_details')
   @include('soma.partials.wizard.school_details')
   @include('soma.partials.wizard.applicant_details')
-  @include('soma.partials.wizard.loan_details') 
+  @include('soma.partials.wizard.loan_details')  -->
 <!-- </form> -->
 @include('soma.partials.scripts.create_scripts')
 

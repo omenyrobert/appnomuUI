@@ -489,8 +489,12 @@ Route::get('loans/soma/declined', [SomaLoanController::class,'declined'])->name(
 Route::get('loans/soma/held', [SomaLoanController::class,'somaOnHold'])->name('soma.held');
 Route::get('loans/soma/approved', [SomaLoanController::class,'approved'])->name('soma.approved');
 Route::get('loans/soma/late', [SomaLoanController::class,'late'])->name('soma.late');
-Route::get('loans/soma/index/{id}', [SomaLoanController::class,'borrowerIndex'])->name('soma.borrower.index');
+Route::get('loans/soma/index', [SomaLoanController::class,'borrowerIndex'])->name('soma.borrower.index');
 Route::post('loans/soma/new', [SomaLoanController::class,'store'])->name('soma.store');
 Route::match(['get', 'put'], '/loans/soma/approve/{id}', [SomaLoanController::class,'approveSomaLoan'])->name('soma.approve');
 Route::get('loans/soma/create', [SomaLoanController::class,'create'])->name('soma.create');
+Route::post('loans/soma/create/student', [SomaLoanController::class,'storeSomaStudent'])->name('soma.store.student');
+Route::get('loans/soma/student/create', [SomaLoanController::class,'createStudent'])->name('soma.create.student');
+
+
 Route::get('loans/soma/dashboard', [SomaLoanController::class,'somaDashboard'])->name('soma.dashboard');

@@ -18,6 +18,7 @@ class CreateBusinessesTable extends Migration
             $table->string('name',255);
             $table->bigInteger('district_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
+            $table->string('BIZ_id')->nullable();
             $table->string('location',255);
             $table->string('license_photo',255)->nullable();
             $table->string('premises_photo',255)->nullable();

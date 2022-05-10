@@ -18,6 +18,7 @@ class CreateStudentsTable extends Migration
             $table->string('fname');
             $table->string('lname');
             $table->string('class_name');
+            $table->string('STD_id')->nullable();
             $table->string('sch_admission_num');
             $table->string('gender');
             $table->string('school_name');

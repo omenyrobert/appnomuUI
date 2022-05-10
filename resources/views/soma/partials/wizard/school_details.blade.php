@@ -1,5 +1,4 @@
 <div id="school_details" class="p-5 bg-white card ">
-<form class="row g-3 ">
 
     <h5>School Details</h5>
     <div class="col-md-6 form-group">
@@ -30,5 +29,4 @@
     <div class="col-md-6" >
            <button id="btn-nxt-parent" type="button" class="btn btn-success">Next</button>
     </div>
-</form>
 </div>

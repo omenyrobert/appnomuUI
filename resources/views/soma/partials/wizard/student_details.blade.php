@@ -1,5 +1,6 @@
 <div class="p-5 bg-white card">
-<form id="student_details" class="row g-3 ">
+<form  class="row g-3 ">
+<div id="student_details"class="row">
 <h5>Student Details</h5>
 <div class="col-md-6 ">
         <label for="student_fname" class="form-label">First Name</label>
@@ -44,7 +45,20 @@
 
     <div class="col-md-6" >
            <button type="submit" id="btn-nxt-school" class="btn btn-success">Add Student</button>
+    </div>    
+    <div class="row">
+    @include('soma.partials.wizard.school_details') 
     </div>
-  
+    
+    <div class="row">
+    @include('soma.partials.wizard.applicant_details') 
+    </div>
+
+    <div class="row">
+    @include('soma.partials.wizard.loan_details') 
+    </div>
+
+    </div>
 </form>
+
 </div>
