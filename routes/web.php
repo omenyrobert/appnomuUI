@@ -7,9 +7,12 @@ use App\Http\Controllers\FlutterwaveController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\SomaLoanController;
 use App\Http\Controllers\AllianceController;
+use App\Http\Controllers\BusinessLoanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanCategoryController;
 use App\Http\Controllers\LoginController;
+use App\Models\BusinessLoan;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -459,9 +462,9 @@ Route::get('/commercials', function () {
     return view('view.commercial');
 });
 
-Route::get('/foo', function () {
-    Artisan::call('storage:link');
-});
+// Route::get('/foo', function () {
+//     Artisan::call('storage:link');
+// });
 
 Route::get('/messages-contact', function () {
     view()->share('page','Contact Page');
@@ -483,18 +486,37 @@ Route::get('/paycheck', function () {
 
 Route::post('/contact_pagexc',[AuthenticationController::class,'sendMessagex']);
 // soma loan routes
+// Route::get('loans/soma/dashboard', [SomaLoanController::class,'index'])->name('soma.dashboard');
 Route::get('loans/soma/index', [SomaLoanController::class,'index'])->name('soma.index');
+Route::get('loans/soma/show/{id}', [SomaLoanController::class,'show'])->name('soma.show');
 Route::get('loans/soma/pending', [SomaLoanController::class,'pending'])->name('soma.pending');
 Route::get('loans/soma/declined', [SomaLoanController::class,'declined'])->name('soma.declined');
 Route::get('loans/soma/held', [SomaLoanController::class,'somaOnHold'])->name('soma.held');
 Route::get('loans/soma/approved', [SomaLoanController::class,'approved'])->name('soma.approved');
 Route::get('loans/soma/late', [SomaLoanController::class,'late'])->name('soma.late');
-Route::get('loans/soma/index', [SomaLoanController::class,'borrowerIndex'])->name('soma.borrower.index');
+Route::get('loans/soma/client/index', [SomaLoanController::class,'borrowerIndex'])->name('soma.borrower.index');
 Route::post('loans/soma/new', [SomaLoanController::class,'store'])->name('soma.store');
 Route::match(['get', 'put'], '/loans/soma/approve/{id}', [SomaLoanController::class,'approveSomaLoan'])->name('soma.approve');
+Route::match(['get', 'put'], '/loans/soma/status/{action}/{id}', [SomaLoanController::class,'loanStatusChange'])->name('soma.loan.status');
+
 Route::get('loans/soma/create', [SomaLoanController::class,'create'])->name('soma.create');
 Route::post('loans/soma/create/student', [SomaLoanController::class,'storeSomaStudent'])->name('soma.store.student');
 Route::get('loans/soma/student/create', [SomaLoanController::class,'createStudent'])->name('soma.create.student');
-
-
 Route::get('loans/soma/dashboard', [SomaLoanController::class,'somaDashboard'])->name('soma.dashboard');
+
+//business loan routes
+Route::get('loans/business/index',[BusinessLoanController::class,'index'])->name('loan.business.index');
+Route::get('loans/business/client',[BusinessLoanController::class,'borrowerIndex'])->name('loan.business.client');
+Route::get('loans/business/pending',[BusinessLoanController::class,'pending'])->name('loan.business.pending');
+Route::get('loans/business/approved',[BusinessLoanController::class,'approved'])->name('loan.business.approved');
+Route::get('loans/business/denied',[BusinessLoanController::class,'declined'])->name('loan.business.declined');
+Route::get('loans/business/held',[BusinessLoanController::class,'onHold'])->name('loan.business.held');
+Route::get('loans/business/over_due',[BusinessLoanController::class,'late'])->name('loan.business.late');
+Route::get('loans/business/create',[BusinessLoanController::class,'create'])->name('loan.business.create');
+Route::get('loans/business/request/{id?}',[BusinessLoanController::class,'requestLoan'])->name('loan.business.request');
+Route::get('loans/business/show/{id}',[BusinessLoanController::class,'show'])->name('loan.business.show');
+Route::post('loans/business/store/business',[BusinessLoanController::class,'storeBusiness'])->name('loan.business.loan.store');
+Route::post('loans/business/store/loan/{id}',[BusinessLoanController::class,'store'])->name('loan.business.store');
+Route::get('loans/business/status/{action}/{id}',[BusinessLoanController::class,'loanStatusChange'])->name('business.loan.status');
+
+// Route::get('loans/business/store/{id}',[BusinessLoanController::class,'store'])->name('loan.business.store');

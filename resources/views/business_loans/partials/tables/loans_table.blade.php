@@ -35,7 +35,7 @@
                          
                             <tr>
                               <td>{{$loan->due_date}}</td>
-                              <td><a href="{{route('soma.show',['id'=>$loan->id])}}">{{$loan->SLN_id}}</a></td>
+                              <td><a href="{{route('loan.business.show',['id'=>$loan->id])}}">{{$loan->BLN_id}}</a></td>
                               <td>{{$loan->principal}}</td>
                               <td>{{$loan->amount_paid}} </td>
                               @switch($loan->status )
@@ -47,6 +47,9 @@
                                   @break
                                 @case('Requested')
                                   <td><span class="btn btn-warning">{{ $loan->status }}</span></td>
+                                  @break
+                                @case('On Hold')
+                                  <td><span class="btn btn-secondary">{{ $loan->status }}</span></td>
                                   @break
                                 @case('Approved')
                                   <td><span class="btn btn-primary">{{ $loan->status }}</span></td>
@@ -64,13 +67,13 @@
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                 @if($user->role == 'admin')
                                 @if($loan->status != 'Approved')
-                                  <li><a class="dropdown-item"href="{{route('soma.loan.status',['action'=>'Approve','id'=>$loan->id])}}">Approve</a></li>
-                                  <li><a class="dropdown-item" href="{{route('soma.loan.status',['action'=>'Deny','id'=>$loan->id])}}">Deny</a></li>
+                                  <li><a class="dropdown-item"href="{{route('business.loan.status',['action'=>'Approve','id'=>$loan->id])}}">Approve</a></li>
+                                  <li><a class="dropdown-item" href="{{route('business.loan.status',['action'=>'Deny','id'=>$loan->id])}}">Deny</a></li>
                                 @endif  
-                                  <li><a class="dropdown-item" href="{{route('soma.loan.status',['action'=>'Hold','id'=>$loan->id])}}">Put On Hold</a></li>
+                                  <li><a class="dropdown-item" href="{{route('business.loan.status',['action'=>'Hold','id'=>$loan->id])}}">Put On Hold</a></li>
                                 @else
                                 @if($loan->status != 'Approved')
-                                <li><a class="dropdown-item" href="{{route('soma.loan.status',['action'=>'Cancel','id'=>$loan->id])}}">Cancel Request</a></li>
+                                <li><a class="dropdown-item" href="{{route('business.loan.status',['action'=>'Cancel','id'=>$loan->id])}}">Cancel Request</a></li>
                                 @endif
                                 @endif
                                 </ul>
@@ -79,7 +82,7 @@
                               </td>
                               @endif
                               @if($loan->status == 'Cancelled' && $user->role != 'admin')
-                              <td><a href="{{route('soma.loan.status',['action'=>'Re-submit','id'=>$loan->id])}}">Re-submit Request</a></span></td>
+                              <td><a href="{{route('loan.status',['action'=>'Re-submit','id'=>$loan->id])}}">Re-submit Request</a></span></td>
                               @endif
                             </tr>
                             @endforeach

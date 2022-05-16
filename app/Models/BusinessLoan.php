@@ -31,4 +31,8 @@ class BusinessLoan extends Model
         return $this->morphOne(Repayment::class,'repaymentable')->latestOfMany();
     }
 
+    public function credential(){
+        return $this->hasOne(BusinessCredential::class);
+    }
+
 }

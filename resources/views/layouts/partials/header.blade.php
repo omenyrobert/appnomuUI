@@ -157,8 +157,8 @@
                       />
                     </div>
                     <div class="ms-2">
-                      <h4 class="mb-0 text-white">Steave Jobs</h4>
-                      <p class="mb-0">varun@gmail.com</p>
+                      <h4 class="mb-0 text-white">{{$user->name}}</h4>
+                      <p class="mb-0">{{$user->email}}</p>
                     </div>
                   </div>
                   <a class="dropdown-item" href="#"

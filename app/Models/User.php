@@ -64,6 +64,10 @@ class User extends Authenticatable
         return $this->hasMany(Business::class);
     }
 
+    public function businessCredentials(){
+        $this->hasMany(BusinessCredential::class);
+    }
+
     public function alliances(){
         return $this->hasMany(Alliance::class);
     }

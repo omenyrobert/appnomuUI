@@ -54,4 +54,4 @@
            <button type="button"id="btn-nxt-loan " class="btn btn-success">Next</button>
        </div>
        </div>
-</div>
+

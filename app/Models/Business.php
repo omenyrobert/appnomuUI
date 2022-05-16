@@ -12,11 +12,16 @@ class Business extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function biz_loan(){
+    public function loans(){
         return $this->hasMany(BusinessLoan::class);
     }
 
     public function district(){
         return $this->belongsTo(District::class);
     }
+
+    public function credentials(){
+        return $this->hasMany(BusinessCredential::class);
+    }
+
 }

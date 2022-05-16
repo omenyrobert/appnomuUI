@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-          @include('soma.partials.wizard.cards')
+            @include('business_loans.partials.wizard.cards')
           <div class="row">
           <div class="col-md-3">
               <div class="card bg-dark">
@@ -21,10 +21,10 @@
                     @endif
                     
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Students</a>
+                      <a class="nav-link" href="{{route('loan.business.create')}}">Request A Business Loan</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">Head Masters</a>
+                      <a class="nav-link" href="#">Businesses</a>
                     </li>
                     
                    
@@ -69,9 +69,9 @@
                   <div class="toolbar">
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                   </div>
-                  @if(!empty($loans))
-                    @include('soma.partials.tables.somatable')
-                 @endif
+                 
+                    @include('business_loans.partials.wizard.loan_table')
+                
                 </div>
                 <!-- end content-->
               </div>

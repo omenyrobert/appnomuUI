@@ -110,7 +110,7 @@ trait RepaymentsTrait{
                         break;
                     case 'Re-submit':
                         $loan->status = 'Requested';
-                        $last_message_string = 'please wait while our personnel assese your application';
+                        $last_message_string = 'please wait while our personnel assess your application';
                         break;
                 }
                 $loan->save();

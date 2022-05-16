@@ -15,7 +15,7 @@ class CreateBusinessLoansTable extends Migration
     {
         Schema::create('business_loans', function (Blueprint $table) {
             $table->id();
-            $table->string('BLN_id')->unique();
+            $table->string('BLN_id')->unique()->nullable();
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('business_id')->unsigned();
             $table->bigInteger('loan_category_id')->unsigned();
@@ -30,7 +30,7 @@ class CreateBusinessLoansTable extends Migration
             $table->integer('installments')->unsigned()->nullable();
             $table->integer('payment_amount')->unsigned()->nullable();
             $table->integer('amount_paid')->unsigned()->default(0);
-            $table->enum('status',['Paid','Approved','Requested','Over Due','Denied','Warning','On Hold','Cancelled']);
+            $table->enum('status',['Paid','Approved','Requested','Over Due','Denied','Warning','On Hold','Cancelled'])->default('Requested');
             $table->date('due_date')->nullable();
             $table->date('approved_at')->nullable();
             $table->date('declined_at')->nullable();

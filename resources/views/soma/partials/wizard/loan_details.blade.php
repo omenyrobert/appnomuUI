@@ -10,9 +10,7 @@
                   @endforeach
            </select>
            <div >
-        <div><button  type="submit"
-        class="btn btn-success" class="form-control">Request Loan</button></div>
-        <span>By Clicking button, u agree to the appnomu terms and conditions</span>
+        
     </div>
     </div>
 </div>

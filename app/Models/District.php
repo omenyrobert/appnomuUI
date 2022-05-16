@@ -12,6 +12,9 @@ class District extends Model
     public function businesses(){
         $this->hasMany(Business::class);
     }
+    public function businessCredentials(){
+        $this->hasMany(BusinessCredential::class);
+    }
 
     public function headteachers(){
         $this->hasMany(Headteacher::class);

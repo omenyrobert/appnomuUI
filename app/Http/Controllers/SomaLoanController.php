@@ -25,7 +25,7 @@ class SomaLoanController extends Controller
     public function somaDashboard(){
         $user = User::findOrFail(Auth::id());
         if($user->role== 'admin'){
-            return redirect()->route('soma.index');
+            return redirect()->route('soma.dashboard');
         }
         return redirect()->route('soma.borrower.index',['id'=>$user->id]);
     }
@@ -52,9 +52,9 @@ class SomaLoanController extends Controller
             // dd($students);
             $headteachers = $borrower->headteachers;
             $loans = $borrower->somaLoans()->orderBy('created_at','DESC')->get();
-            $repayments = $borrower->repayments()->where('repaymentable_type','App\Models\SomaLoan')->where('status','!=','Paid')->get();
-            $installments = $borrower->repayments()->where('status','pending')->orWhere('status','late')->get();
-            return view('soma.borrower_index',['loans'=>$loans,'repayments'=>$repayments,'headteachers'=>$headteachers,'user'=>$borrower,'students'=>$students,'installments'=>$installments])->with('page',$borrower->fname.' '.$borrower->lname.' Soma Loans');
+            $repayments = $borrower->repayments()->where('repaymentable_type','App\Models\SomaLoan')->where('status','!=','Pending')->get();
+            // $installments = $borrower->repayments()->where('status','pending')->orWhere('status','late')->get();
+            return view('soma.borrower_index',['loans'=>$loans,'repayments'=>$repayments,'headteachers'=>$headteachers,'user'=>$borrower,'students'=>$students])->with('page',$borrower->fname.' '.$borrower->lname.' Soma Loans');
         } catch (\Throwable $th) {
             throw $th;
             // return redirect()->back()->withErrors($th->getMessage());
@@ -68,7 +68,7 @@ class SomaLoanController extends Controller
             $user = User::find(Auth::id());
             if($user){
                 $loans = $user->role == 'admin' ? SomaLoan::where('status','pending')->latest()->get() :
-                    $user->somaLoans()->where('status','pending')->latest()->get();
+                    $user->somaLoans()->where('status','Requested')->latest()->get();
                 return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Pending');
             }
             return redirect()->route('login');
@@ -82,7 +82,7 @@ class SomaLoanController extends Controller
             $user = User::find(Auth::id());
             if($user){
                 $loans = $user->role == 'admin' ? SomaLoan::where('status','late')->latest()->get() :
-                    $user->somaLoans()->where('status','late')->latest()->get();
+                    $user->somaLoans()->where('status','Over Due')->latest()->get();
                 return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Late');
             }
             return redirect()->route('login');
@@ -96,7 +96,7 @@ class SomaLoanController extends Controller
             $user = User::find(Auth::id());
             if($user){
                 $loans = $user->role == 'admin' ? SomaLoan::where('status','approved')->latest()->get() :
-                    $user->somaLoans()->where('status','approved')->latest()->get();
+                    $user->somaLoans()->where('status','Approved')->latest()->get();
                 return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Approved');
             }
             return redirect()->route('login');
@@ -110,7 +110,7 @@ class SomaLoanController extends Controller
             $user = User::find(Auth::id());
             if($user){
                 $loans = $user->role == 'admin' ? SomaLoan::where('status','declined')->latest()->get() :
-                    $user->somaLoans()->where('status','declined')->latest()->get();
+                    $user->somaLoans()->where('status','Denied')->latest()->get();
                 return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | Declined');
             }
             return redirect()->route('login');
@@ -124,7 +124,7 @@ class SomaLoanController extends Controller
             $user = User::find(Auth::id());
             if($user){
                 $loans = $user->role == 'admin' ? SomaLoan::where('status','on hold')->latest()->get() :
-                    $user->somaLoans()->where('status','on hold')->latest()->get();
+                    $user->somaLoans()->where('status','On Hold')->latest()->get();
                 return view('soma.index',['user'=>$user,'loans'=>$loans])->with('page','Soma Loans | On Hold');
             }
             return redirect()->route('login');
@@ -164,17 +164,19 @@ class SomaLoanController extends Controller
     //store the soma loan
     public function storeSomaStudent(Request $request){
         try {
+            // dd($request);
             $user = User::findOrFail(Auth::id());
+            // dd($user);
             if($user){
-                $outstanding_loans = $user->loans()->where('status','approved')->orWhere('status','Over Due')->count();
-                $outstanding_soma = $user->soma_loans()->where('status','approved')->orWhere('status','Over Due')->count();
-                $outstanding_biz = $user->biz_loans()->where('status','approved')->orWhere('status','Over Due')->count();
-                if($outstanding_biz || $outstanding_loans || $outstanding_soma){
-                    return redirect()->back()->withErrors(['Errors'=>'you still have an outstanding loan']);
-                }
-                if($user->alliances()->count() < 2){
-                    return redirect()->back()->withErrors(['Errors'=>'You Dont Have enough Allianses to qualify For a loan,Add alliance and try again later']);
-                }
+                // $outstanding_loans = $user->loans()->where('status','approved')->orWhere('status','Over Due')->count();
+                // $outstanding_soma = $user->somaLoans()->where('status','approved')->orWhere('status','Over Due')->count();
+                // $outstanding_biz = $user->businessLoans()->where('status','approved')->orWhere('status','Over Due')->count();
+                // if($outstanding_biz || $outstanding_loans || $outstanding_soma){
+                //     return redirect()->back()->withErrors(['Errors'=>'you still have an outstanding loan']);
+                // }
+                // if($user->alliances()->count() < 2){
+                //     return redirect()->back()->withErrors(['Errors'=>'You Dont Have enough Allianses to qualify For a loan,Add alliance and try again later']);
+                // }
                 $student = new Student();
                 $student->fname = $request->student_fname;
                 $student->lname = $request->student_lname;
@@ -183,7 +185,7 @@ class SomaLoanController extends Controller
                 $student->class_name = $request->student_class;
                 $student->dob = $request->student_dob;
                 $student->phone = $request->student_phone;
-                $student->school_name = $request->student_school_name;
+                $student->school_name = $request->sch_name;
                 $student->school_id_card = $request->student_id_card;
                 $student->sch_admission_num = $request->sch_admin_num;
                 if($request->radio_receipt_report == 'report'){
@@ -193,8 +195,9 @@ class SomaLoanController extends Controller
 
                 }
                 
-                $student->class_name = $request->student_class;
+                $student->class_name = Grade::where('id',(int)$request->student_class)->first()->name;
                 $student->save();
+                // dd($student);
                 $student->STD_id = 'STD_'.$student->id.rand(0000,9999);
                 $student->save();
                 if($student){
@@ -205,9 +208,10 @@ class SomaLoanController extends Controller
                     $headteacher->school_name = $request->sch_name;
                     $headteacher->phone = $request->hm_contact;
                     $headteacher->district()->associate($hm_district);
-                    // $headteacher->student()->associate($student);
+                    $headteacher->user()->associate($user);
                     $headteacher->save();
-                    $headteacher->students()->attach($student->id);
+                    $headteacher->students()->attach($student->id,['student_admission_num'=>$student->sch_admission_num ]);
+                    // dd($headteacher);
 
                 }
                 // dd(typeof $request->chk_parent_applicant);
@@ -224,6 +228,7 @@ class SomaLoanController extends Controller
                     $parent->id_photo = $request->parent_id_card;
                     $parent->save();
                 }
+                // dd($parent);
                 $parent->students()->attach($student->id,['relationship'=>$request->relationship]);
                 $this->store($request,$student->id);
                 
@@ -238,18 +243,22 @@ class SomaLoanController extends Controller
     public function store(Request $request,$id){
         try {
             $user = User::find(Auth::id());
+            // dd($user);
             if($user){
                 $student = Student::findOrFail($id);
                 $loan_category = LoanCategory::find($request->loan_category);
+                // dd($loan_category);
                 $soma = new SomaLoan();
                 $soma->user()->associate($user);
                 $soma->student()->associate($student);
                 $soma->loanCategory()->associate($loan_category);
+                $soma->account()->associate($user->account);
                 $soma->principal = $loan_category->loan_amount;
                 $soma->interest_rate = $loan_category->interest_rate;
                 $soma->payment_period = $loan_category->loan_period;
                 $soma-> installments = $loan_category->installments;
                 $soma->save();
+                // dd($soma);
                 switch (strlen($soma->id)) {
                     case 1:
                         $soma->SLN_id = 'SLN_'.$soma->id.'00'.rand(111,999);
@@ -266,12 +275,13 @@ class SomaLoanController extends Controller
                         break;
                 }
                 $soma->save();
-                // dd($soma);
                 if($soma){
+                    // dd($soma);
                     
                     // $message = 'Dear '. $user->name .', Your '.$soma->SLN_id .' of '.$soma->principal .' has been requested pending approval';
                     
                     // $smsStatus = $this->sendSMS($message,$user->telephone);
+                    // $this->show($soma->id);
                     return redirect()->route('soma.show',['id'=>$soma->id]);
                 }
                 return redirect()->back();
@@ -283,19 +293,23 @@ class SomaLoanController extends Controller
         }
     }
 
-    public function loanStatusChange(Request $request,$id){
+   
+   
+
+    public function loanStatusChange($action,$id){
         try {
+            // dd($action);
             if(Auth::check()){
-                $loan_n_string = $this->changeStatus($request,$id,'soma');
+                $loan_n_string = $this->changeStatus($action,$id,'soma');
                 if($loan_n_string){
                     $loan = $loan_n_string['loan'];
                     $user = $loan->user; 
                     $last_message_string = $loan_n_string['last_message_string'];
                     $message = 'Dear '. $user->name .', Your '.$loan->SLN_id .' of '.$loan->principal .' has been '.$loan->status .$last_message_string;                    
                     $sms_status = $this->sendSMS($message,$user->telephone);
-                    for(;$sms_status != 'success';){
-                        $sms_status = $this->sendSMS($message,$user->telephone);
-                    }
+                    // for(;$sms_status != 'success';){
+                    //     $sms_status = $this->sendSMS($message,$user->telephone);
+                    // }
                 }
 
                 return redirect()->back();
@@ -314,16 +328,22 @@ class SomaLoanController extends Controller
 
     }
 
-    //show a particular soma loan
+    //retrieve a single soma loan
     public function show($id){
         try {
-            $loan = SomaLoan::findOrFail($id);
-            $repayments = $loan->repayments;
-            $student = $loan->student;
-            $school = $loan->headTeacher;
-            return view('soma.show',['loan'=>$loan,'repayments'=>$repayments,'student'=>$student,'school'=>$school])
-                ->with('page','Soma Loan | Show');
+            $user = User::find(Auth::id());
+            if($user){
+                $loan = SomaLoan::findOrFail($id);
+                $repayments = $loan->status=='Pending'?$loan->repayments()->where('status','pending')->get(): $loan->repayments;
+                $student = $loan->student;
+                $school = $loan->student->headteachers()->latest()->first();
+                return view('soma.show',['loan'=>$loan,'repayments'=>$repayments,'student'=>$student,'school'=>$school])
+                    ->with('page','Soma Loan | Show');
 
+            }
+            return redirect()->back()->withErrors('Error','You must Login First To View This Loan');
+
+            // return redirect()->route('login')->withErrors('Error','You must Login First To View This Loan');
         } catch (\Throwable $th) {
             throw $th;
         }
