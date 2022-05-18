@@ -1,5 +1,5 @@
 <div class="p-5 bg-white card col-sm-12 col-md-6 mx-auto">
-        <form action="">
+        <form action="" class="">
            <h4>Make A withDraw</h4>
             <div class="row mt-5 card">
                 <div class="col-sm-12">

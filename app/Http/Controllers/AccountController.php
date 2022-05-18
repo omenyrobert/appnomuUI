@@ -9,6 +9,20 @@ use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
+    public function index(){
+        try {
+            $user=User::find(Auth::id());
+            if($user && $user->role == 'admin'){
+                $accounts = Account::paginate(10);
+                return view('accounts.index',['user'=>$user,'accounts'=>$accounts])->with('page','Accounts | All');
+            }
+            return redirect()->back()->withErrors('error','Unauthorized');
+
+            
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
     //change loan limit
     public function updateLoanLimit(Request $request,$id){
         try {

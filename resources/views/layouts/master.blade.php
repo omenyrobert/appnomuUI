@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
      @include('layouts.partials.header')
      @include('layouts.partials.sidebar')
     
-      <div class="page-wrapper">
+      <div class="page-wrapper " >
         <!-- ============================================================== -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- ============================================================== -->

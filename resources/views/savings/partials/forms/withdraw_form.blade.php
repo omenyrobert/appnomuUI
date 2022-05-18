@@ -1,5 +1,5 @@
 <!-- <div class="p-5 bg-white  col-sm-12 col-md-6 mx-auto"> -->
-        <form action="" class="my-auto mx-auto border border-1 my-2 modal-forms">
+<form action="" class="my-auto mx-auto border border-1 my-2 modal-forms">
             <div class="row mt-5 ">
                 <div class="col-sm-12">
                     <label>Enter Amount</label>

@@ -1,6 +1,5 @@
 @extends('layouts.master')
 @section('content')
-    @include('withdraws.partials.wizard.cards')
     <div class="row  bg-light">
         <button data-bs-toggle="modal" data-placement="top" data-bs-target="#create_saving" class="btn btn-primary col-sm-12 col-md-2 m-auto">
             Deposit To Your Savings
@@ -18,5 +17,4 @@
            Pay for  Utilities
         </button>
     </div>
-    @include('withdraws.partials.tables.withdraws_table')
 @endsection

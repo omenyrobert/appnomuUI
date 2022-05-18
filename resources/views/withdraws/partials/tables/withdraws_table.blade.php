@@ -18,7 +18,7 @@
                   <td>{{$withdraw->fee}}</td>
                  
                 </tr>
-               
+               @endforeach
               </tbody>
             </table>
 
