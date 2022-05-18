@@ -11,6 +11,8 @@ use App\Http\Controllers\BusinessLoanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanCategoryController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SavingController;
+use App\Http\Controllers\WithdrawController;
 use App\Models\BusinessLoan;
 
 /*
@@ -520,3 +522,10 @@ Route::post('loans/business/store/loan/{id}',[BusinessLoanController::class,'sto
 Route::get('loans/business/status/{action}/{id}',[BusinessLoanController::class,'loanStatusChange'])->name('business.loan.status');
 
 // Route::get('loans/business/store/{id}',[BusinessLoanController::class,'store'])->name('loan.business.store');
+
+// withdraws routes
+Route::get('withdraws/index',[WithdrawController::class,'index'])->name('withdraws.index');
+Route::get('withdraws/create',[WithdrawController::class,'create'])->name('withdraws.create');
+
+// savings routes
+Route::get('savings/index',[SavingController::class,'index'])->name('savings.index'); 

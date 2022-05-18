@@ -15,6 +15,6 @@ class SavingSubCategory extends Model
     }
 
     public function savings(){
-        return $this->hasMany(Save::class,'SubCateId','SubCateId');
+        return $this->hasMany(Saving::class,'SubCateId','SubCateId');
     }
 }

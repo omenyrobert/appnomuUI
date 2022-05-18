@@ -91,7 +91,7 @@ class User extends Authenticatable
     }
 
     public function savings(){
-        return $this->hasMany(Save::class);
+        return $this->hasMany(Saving::class);
     }
     
     public function withdraws(){

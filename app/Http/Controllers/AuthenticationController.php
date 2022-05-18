@@ -251,39 +251,7 @@ class AuthenticationController extends BaseController
 
    
    
-    public static function getAllWithdraws(){
-        $db = DB::table('withdraws')
-            ->get();
-
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function getMyWithdraws($user_id){
-        $db = DB::table('withdraws')
-            ->where('user_id','=',$user_id)
-            ->get();
-
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
-
-    public static function getAllWithrawsByStatus($status){
-        $amounts = 0;
-        $withdraws_number = 0;
-        $db_save = AuthenticationController::getAllWithdraws();
-        
-        foreach ($db_save as $key) {
-            if (($key['status']==$status)) {
-                $amounts = $amounts+ $key['amount'];
-                $withdraws_number ++;
-            }
-        }
-
-        $arr =  array('amounts' => $amounts,'number'=>$withdraws_number);
-        return $arr;
-    }
-
+    
     
     
 

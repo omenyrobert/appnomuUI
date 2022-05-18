@@ -19,7 +19,7 @@ class Account extends Model
     }
 
     public function savings(){
-        return $this->hasMany(Save::class);
+        return $this->hasMany(Saving::class);
 
     }
 
