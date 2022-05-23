@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use App\Models\User;
-use App\Http\traits\RepaymentsTrait;
-use App\Http\traits\SMSTrait;
+use App\Http\Traits\RepaymentsTrait;
+use App\Http\Traits\SMSTrait;
 
 class LoanController extends Controller
 {
