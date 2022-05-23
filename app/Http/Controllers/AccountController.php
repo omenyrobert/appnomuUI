@@ -49,35 +49,7 @@ class AccountController extends Controller
 
     }
 
-    public function accountOperation($operation,$type,$id){
-        //operation = credit or debit
-        //type = loan,soma,business,saving,transaction
-        try {
-            //code...
-            switch ($operation) {
-                case 'credit':
-                    switch ($type) {
-                        case 'loan':
-                            $loan = Loan::findOrFail($id);
-                            $account = $loan->account;
-                            $account = 
-                            break;
-                        
-                        default:
-                            # code...
-                            break;
-                    }    
-                    break;
-                
-                default:
-                    # code...
-                    break;
-            }
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-
-    }
+    
     // create a new account
     public function store($id){
         try {
@@ -100,6 +72,21 @@ class AccountController extends Controller
             throw $th;
         }
 
+    }
+
+    public function changeLoanLimit(Request $request,$id){
+        try {
+            $user = User::find(Auth::id());
+            if($user && $user->role == 'admin'){
+                $account = Account::findOrFail($id);
+                $account->Loan_Limit = (int)$request->loan_limit;
+                $account->save();
+                return redirect()->back()->with('success','loan limit reset successfully');
+            }
+            return redirect()->route('login')->withErrors('error','Unauthorised');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     

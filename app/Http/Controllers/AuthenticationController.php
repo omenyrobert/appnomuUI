@@ -64,24 +64,24 @@ class AuthenticationController extends BaseController
 
     
 
-    public static function getUserById($user_id){
-        $db = DB::table('sysusers')
-            ->where('user_id','=',$user_id)
-            ->get();
+    // public static function getUserById($user_id){
+    //     $db = DB::table('sysusers')
+    //         ->where('user_id','=',$user_id)
+    //         ->get();
 
-        $dbx = json_decode($db, true);
+    //     $dbx = json_decode($db, true);
 
-        return $dbx;
-    }
+    //     return $dbx;
+    // }
 
-    public static function getUserByEmail($email){
-        $db = DB::table('sysusers')
-            ->where('email','=',$email)
-            ->get();
+    // public static function getUserByEmail($email){
+    //     $db = DB::table('sysusers')
+    //         ->where('email','=',$email)
+    //         ->get();
   
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
     public static function verifyUserEmail($email,$code){
         $user = AuthenticationController::getUserByEmail($email);
@@ -153,120 +153,120 @@ class AuthenticationController extends BaseController
         }
     }
 
-    public static function loginUser($user_id){
-        $get = DB::table('userlogins')
-            ->where('user_id','=',$user_id)
-            ->where('status','=','logged')
-            ->get();
+    // public static function loginUser($user_id){
+    //     $get = DB::table('userlogins')
+    //         ->where('user_id','=',$user_id)
+    //         ->where('status','=','logged')
+    //         ->get();
 
-        $dbx = json_decode($get,true);
-        $numx =sizeof($dbx);
+    //     $dbx = json_decode($get,true);
+    //     $numx =sizeof($dbx);
 
-        session(['user_id'=>$user_id]);
+    //     session(['user_id'=>$user_id]);
 
-        if ($numx<1) {
-            # code...
-            $db = DB::table('userlogins')->insert([
-                'user_id'=>$user_id,
-                'last_login'=>time(),
-                'Device_Ip'=>$_SERVER['REMOTE_ADDR'],
-                'status'=>'logged',
-                'created_at'=>date('Y-m-d H:i:s',time())
-            ]);
+    //     if ($numx<1) {
+    //         # code...
+    //         $db = DB::table('userlogins')->insert([
+    //             'user_id'=>$user_id,
+    //             'last_login'=>time(),
+    //             'Device_Ip'=>$_SERVER['REMOTE_ADDR'],
+    //             'status'=>'logged',
+    //             'created_at'=>date('Y-m-d H:i:s',time())
+    //         ]);
 
-            if ($db) {
-                $retx = 1;
-            }
-        }else {
-            # code...
-            $ret = AuthenticationController::logout($user_id);
-            $db = DB::table('userlogins')->insert([
-                'user_id'=>$user_id,
-                'last_login'=>time(),
-                'Device_Ip'=>$_SERVER['REMOTE_ADDR'],
-                'status'=>'logged',
-                'created_at'=>date('Y-m-d H:i:s',time())
-            ]);
-            if ($db) {
-                $retx = 1;
-            }
-        }
+    //         if ($db) {
+    //             $retx = 1;
+    //         }
+    //     }else {
+    //         # code...
+    //         $ret = AuthenticationController::logout($user_id);
+    //         $db = DB::table('userlogins')->insert([
+    //             'user_id'=>$user_id,
+    //             'last_login'=>time(),
+    //             'Device_Ip'=>$_SERVER['REMOTE_ADDR'],
+    //             'status'=>'logged',
+    //             'created_at'=>date('Y-m-d H:i:s',time())
+    //         ]);
+    //         if ($db) {
+    //             $retx = 1;
+    //         }
+    //     }
         
-        return $retx;
-    }
+    //     return $retx;
+    // }
 
-    public static function logout($userid){
-        $db = DB::table('userlogins')
-            ->where('user_id','=',$userid)
-            ->update([
-                'status'=>'logged_out',
-                'updated_at'=>date('Y-m-d H:i:s',time())
-            ]);
+    // public static function logout($userid){
+    //     $db = DB::table('userlogins')
+    //         ->where('user_id','=',$userid)
+    //         ->update([
+    //             'status'=>'logged_out',
+    //             'updated_at'=>date('Y-m-d H:i:s',time())
+    //         ]);
         
-        if ($db) {
-            # code...
-            session()->flush(); 
-            $ret = 1;
-        }else {
-            $ret = 0;
-        }
-        return $ret;
-    }
+    //     if ($db) {
+    //         # code...
+    //         session()->flush(); 
+    //         $ret = 1;
+    //     }else {
+    //         $ret = 0;
+    //     }
+    //     return $ret;
+    // }
 
    
 
-    public static function getAccount($user_id){
-        $db = DB::table('user_account')
-            ->where('user_id','=',$user_id)
-            ->get();
+    // public static function getAccount($user_id){
+    //     $db = DB::table('user_account')
+    //         ->where('user_id','=',$user_id)
+    //         ->get();
         
-        $dbx = json_decode($db,true);
+    //     $dbx = json_decode($db,true);
 
-        if(sizeof($dbx)<1){
-            $i = 0;
-            $db_new = DB::table('user_account')->insert([
-                'available_balance'=>$i,
-                'Ledger_Balance'=>$i,
-                'Total_Saved'=>$i,
-                'Amount_Withdrawn'=>$i,
-                'Loan_Balance'=>$i,
-                'Outstanding_Balance'=>$i,
-                'Total_Paid'=>$i,
-                'Loan_Limit'=>$i,
-                'created_at'=>date('Y-m-d H:i:s',time()),
-                'user_id'=>$user_id
-            ]);
+    //     if(sizeof($dbx)<1){
+    //         $i = 0;
+    //         $db_new = DB::table('user_account')->insert([
+    //             'available_balance'=>$i,
+    //             'Ledger_Balance'=>$i,
+    //             'Total_Saved'=>$i,
+    //             'Amount_Withdrawn'=>$i,
+    //             'Loan_Balance'=>$i,
+    //             'Outstanding_Balance'=>$i,
+    //             'Total_Paid'=>$i,
+    //             'Loan_Limit'=>$i,
+    //             'created_at'=>date('Y-m-d H:i:s',time()),
+    //             'user_id'=>$user_id
+    //         ]);
 
-            $db = DB::table('user_account')
-            ->where('user_id','=',$user_id)
-            ->get();
+    //         $db = DB::table('user_account')
+    //         ->where('user_id','=',$user_id)
+    //         ->get();
         
-            $dbx = json_decode($db,true);
-        }
+    //         $dbx = json_decode($db,true);
+    //     }
 
-        return $dbx;
-    }
-
-   
+    //     return $dbx;
+    // }
 
    
+
    
-    public static function getAllWithdraws(){
-        $db = DB::table('withdraws')
-            ->get();
+   
+    // public static function getAllWithdraws(){
+    //     $db = DB::table('withdraws')
+    //         ->get();
 
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
-    public static function getMyWithdraws($user_id){
-        $db = DB::table('withdraws')
-            ->where('user_id','=',$user_id)
-            ->get();
+    // public static function getMyWithdraws($user_id){
+    //     $db = DB::table('withdraws')
+    //         ->where('user_id','=',$user_id)
+    //         ->get();
 
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
     public static function getAllWithrawsByStatus($status){
         $amounts = 0;
@@ -287,95 +287,95 @@ class AuthenticationController extends BaseController
     
     
 
-    public function saveSavingCate(Request $request){
-        $validated = $request->validate([
-            'upper_limit'=>'required',
-            'lower_limit'=>'required'
-        ]);
+    // public function saveSavingCate(Request $request){
+    //     $validated = $request->validate([
+    //         'upper_limit'=>'required',
+    //         'lower_limit'=>'required'
+    //     ]);
 
-        $cate = 'Cat-'.rand(1111,9999);
+    //     $cate = 'Cat-'.rand(1111,9999);
 
-        if (!is_numeric($request['upper_limit'])) {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Sorry Upper Limit Should Be a numeric Value']);
-        }
+    //     if (!is_numeric($request['upper_limit'])) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry Upper Limit Should Be a numeric Value']);
+    //     }
 
-        if (!is_numeric($request['lower_limit'])) {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Sorry Lower Limit Should Be a numeric Value']);
-        }
-        $i = 7;
-        // 7 - active - 5 - not active
-        $db = DB::table('savingcategories')->insert([
-            'cate_id'=>$cate,
-            'upperlimit'=>$request['upper_limit'],
-            'lowerlimit'=>$request['lower_limit'],
-            'created_at'=>date('Y-m-d H:i:s', time()),
-            'status'=> $i
-        ]);
+    //     if (!is_numeric($request['lower_limit'])) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry Lower Limit Should Be a numeric Value']);
+    //     }
+    //     $i = 7;
+    //     // 7 - active - 5 - not active
+    //     $db = DB::table('savingcategories')->insert([
+    //         'cate_id'=>$cate,
+    //         'upperlimit'=>$request['upper_limit'],
+    //         'lowerlimit'=>$request['lower_limit'],
+    //         'created_at'=>date('Y-m-d H:i:s', time()),
+    //         'status'=> $i
+    //     ]);
 
-        if ($db) {
-            # code...
-            return redirect()->back()->with('Success','New Saving Category Saved Succesfully');
-        }else {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'New Saving Category Not Saved Succesfully Try Again later']);
-        }
-    }
+    //     if ($db) {
+    //         # code...
+    //         return redirect()->back()->with('Success','New Saving Category Saved Succesfully');
+    //     }else {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'New Saving Category Not Saved Succesfully Try Again later']);
+    //     }
+    // }
 
-    public function saveSavingSubCate(Request $request){
-        $validated = $request->validate([
-            'category'=>'required',
-            'saving_period'=>'required',
-            'interest'=>'required'
+    // public function saveSavingSubCate(Request $request){
+    //     $validated = $request->validate([
+    //         'category'=>'required',
+    //         'saving_period'=>'required',
+    //         'interest'=>'required'
             
-        ]);
+    //     ]);
 
-        $cate = 'Sub-'.rand(1111,9999).'-Cat';
+    //     $cate = 'Sub-'.rand(1111,9999).'-Cat';
 
-        $category = AuthenticationController::getSavingCatByCatId($request['category']);
-        $num_cate = sizeof($category);
+    //     $category = AuthenticationController::getSavingCatByCatId($request['category']);
+    //     $num_cate = sizeof($category);
 
-        if ($num_cate<1) {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Sorry You Have an UNknown Category']);
-        }
+    //     if ($num_cate<1) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry You Have an UNknown Category']);
+    //     }
 
-        if (!is_numeric($request['saving_period'])) {
-            return redirect()->back()->withErrors(['Error'=>'Sorry Saving Period Should Be a numeric Value']);
-        }
+    //     if (!is_numeric($request['saving_period'])) {
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry Saving Period Should Be a numeric Value']);
+    //     }
 
-        if (!is_numeric($request['interest'])) {
-            return redirect()->back()->withErrors(['Error'=>'Sorry Interest Should Be a numeric Value']);
-        }
-        $i = 7;
-        // 7 - active - 5 - not active
-        $db = DB::table('savingsubcategories')->insert([
-            'cate_id'=>$request['category'],
-            'SubCateId'=>$cate,
-            'Saving_Period'=>$request['saving_period'],
-            'interest'=>$request['interest'],
-            'created_at'=>date('Y-m-d H:i:s', time()),
-            'status'=>$i
-        ]);
+    //     if (!is_numeric($request['interest'])) {
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry Interest Should Be a numeric Value']);
+    //     }
+    //     $i = 7;
+    //     // 7 - active - 5 - not active
+    //     $db = DB::table('savingsubcategories')->insert([
+    //         'cate_id'=>$request['category'],
+    //         'SubCateId'=>$cate,
+    //         'Saving_Period'=>$request['saving_period'],
+    //         'interest'=>$request['interest'],
+    //         'created_at'=>date('Y-m-d H:i:s', time()),
+    //         'status'=>$i
+    //     ]);
 
-        if ($db) {
-            # code...
-            return redirect()->back()->with(['Success'=>'New Saving Category Saved Succesfully']);
-        }else {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'New Saving Category Not Saved Succesfully Try Again latter']);
-        }
-    }
+    //     if ($db) {
+    //         # code...
+    //         return redirect()->back()->with(['Success'=>'New Saving Category Saved Succesfully']);
+    //     }else {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'New Saving Category Not Saved Succesfully Try Again latter']);
+    //     }
+    // }
 
-    public static function getSavingCatByCatId($cate_id){
-        $db = DB::table('savingcategories')
-            ->where('cate_id','=',$cate_id)
-            ->get();
+    // public static function getSavingCatByCatId($cate_id){
+    //     $db = DB::table('savingcategories')
+    //         ->where('cate_id','=',$cate_id)
+    //         ->get();
 
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
     public static function getSavingsBetween($lower,$upper){
         $db = DB::table('savings')
@@ -387,74 +387,74 @@ class AuthenticationController extends BaseController
         return $dbx;
     }
 
-    public function saveLoanCategory(Request $request){
-        $validated = $request->validate([
-            'amount'=>'required',
-            'period'=>'required',
-            'interest'=>'required',
-            'processing'=>'required',
-            'installements'=>'required'
-        ]);
+    // public function saveLoanCategory(Request $request){
+    //     $validated = $request->validate([
+    //         'amount'=>'required',
+    //         'period'=>'required',
+    //         'interest'=>'required',
+    //         'processing'=>'required',
+    //         'installements'=>'required'
+    //     ]);
 
-        $cate = 'LN-'.rand(1111,9999);
+    //     $cate = 'LN-'.rand(1111,9999);
 
-        if (!is_numeric($request['amount'])) {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Sorry Amount Should Be a numeric Value']);
-        }
+    //     if (!is_numeric($request['amount'])) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry Amount Should Be a numeric Value']);
+    //     }
 
-        if (!is_numeric($request['period'])) {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Sorry Period Should Be a numeric Value']);
-        }
+    //     if (!is_numeric($request['period'])) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry Period Should Be a numeric Value']);
+    //     }
 
-        if (!is_numeric($request['interest'])) {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Sorry Interest Should Be a numeric Value']);
-        }
+    //     if (!is_numeric($request['interest'])) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry Interest Should Be a numeric Value']);
+    //     }
 
-        if (!is_numeric($request['processing'])) {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Sorry Proccessing Fee Should Be a numeric Value']);
-        }
+    //     if (!is_numeric($request['processing'])) {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Sorry Proccessing Fee Should Be a numeric Value']);
+    //     }
 
-        // Installement days 
-        $install_days = intdiv($request['period'],$request['installements']);
+    //     // Installement days 
+    //     $install_days = intdiv($request['period'],$request['installements']);
 
-        //Status
-        $status = 7;
+    //     //Status
+    //     $status = 7;
 
-        $db = DB::table('loanchart')->insert([
-            'loan_id'=>$cate,
-            'loan_amount'=>$request['amount'],
-            'loan_period'=>$request['period'],
-            'interest_rate'=>$request['interest'],
-            'processing_fees'=>$request['processing'],
-            'status'=>$status,
-            'installments'=>$request['installements'],
-            'installement_period'=>$install_days,
-            'created_at'=>date('Y-m-d H:i:s',time()),
+    //     $db = DB::table('loanchart')->insert([
+    //         'loan_id'=>$cate,
+    //         'loan_amount'=>$request['amount'],
+    //         'loan_period'=>$request['period'],
+    //         'interest_rate'=>$request['interest'],
+    //         'processing_fees'=>$request['processing'],
+    //         'status'=>$status,
+    //         'installments'=>$request['installements'],
+    //         'installement_period'=>$install_days,
+    //         'created_at'=>date('Y-m-d H:i:s',time()),
             
-        ]);
+    //     ]);
 
-        if ($db) {
-            # code...
-            return redirect()->back()->with(['Success'=>'Loan Category Saved Successfully']);
-        }else {
-            # code...
-            return redirect()->back()->withErrors(['Error'=>'Loan Category Not Saved Successfully']);
-        }
+    //     if ($db) {
+    //         # code...
+    //         return redirect()->back()->with(['Success'=>'Loan Category Saved Successfully']);
+    //     }else {
+    //         # code...
+    //         return redirect()->back()->withErrors(['Error'=>'Loan Category Not Saved Successfully']);
+    //     }
 
-    }
+    // }
 
-    public static function getSavingSubCatByCatId($cate_id){
-        $db = DB::table('savingsubcategories')
-            ->where('SubCateId','=',$cate_id)
-            ->get();
+    // public static function getSavingSubCatByCatId($cate_id){
+    //     $db = DB::table('savingsubcategories')
+    //         ->where('SubCateId','=',$cate_id)
+    //         ->get();
 
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
     public static function getSavingById($cate_id){
         $db = DB::table('savings')
@@ -527,23 +527,23 @@ class AuthenticationController extends BaseController
     }
 
 
-    public static function getLoanByCatID($cate_id){
-        $db = DB::table('loanchart')
-            ->where('loan_id','=',$cate_id)
-            ->get();
+    // public static function getLoanByCatID($cate_id){
+    //     $db = DB::table('loanchart')
+    //         ->where('loan_id','=',$cate_id)
+    //         ->get();
         
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
-    public static function getLoanByCatID2($cate_id){
-        $db = DB::table('userloans')
-            ->where('ULoan_Id','=',$cate_id)
-            ->get();
+    // public static function getLoanByCatID2($cate_id){
+    //     $db = DB::table('userloans')
+    //         ->where('ULoan_Id','=',$cate_id)
+    //         ->get();
         
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
     public static function approveLoan($loan_id){
         $loan_type = AuthenticationController::getLoanByCatID2($loan_id);
@@ -599,58 +599,58 @@ class AuthenticationController extends BaseController
         }
     }
 
-    public static function denyLoan($loan_id){
-        $loan_type = AuthenticationController::getLoanByCatID2($loan_id);
-        $loanxc = AuthenticationController::getLoanCatID($loan_type[0]['loan_amount']);
-        $i = 3;
-        $db = DB::table('userloans')
-            ->where('ULoan_Id','=',$loan_id)
-            ->update([
-                'approved_at'=>time(),
-                'dueDate'=>time(),
-                'status'=>$i,
-                'approved_by'=>session('user_id'),
-                'updated_at'=>date('Y-m-d H:i:s',time())
-            ]);
+    // public static function denyLoan($loan_id){
+    //     $loan_type = AuthenticationController::getLoanByCatID2($loan_id);
+    //     $loanxc = AuthenticationController::getLoanCatID($loan_type[0]['loan_amount']);
+    //     $i = 3;
+    //     $db = DB::table('userloans')
+    //         ->where('ULoan_Id','=',$loan_id)
+    //         ->update([
+    //             'approved_at'=>time(),
+    //             'dueDate'=>time(),
+    //             'status'=>$i,
+    //             'approved_by'=>session('user_id'),
+    //             'updated_at'=>date('Y-m-d H:i:s',time())
+    //         ]);
 
-        if ($db) {
-            $userxc = AuthenticationController::getUserById($loan_type[0]['user_id']);
-                $ret = SmsController::approvedLoan($userxc[0]['telephone'],'Denied',$loan_type[0]['user_id'],$loan_id,$userxc[0]['name']);
-            return 1;
-        }else {
-            return 0;
-        }
-    }
+    //     if ($db) {
+    //         $userxc = AuthenticationController::getUserById($loan_type[0]['user_id']);
+    //             $ret = SmsController::approvedLoan($userxc[0]['telephone'],'Denied',$loan_type[0]['user_id'],$loan_id,$userxc[0]['name']);
+    //         return 1;
+    //     }else {
+    //         return 0;
+    //     }
+    // }
 
-    public static function PendLoan($loan_id){
-        $loan_type = AuthenticationController::getLoanByCatID($loan_id);
-        $loanxc = AuthenticationController::getLoanCatID($loan_type[0]['loan_amount']);
-        $i = 2;
-        $db = DB::table('userloans')
-            ->where('ULoan_Id','=',$loan_id)
-            ->update([
-                'approved_at'=>time(),
-                'dueDate'=>time(),
-                'status'=>$i,
-                'approved_by'=>session('user_id'),
-                'updated_at'=>date('Y-m-d H:i:s',time())
-            ]);
+    // public static function PendLoan($loan_id){
+    //     $loan_type = AuthenticationController::getLoanByCatID($loan_id);
+    //     $loanxc = AuthenticationController::getLoanCatID($loan_type[0]['loan_amount']);
+    //     $i = 2;
+    //     $db = DB::table('userloans')
+    //         ->where('ULoan_Id','=',$loan_id)
+    //         ->update([
+    //             'approved_at'=>time(),
+    //             'dueDate'=>time(),
+    //             'status'=>$i,
+    //             'approved_by'=>session('user_id'),
+    //             'updated_at'=>date('Y-m-d H:i:s',time())
+    //         ]);
 
-        if ($db) {
-            return 1;
-        }else {
-            return 0;
-        }
-    }
+    //     if ($db) {
+    //         return 1;
+    //     }else {
+    //         return 0;
+    //     }
+    // }
 
-    public static function getLoanCatID($cate_id){
-        $db = DB::table('loanchart')
-            ->where('loan_amount','=',$cate_id)
-            ->get();
+    // public static function getLoanCatID($cate_id){
+    //     $db = DB::table('loanchart')
+    //         ->where('loan_amount','=',$cate_id)
+    //         ->get();
         
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
     public function editUserProfile(Request $request){
         $user = AuthenticationController::getUserById(session('user_id'));
@@ -733,41 +733,41 @@ class AuthenticationController extends BaseController
 
     
 
-    public static function getloanInstalls($user_id){
-        $db = DB::table('loanpaymentsinstallments')
-            ->where('user_id','=',$user_id)
-            ->get();
+    // public static function getloanInstalls($user_id){
+    //     $db = DB::table('loanpaymentsinstallments')
+    //         ->where('user_id','=',$user_id)
+    //         ->get();
 
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
-    public static function getloanInstallsbyloanId($ULoan_Id){
-        $db = DB::table('loanpaymentsinstallments')
-            ->where('ULoan_Id','=',$ULoan_Id)
-            ->get();
+    // public static function getloanInstallsbyloanId($ULoan_Id){
+    //     $db = DB::table('loanpaymentsinstallments')
+    //         ->where('ULoan_Id','=',$ULoan_Id)
+    //         ->get();
 
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
-    public static function getLoanInstallmentById($id){
-        $db = DB::table('loanpaymentsinstallments')
-            ->where('id','=',$id)
-            ->get();
+    // public static function getLoanInstallmentById($id){
+    //     $db = DB::table('loanpaymentsinstallments')
+    //         ->where('id','=',$id)
+    //         ->get();
 
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
-    public static function getLoanId($id){
-        $db = DB::table('userloans')
-            ->where('ULoan_Id','=',$id)
-            ->get();
+    // public static function getLoanId($id){
+    //     $db = DB::table('userloans')
+    //         ->where('ULoan_Id','=',$id)
+    //         ->get();
 
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
     public static function payLoanByDash($i){
         $user = AuthenticationController::getUserById(session('user_id'));
@@ -1023,14 +1023,14 @@ class AuthenticationController extends BaseController
         }
     }
 
-    public static function getRefferals($user_id){
-        $db = DB::table('sysusers')
-            ->where('refferer','=',$user_id)
-            ->get();
+    // public static function getRefferals($user_id){
+    //     $db = DB::table('sysusers')
+    //         ->where('refferer','=',$user_id)
+    //         ->get();
         
-        $dbx = json_decode($db,true);
-        return $dbx;
-    }
+    //     $dbx = json_decode($db,true);
+    //     return $dbx;
+    // }
 
     public static function getReffCommisisons($refferer,$refferal){
         $db = DB::table('transactions')
