@@ -14,7 +14,7 @@ class StudentController extends Controller
     public function index(){
         try {
             $user = User::findOrFail(Auth::id());
-            $students = $user->students;
+            $students = $user->role == 'admin' ? Student::latest()->get(): $user->students()->latest()->get();
             return view('student.index',['students'=>$students,'user'=>$user])->with('page','Students | All');
         } catch (\Throwable $th) {
             //throw $th;
