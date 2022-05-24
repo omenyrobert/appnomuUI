@@ -16,4 +16,8 @@ class Transaction extends Model
     public function transactionable(){
         return $this->morphTo();
     }
+
+    public function paymentable(){
+        return $this->morphTo(__FUNCTION__, 'paymentable_type', 'paymentable_id');
+    }
 }
