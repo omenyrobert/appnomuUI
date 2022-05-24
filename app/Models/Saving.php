@@ -22,4 +22,8 @@ class Saving extends Model
         return $this->belongsTo(SavingSubCategory::class,'SubCateId','SubCateId');
     }
 
+    public function transaction(){
+        return $this->morphOne(Transaction::class,'transactionable');
+    }
+
 }

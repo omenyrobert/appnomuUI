@@ -52,6 +52,7 @@ class SavingCategoryController extends Controller
                 $category = new SavingCategory();
                 $category->lowerlimit = $request->lower_limit;
                 $category->upperlimit = $request->upper_limit;
+                $category->status = 'Active';
                 $category->cate_id = 'CAT-'.rand(0001,9999);
                 $category->save();
                 if($category){

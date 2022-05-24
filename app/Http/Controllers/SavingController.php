@@ -16,6 +16,7 @@ class SavingController extends Controller
             $savings = $user->role == 'admin' ? Saving::latest()->paginate(10)
                 : $user->savings()->latest()->paginate(10);
             $categories = SavingSubCategory::with('savingCategory')->get();
+            // dd($categories);
             return view('savings.index',
                 ['savings'=>$savings,
                 'user'=>$user,

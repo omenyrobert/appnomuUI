@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\traits\SMSTrait;
-use App\Http\traits\RepaymentsTrait;
+use App\Http\Traits\SMSTrait;
+use App\Http\Traits\RepaymentsTrait;
 use App\Models\SomaLoan;
 use App\Models\User;
 use App\Models\District;

@@ -10,7 +10,7 @@
                   </div>
                 </div>
                 <div class="card-body ">
-                  <form method="post" action="/save_loan_category" class="form-horizontal">
+                  <form method="post" action="{{route('loan.categories.store')}}" class="form-horizontal">
                     @csrf
                     <div class="row">
                       <label class="col-sm-4 col-form-label">Loan Amount</label>

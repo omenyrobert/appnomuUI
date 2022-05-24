@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SavingSubCategory extends Model
 {
     use HasFactory;
-    protected $table = 'savingcategories';
+    protected $table = 'savingsubcategories';
 
     public function savingCategory(){
         return $this->belongsTo(SavingCategory::class,'cate_id','cate_id');

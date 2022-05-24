@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
-use App\Http\Controllers\AuthenticationController as Auth;
+// use App\Http\Controllers\AuthenticationController as Auth;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
@@ -12,28 +12,28 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmMail;
 use App\Http\Controllers\SmsController;
+use App\Models\SavingCategory;
+use App\Models\SavingSubCategory;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\AccountsOperationsTrait;
+use App\Models\Repayment;
 
 class FlutterwaveController extends BaseController
 {
+    use AccountsOperationsTrait;
     //
-    public function initialize()
+    public function initialize(Request $request)
     {
-        $user = Auth::getUserById(session('user_id'));
+        $user = User::find(Auth::id());
         //Getting the saving category
-        $cate = Auth::getSavingSubCatByCatId(request()->category);
+        $category = SavingCategory::find((int)$request->category);
+        if($category){
+            if($request->amount < $category->savingCategory->lowerlimit || $request->amount > $category->savingCategory->upperlimit ){
 
-        $num = sizeof($cate);
-
-        if ($num<1) {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'Unsupported Saving Category Choose Another ']);
-        }
-
-        $real_cate = Auth::getSavingCatByCatId($cate[0]['cate_id']);
-
-        if ((request()->amount < $real_cate[0]['lowerlimit']) || (request()->amount > $real_cate[0]['upperlimit'])  ) {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'Amount to be saved doesnot fall under this category choose supported category...']);
+                return redirect()->back()->withErrors(['Errors'=>'Amount to be saved doesnot fall under this category choose supported category...']);
+            }
         }
         //This generates a payment reference
         $reference =Flutterwave::generateReference().'_sv';
@@ -41,15 +41,15 @@ class FlutterwaveController extends BaseController
         // Enter the details of the payment
         $data = [
             'payment_options' => 'card,banktransfer,mobile_money_ug',
-            'amount' => request()->amount,
-            'email' => $user[0]['email'],
+            'amount' => $request->amount,
+            'email' => $user->email,
             'tx_ref' => $reference,
             'currency' => "UGX",
             'redirect_url' => route('callback'),
             'customer' => [
-                'email' => $user[0]['email'],
-                "phone_number" => $user[0]['telephone'],
-                "name" => $user[0]['name']
+                'email' => $user->email,
+                "phone_number" => $user->telephone,
+                "name" => $user->name
             ],
 
             "customizations" => [
@@ -61,34 +61,35 @@ class FlutterwaveController extends BaseController
         if ($payment['status'] !== 'success') {
             return redirect()->back()->withErrors(['Errors'=>'Transaction Failed To Start']);
         }elseif ($payment['status'] == 'success') {
+            $this->storeSaving($request,$reference);
             # code...
-            $status = '06';
-            $op_id = 'Save-'.rand(11111,99999);
-            $db_transactions = DB::table('transactions')->insert([
-                'user_id'=>session('user_id'),
-                'Trans_id'=>$reference,
-                'amount'=>request()->amount,
-                'operation'=>'Saving',
-                'op_id'=>$op_id,
-                'email'=>$user[0]['email'],
-                'name'=>$user[0]['name'],
-                'status'=>$status,
-                'created_at'=>date('Y-m-d H:i:s',time())
-            ]);
-            $status2 = 6;
-            $processing = 0;
-            $db_saving = DB::table('savings')->insert([
-                'SubCateId'=>request()->category,
-                'saving_id'=>$op_id,
-                'user_id'=>session('user_id'),
-                'amount'=>request()->amount,
-                'status'=>$status2,
-                'Interest'=>(request()->amount)*($cate[0]['Interest']/100),
-                'duedate'=>time(),
-                'savingdate'=>time(),
-                'processing_fees'=>$processing,
-                'created_at'=> date('Y-m-d H:i:s',time())
-            ]);
+            // $status = '06';
+            // $op_id = 'Save-'.rand(11111,99999);
+            // $db_transactions = DB::table('transactions')->insert([
+            //     'user_id'=>$user->user_id,
+            //     'Trans_id'=>$reference,
+            //     'amount'=>request()->amount,
+            //     'operation'=>'Saving',
+            //     'op_id'=>$op_id,
+            //     'email'=>$user->email,
+            //     'name'=>$user->name,
+            //     'status'=>$status,
+            //     'created_at'=>Carbon::now()
+            // ]);
+            // $status2 = 6;
+            // $processing = 0;
+            // $db_saving = DB::table('savings')->insert([
+            //     'SubCateId'=>request()->category,
+            //     'saving_id'=>$op_id,
+            //     'user_id'=>session('user_id'),
+            //     'amount'=>request()->amount,
+            //     'status'=>$status2,
+            //     'Interest'=>($request->amount)*($category->Interest/100),
+            //     'duedate'=>time(),
+            //     'savingdate'=>time(),
+            //     'processing_fees'=>$processing,
+            //     'created_at'=> Carbon::now()
+            // ]);
 
         }
 
@@ -281,22 +282,18 @@ class FlutterwaveController extends BaseController
 
     }
 
-    public static function pay_loan($i)
+    public static function pay_loan($id)
     {
-        $user = Auth::getUserById(session('user_id'));
-        $cate = Auth::getLoanInstallmentById($i);
-        $lons = Auth::getLoanId($cate[0]['ULoan_Id']);
-        $lonx = Auth::getLoanCatID($lons[0]['loan_amount']);
+        $user = User::find(Auth::id());
+        $installment = Repayment::find($id); 
+        $loan =  $installment->repaymentable;
+        $category = $loan->loanCategory;
 
-        $num = sizeof($cate);
+        
 
-        if ($num<1) {
-            return 1;
-        }
-
-        if ($cate[0]['status']!=6) {
-            return 2;
-        }
+        // if ($cate[0]['status']!=6) {
+        //     return 2;
+        // }
 
         //This generates a payment reference
         $reference =Flutterwave::generateReference().'_ln';
@@ -304,15 +301,15 @@ class FlutterwaveController extends BaseController
         // Enter the details of the payment
         $data = [
             'payment_options' => 'card,banktransfer,mobile_money_ug',
-            'amount' => $cate[0]['Amount_Paid']+(($lonx[0]['interest_rate']/100)*$cate[0]['Amount_Paid'])+$lonx[0]['processing_fees'],
-            'email' => $user[0]['email'],
+            'amount' => $installment->amount,
+            'email' => $user->email,
             'tx_ref' => $reference,
             'currency' => "UGX",
             'redirect_url' => route('callback_loans'),
             'customer' => [
-                'email' => $user[0]['email'],
-                "phone_number" => $user[0]['telephone'],
-                "name" => $user[0]['name']
+                'email' => $user->email,
+                "phone_number" => $user->telephone,
+                "name" => $user->name
             ],
 
             "customizations" => [
@@ -320,25 +317,15 @@ class FlutterwaveController extends BaseController
             ]
         ];
 
+
+
         $payment = Flutterwave::initializePayment($data);
         if ($payment['status'] !== 'success') {
             return 3;
         }elseif ($payment['status'] == 'success') {
-            # code...
-            $status = '06';
-            $op_id = 'ln-'.rand(11111,99999);
-            $db_transactions = DB::table('transactions')->insert([
-                'user_id'=>session('user_id'),
-                'Trans_id'=>$reference,
-                'amount'=>$cate[0]['Amount_Paid']+(($lonx[0]['interest_rate']/100)*$cate[0]['Amount_Paid'])+$lonx[0]['processing_fees'],
-                'operation'=>'Loan Installement',
-                'op_id'=>$i,
-                'email'=>$user[0]['email'],
-                'name'=>$user[0]['name'],
-                'status'=>$status,
-                'created_at'=>date('Y-m-d H:i:s',time())
-            ]);
-
+            $operation ='Loan Installment';
+            $this->storeTransaction($operation,$installment->id,$reference);
+           
         }
         return $payment['data']['link'];
     }
@@ -635,18 +622,21 @@ class FlutterwaveController extends BaseController
             'amount'=>'required'
         ]);
 
-        $user = Auth::getUserById(session('user_id'));
-        $user_acc = Auth::getAccount(session('user_id'));
+        $user = User::findOrFail(Auth::id());
+        $user_acc = $user->account;
 
-        if (sizeof($user)<1) {
-            return redirect()->back()->withErrors(['Errors'=>'User Account Error Contact Administration']);
-        }
+        // if (sizeof($user)<1) {
+        //     return redirect()->back()->withErrors(['Errors'=>'User Account Error Contact Administration']);
+        // }
 
-        if (sizeof($user_acc)<1) {
-            return redirect()->back()->withErrors(['Errors'=>'User Account Error Contact Administration']);
-        }
+        // if (sizeof($user_acc)<1) {
+        //     return redirect()->back()->withErrors(['Errors'=>'User Account Error Contact Administration']);
+        // }
 
-        if ($user[0]['sms_verified_at']==null) {
+        // todo:allow withdraws on savings that are ready for wihdrawall
+        // todo:connect this data to account after transaction 
+
+        if ($user->sms_verified_at==null) {
             return redirect()->route('profile')->withErrors(['Errors'=>'No Verified Phone Number Has Been Found Please Verify Your Phone Number Before You Can Withdraw Your Money']);
         }
 
@@ -678,12 +668,12 @@ class FlutterwaveController extends BaseController
 
         $data = [
             "account_bank" => "MPS",
-            "account_number" => $user[0]['telephone'],
+            "account_number" => $user->telephone,
             "amount" => $request['amount'],
             "narration" => "Appnomu Withdraws",
             "currency" => "UGX",
             "reference" => $reference,
-            "beneficiary_name" => $user[0]['name']
+            "beneficiary_name" => $user->name
         ];
         
         $transfer = Flutterwave::transfers()->initiate($data);
@@ -693,49 +683,9 @@ class FlutterwaveController extends BaseController
         } elseif ($transfer['status']=='success') {
             $status = '06';
             $op_id = 'Withdraws-'.rand(11111,99999);
-            $db_transactions = DB::table('transactions')->insert([
-                'user_id'=>session('user_id'),
-                'Trans_id'=>$reference,
-                'amount'=>$request['amount'],
-                'operation'=>'Withdraw',
-                'op_id'=>$op_id,
-                'email'=>$user[0]['email'],
-                'name'=>$user[0]['name'],
-                'status'=>$status,
-                'created_at'=>date('Y-m-d H:i:s',time()),
-                'FLW_Id'=>$transfer['data']['id'],
-                'FLW_txref'=>$transfer['data']['reference'],
-                'mode'=>$transfer['data']['bank_name'],
-                'flw_charge'=>$transfer['data']['fee']
-            ]);
+            $this->storeWithdraw($request,$reference,$transfer);
 
-            $db_withdraws = DB::table('withdraws')->insert([
-                'user_id'=>session('user_id'),
-                'trans_id'=>$reference,
-                'accounts_number'=>$transfer['data']['account_number'],
-                'Currency'=>$transfer['data']['currency'],
-                'amount'=>$transfer['data']['amount'],
-                'withdraw_from'=>$request['account'],
-                'status'=>$status,
-                'mode'=>$transfer['data']['amount'],
-                'created_at'=>date('Y-m-d H:i:s',time())
-            ]);
-
-            if ($request['account']=='savings') {
-                $db_acc = DB::table('user_account')
-                    ->where('user_id','=',session('user_id'))
-                    ->update([
-                        'available_balance'=> $user_acc[0]['available_balance'] - ($transfer['data']['amount'] + $transfer['data']['fee']),
-                        'Amount_Withdrawn'=>$user_acc[0]['Amount_Withdrawn'] + ($transfer['data']['amount'] + $transfer['data']['fee'])
-                    ]);
-            } elseif ($request['account']=='loans') {
-                $db_acc = DB::table('user_account')
-                    ->where('user_id','=',session('user_id'))
-                    ->update([
-                        'available_balance'=> $user_acc[0]['Loan_Balance'] - ($transfer['data']['amount'] + $transfer['data']['fee']),
-                        'Amount_Withdrawn'=>$user_acc[0]['Amount_Withdrawn'] + ($transfer['data']['amount'] + $transfer['data']['fee'])
-                    ]);
-            }
+           
             
             return redirect()->back()->with('Success','Withdraw Initiated Successfully');
 

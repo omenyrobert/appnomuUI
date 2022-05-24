@@ -22,6 +22,7 @@ class SavingSubCategoryController extends Controller
             if($user && $user->role== 'admin'){
                 $main_categories = SavingCategory::all();
                 $categories = SavingSubCategory::oldest()->paginate(10);
+                dd($categories);
                 return view('categories.savings.index',['main_categories'=>$main_categories,'categories'=>$categories,'user'=>$user])->with('page','Saving | Sub |Categories');
             }
             return redirect()->route('login');
