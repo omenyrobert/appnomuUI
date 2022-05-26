@@ -11,6 +11,7 @@ use App\Http\Controllers\BusinessLoanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoanCategoryController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ReloadlyController;
 use App\Http\Controllers\SavingCategoryController;
 use App\Http\Controllers\SavingController;
 use App\Http\Controllers\WithdrawController;
@@ -537,3 +538,6 @@ Route::get('savings/index',[SavingController::class,'index'])->name('savings.ind
 Route::get('savings/categories/index',[SavingCategoryController::class,'index'])->name('savings.category.index');
 Route::get('savings/categories/edit/{id}',[SavingCategoryController::class,'update'])->name('savings.category.update');
 Route::post('savings/categories/store',[SavingCategoryController::class,'store'])->name('savings.category.store');
+
+//reloadly routes
+Route::get('payments/dashboard',[ReloadlyController::class,'playground'])->name('reloadly.playground');

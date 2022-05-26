@@ -86,6 +86,25 @@ class AirtimeController extends Controller
             if($user){
                 $rate = AirtimeRate::find($id);
                 $amount = $request->amount + $rate->bonus;
+                $operator = $request->operator;
+                // $reciepient
+
+
+                // '{       
+                //     "operatorId":"341",     
+                //     "amount":"10",      
+                //     "useLocalAmount": false,        
+                //     "customIdentifier": "This is example identifier 092",       
+                //     "recipientPhone": {     
+                //         "countryCode": "NG",        
+                //         "number": "08147658721"     
+                //     },      
+                //     "senderPhone": {        
+                //         "countryCode": "CA",        
+                //         "number": "1231231231"      
+                //     }
+                //         }'
+                        //call reloadly
                
                 return redirect()->back();
 

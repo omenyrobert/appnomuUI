@@ -82,6 +82,10 @@ class User extends Authenticatable
         return $this->belongsTo(District::class);
     }
 
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+
     public function repayments(){
         return $this->hasMany(Repayment::class);
     }
@@ -106,6 +110,9 @@ class User extends Authenticatable
         return $this->hasMany(Transaction::class);
     }
 
+    public function airtimes(){
+        return $this->hasMany(AirTime::class);
+    }
 
 
 }

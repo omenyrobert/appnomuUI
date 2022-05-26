@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAirtimeRatesTable extends Migration
+class CreateCountriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateAirtimeRatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('airtime_rates', function (Blueprint $table) {
+        Schema::create('countries', function (Blueprint $table) {
             $table->id();
-            $table->integer('lower_limit')->unsigned();
-            $table->integer('upper_limit')->unsigned();
-            $table->integer('bonus')->unsigned();
-            $table->enum('status',['Active','InActive'])->default('Active');
+            $table->string('ISO');
+            $table->string('code');
+            $table->string('flag_url');
+            $table->string('currency');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateAirtimeRatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('airtime_rates');
+        Schema::dropIfExists('countries');
     }
 }
