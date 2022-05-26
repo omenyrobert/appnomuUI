@@ -109,7 +109,7 @@ trait ReloadlyTrait{
         return $response;
     }
 
-    public function getCountries(){
+    public function getTopupCountries(){
 		$token = $this->getAccessToken('topup');
         $curl = curl_init();
 
@@ -135,7 +135,7 @@ trait ReloadlyTrait{
     }
 
 
-    public function getOperators(){ 
+    public function getTopupOperators(){ 
 		$token = $this->getAccessToken('topup');
         $curl = curl_init();
 
@@ -160,7 +160,7 @@ trait ReloadlyTrait{
         return $response;
     }
 
-    public function getOperator($id){
+    public function getTopupOperator($id){
 		$token = $this->getAccessToken('topup');
         $curl = curl_init();        
 
@@ -185,7 +185,7 @@ trait ReloadlyTrait{
         return $response;
     }
 
-    public function autoDetectOperator($phone,$iso){
+    public function autoDetectTopupOperator($phone,$iso){
 		$token = $this->getAccessToken('topup');
         $curl = curl_init();
 
@@ -210,7 +210,7 @@ trait ReloadlyTrait{
         return $response;
     }
 
-    public function getOperatorByIso($iso){
+    public function getTopupOperatorByIso($iso){
 		$token = $this->getAccessToken('topup');
         $curl = curl_init();
 
@@ -237,7 +237,7 @@ trait ReloadlyTrait{
 
     }
 
-    public function foreignExchangeRate($id,$amount){
+    public function TopupforeignExchangeRate($id,$amount){
 		$token = $this->getAccessToken('topup');
         $curl = curl_init();
 
@@ -267,7 +267,7 @@ trait ReloadlyTrait{
         return $response;
     }
 
-    public function getOperatorCommissions($id){
+    public function getTopupOperatorCommissions($id){
 		$token = $this->getAccessToken('topup');
         $curl = curl_init();
 
@@ -292,7 +292,7 @@ trait ReloadlyTrait{
         return $response;
     }
 
-    public function getPromotions(){
+    public function getTopPromotions(){
 		$token = $this->getAccessToken('topup');
         $curl = curl_init();
 
@@ -317,7 +317,7 @@ trait ReloadlyTrait{
         return $response;
     }
 
-    public function getPromotion($id){
+    public function getTopupPromotion($id){
 		$token = $this->getAccessToken('topup');
 
         $curl = curl_init();
@@ -343,7 +343,7 @@ trait ReloadlyTrait{
         return $response;
     }
 
-    public function getOperatorPromotions($id){
+    public function getTopupOperatorPromotions($id){
 		$token = $this->getAccessToken('topup');
 
         $curl = curl_init();
