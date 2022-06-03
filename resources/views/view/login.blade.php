@@ -155,6 +155,15 @@
           <label>Email</label>
           <input type="email" class="form-control" name"email"placeholder="Enter Email" required/>
           <br/>
+          <label>Nationality</label>
+            <select name="country" id="country">
+              <option value="select">select Nationality</option>
+              @foreach($countries as $country)
+                <option value="{{country->ISO}}">{{$country->name}}</option>
+              @endforeach
+            </select>
+          <input type="email" class="form-control" name"email"placeholder="Enter Email" required/>
+          <br/>
           <label>refferer</label>
           <input type="text" class="form-control" name"refferer" placeholder="Enter refferers code" />
           <br/>

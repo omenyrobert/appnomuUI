@@ -15,6 +15,7 @@ use App\Http\Controllers\SavingCategoryController;
 use App\Http\Controllers\SavingController;
 use App\Http\Controllers\WithdrawController;
 use App\Models\BusinessLoan;
+use App\Models\Country;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +39,8 @@ Route::get('/dashboard/admin',[HomeController::class,'adminDashboard'])->name('d
 Route::get('/dashboard/client',[HomeController::class,'clientDashboard'])->name('dashboard.client');
 Route::get('/login', function () {
     view()->share('page','Login');
-    return view('view.login');
+    $countries = Country::all();
+    return view('view.login',['countries'=>$countries]);
 })->name('login');
 
 Route::get('/register', function () {
