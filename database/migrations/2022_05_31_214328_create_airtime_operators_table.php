@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCountriesTable extends Migration
+class CreateAirtimeOperatorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class CreateCountriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('countries', function (Blueprint $table) {
+        Schema::create('airtime_operators', function (Blueprint $table) {
             $table->id();
-            $table->string('ISO')->unique();
             $table->string('name');
-            $table->string('flag_url');
-            $table->string('currency_name');
-            $table->string('currency_code');
+            $table->string('country_id');
+            $table->string('operator_code');
+            $table->string('logo_url');
+            $table->foreign('country_id')->references('ISO')->on('countries')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +33,6 @@ class CreateCountriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('countries');
+        Schema::dropIfExists('airtime_operators');
     }
 }

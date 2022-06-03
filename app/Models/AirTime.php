@@ -17,7 +17,7 @@ class AirTime extends Model
         return $this->belongsTo(AirtimeRate::class,'air_time_rate_id','id');
     }
 
-    public function transaction(){
+    public function payment(){
         return $this->morphOne(Transaction::class,'paymentable');
     }
 }

@@ -18,4 +18,8 @@ class Withdraw extends Model
     public function account(){
         return $this->belongsTo(Account::class);
     }
+
+    public function transaction(){
+        return $this->morphOne(Transaction::class,'transactionable');
+    }
 }

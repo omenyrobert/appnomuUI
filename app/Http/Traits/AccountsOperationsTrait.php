@@ -4,8 +4,9 @@
 namespace App\Http\Traits;
 
 use App\Models\Loan;
+use App\Models\Payment;
 use App\Models\Repayment;
-use App\Models\Saving;
+use App\Models\Savingg;
 use App\Models\SavingSubCategory;
 use App\Models\Transaction;
 use App\Models\User;
@@ -69,7 +70,7 @@ trait AccountsOperationsTrait{
         try {
             $user = User::findOrFail(Auth::id());
             $category = SavingSubCategory::find((int) $request->category);
-            $saving = new Saving();
+            $saving = new Savingg();
             $saving->user()->associate($user);
             $saving->account()->associate($user->account);
             $saving->savingSubCategory()->associate($category);
@@ -115,8 +116,8 @@ trait AccountsOperationsTrait{
         $transaction = new Transaction();
         switch ($type) {
             case 'Saving':
-                $operation = Saving::findOrFail($id);
-                $transaction->saving()->associate($operation);
+                $operation = Savingg::findOrFail($id);
+                $transaction->savingg()->associate($operation);
                 break;                
             case 'Loan Installment':
                 $operation = Repayment::findOrFail($id);
@@ -126,13 +127,17 @@ trait AccountsOperationsTrait{
                 $operation = Withdraw::findOrFail($id);
                 $transaction->withdraw()->associate($operation);
                 break;
+            case 'Payment':
+                $operation = Payment::findOrFail($id);
+                $transaction->payment()->associate($operation);
+                break;
         }
 
         $transaction->user()->associate($operation->user);   
         $transaction->operation = $type;
         $transaction->amount = $operation->amount;
         $transaction->Trans_id = $refference;
-        $transaction->satus = 'Successful';
+        $transaction->status = 'Successful';
         if($details){
             $transaction->FLW_Id = $details->data->id;
             $transaction->FLW_txref = $details->data->reference;

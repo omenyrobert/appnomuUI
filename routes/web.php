@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AirtimeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\LoanController;
@@ -540,4 +541,16 @@ Route::get('savings/categories/edit/{id}',[SavingCategoryController::class,'upda
 Route::post('savings/categories/store',[SavingCategoryController::class,'store'])->name('savings.category.store');
 
 //reloadly routes
-Route::get('payments/dashboard',[ReloadlyController::class,'playground'])->name('reloadly.playground');
+Route::get('payments/playground',[ReloadlyController::class,'playground'])->name('reloadly.playground');
+Route::get('payments/dashboard',[ReloadlyController::class,'dashboard'])->name('reloadly.dashboard');
+
+
+//airtime routes
+Route::get('airtime/index',[AirtimeController::class,'index'])->name('airtime.index');
+Route::post('airtime/buy/{id?}',[AirtimeController::class,'buyAirtime'])->name('airtime.buy');
+Route::post('airtime/rate/store',[AirtimeController::class,'storeRate'])->name('airtime.rate.store');
+Route::put('airtime/rate/update',[AirtimeController::class,'updateRate'])->name('airtime.rate.update');
+Route::get('airtime/rate/index',[AirtimeController::class,'indexRates'])->name('airtime.rate.index');
+Route::get('airtime/transactions',[AirtimeController::class,'airtimeTransactions'])->name('airtime.transactions');
+Route::get('airtime/operators/{iso}',[AirtimeController::class,'getCountryOperators'])->name('airtime.iso.operators');
+Route::get('airtime/get/rate/{id}',[AirtimeController::class,'getRate'])->name('airtime.get.rate');

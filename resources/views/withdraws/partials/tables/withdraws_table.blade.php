@@ -12,7 +12,7 @@
                   @foreach($withdraws as $withdraw)
                 <tr>
                   <td>{{$withdraw->created_at}}</td>
-                  <td>{{$withdraw->transaction->id}}</td>
+                  <td>{{$withdraw->transaction ? $withdraw->transaction->id : ""}}</td>
                   <td>{{$withdraw->user}}</td>
                   <td>{{$withdraw->amount}}</td>
                   <td>{{$withdraw->fee}}</td>

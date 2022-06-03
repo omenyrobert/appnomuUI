@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Saving;
+use App\Models\Savingg;
 use App\Models\SavingSubCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class SavingController extends Controller
     public function index(){
         $user = User::find(Auth::id());
         if($user){
-            $savings = $user->role == 'admin' ? Saving::latest()->paginate(10)
+            $savings = $user->role == 'admin' ? Savingg::latest()->paginate(10)
                 : $user->savings()->latest()->paginate(10);
             $categories = SavingSubCategory::with('savingCategory')->get();
             // dd($categories);
@@ -30,7 +30,7 @@ class SavingController extends Controller
     public function create(){
         $user = User::find(Auth::id());
         if($user){
-            $savings = $user->role == 'admin' ? Saving::latest()->paginate(10)
+            $savings = $user->role == 'admin' ? Savingg::latest()->paginate(10)
                 : $user->savings()->latest()->paginate(10);
             return view('savings.index')->with('page','All | Savings');
         }

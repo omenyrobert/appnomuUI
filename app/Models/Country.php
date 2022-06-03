@@ -12,4 +12,8 @@ class Country extends Model
     public function users(){
         return $this->hasMany(User::class);
     }
+
+    public function operators(){
+        return $this->hasMany(AirtimeOperator::class,'country_id','ISO');
+    }
 }

@@ -2,22 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Traits\ReloadlyTrait;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Traits\AirtimeTrait;
+use App\Http\Traits\UtilityTrait;
 use Illuminate\Support\Facades\Auth;
 
 class ReloadlyController extends Controller
 {
-    use ReloadlyTrait;
+    use AirtimeTrait, UtilityTrait;
     public function buyAirtime(){
         
     }
     public function playground(){
         $user = User::find(Auth::id());
-        $response = $this->getAccessToken('topup');
+        $response = $this->getTopupOperatorByIso('UG');
+        $response = json_decode($response);
         dd($response);
-        return view('payments.dashboards.index',['response'=>$response,'user'=>$user]);
+        return view('payments.dashboards.client_dashboard',['response'=>$response,'user'=>$user]);
 
+    }
+
+    public function dashboard(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                if($user->role == 'admin'){
+                    
+                    return view('payments.dashboards.index');
+                }
+                return redirect()->back()->withErrors('Error','UnAuthorised!');
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function clientDashboard(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $airtime_providers = $this->getTopupOperators();
+                $elctricity_providers = $this->getUtilityBillers();
+                return view('payments.dashboards.client_dashboard')->with('page','Airtime | Utilities');
+            }
+            return redirect()->route('login');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

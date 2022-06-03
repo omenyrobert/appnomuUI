@@ -15,6 +15,6 @@ class SavingCategory extends Model
     }
 
     public function savings(){
-        return $this->hasManyThrough(Save::class,SavingSubCategory::class);
+        return $this->hasManyThrough(Savingg::class,SavingSubCategory::class);
     }
 }
