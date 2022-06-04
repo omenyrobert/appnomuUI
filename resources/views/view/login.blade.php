@@ -16,7 +16,7 @@
       content="MaterialPro is powerful and clean admin dashboard template, inpired from Google's Material Design"
     />
     <meta name="robots" content="noindex,nofollow" />
-    <title>Appnomu Saving and loan</title>
+    <title>Appnomu Savings and loans</title>
     <link rel="canonical" href="https://www.wrappixel.com/templates/materialpro/"/>
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="https://demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/assets/images/favicon.png"/>
@@ -148,21 +148,24 @@
           <br/>
           <label>Full Names</label>
           <input type="text" class="form-control" name="name" placeholder="Enter your Full Names" required/>
+          <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>Phone</label>
           <input type="text" class="form-control" name="telephone" placeholder="Enter Phone Number" required/>
+          <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>Email</label>
           <input type="email" class="form-control" name"email"placeholder="Enter Email" required/>
+          <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>Nationality</label>
-            <select name="country" id="country">
+            <select name="country" id="country" class="form-select" aria-label="Default select example" >
               <option value="select">select Nationality</option>
               @foreach($countries as $country)
-                <option value="{{country->ISO}}">{{$country->name}}</option>
+                <option value="{{$country->ISO}}">{{$country->name}}</option>
               @endforeach
             </select>
-          <input type="email" class="form-control" name"email"placeholder="Enter Email" required/>
+            <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>refferer</label>
           <input type="text" class="form-control" name"refferer" placeholder="Enter refferers code" />

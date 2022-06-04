@@ -11,7 +11,10 @@ use App\Models\LoanPayment;
 use App\Models\Repayment;
 use App\Models\Save;
 use App\Models\User;
+use App\Models\Withdraw;
 use Carbon\Carbon;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\Command;
 
 class RefactorStructure extends Command
@@ -95,8 +98,42 @@ class RefactorStructure extends Command
             $this->error($res);
         }
 
-
+        $this->reStructureWithdrawsTable();
         return 0;
+    }
+
+    private function reStructureWithdrawsTable(){
+        $this->info('fetch all withdraws');
+        $withdraws = Withdraw::all();
+        $this->info('checking each withdraw');
+        foreach($withdraws as $withdraw){
+            $this->info("checking withdraw $withdraw->id");
+            $user = User::where('user_id',$withdraw->Uuser_id)->first();
+            if($user){
+                $withdraw->user()->associate($user);
+                switch($withdraw->status){
+                    case '07':
+                        $withdraw->status = '';
+                        break;
+                    case '06':
+                        $withdraw->status = '';
+                        break;
+                    case '05':
+                        $withdraw->status = '';
+                        break;
+                }
+                $withdraw->save(); 
+                break;
+            }
+            $this->info("withdraw $withdraw->id has no registered user");
+            $this->error("deleting withdraw $withdraw->id");
+            $withdraw->delete();
+        }
+        Schema::table('withdraws', function (Blueprint $table) {
+            $this->info('trimming withdraws table');
+            $table->dropColumn('Uuser_id');
+            $table->dropColumn('trans_id');
+        });
     }
 
     private function updateIdentifications()

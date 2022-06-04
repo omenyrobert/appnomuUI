@@ -19,11 +19,45 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Traits\AccountsOperationsTrait;
 use App\Models\Repayment;
+use App\Models\Withdraw;
+use FlutterwaveTrait;
 
 class FlutterwaveController extends BaseController
 {
-    use AccountsOperationsTrait;
+    use AccountsOperationsTrait, FlutterwaveTrait;
     //
+    public function makeWithdraw(Request $request){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $withdraw = new Withdraw();
+                $withdraw->withdraw_from = $request->source;
+                $withdraw->user()->associate($user);
+                $withdraw->amount = $request->amount;
+                $withdraw->status = 'Processing';
+                if($request->chk_bank)
+                $withdraw->account_number = $request->chk_num ? $withdraw->user->telephone :$request->account;
+                $withdraw->currency = $request->currency;
+                $withdraw->save();
+                $reference =Flutterwave::generateReference().'_wd';
+                $trans_details = [
+                    'account_bank'=>'',
+                    'account_number'=> $withdraw->account_number,
+                    'amount'=>$withdraw->amount,
+                    "narration"=> "UGX momo ",
+                    "currency"=> $withdraw->currency,
+                    "reference"=> $reference,
+                    // "beneficiary_name": $beneficiary
+
+
+                ];
+                $response = $this->makeTransfer($trans_details);
+            }
+            return redirect()->route('login')->withErrors('Error','Unauthorized. You must login to perform this operation');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
     public function initialize(Request $request)
     {
         $user = User::find(Auth::id());

@@ -14,7 +14,7 @@ class AddPaymentableColumnsToTransactionsTable extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->morphs('paymentable');
+            $table->morphs('transactionable');
         });
     }
 
