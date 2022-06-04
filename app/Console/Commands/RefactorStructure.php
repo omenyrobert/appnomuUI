@@ -9,7 +9,7 @@ use App\Models\Loan;
 use App\Models\LoanCategory;
 use App\Models\LoanPayment;
 use App\Models\Repayment;
-use App\Models\Save;
+use App\Models\Savingg;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -204,7 +204,7 @@ class RefactorStructure extends Command
 
     private function updateSavings(){
         try {
-            $savings = Save::all();
+            $savings = Savingg::all();
             foreach($savings as $saving){
                 $user = User::where('user_id',$saving->Uuser_id)->first();
                 if ($user) {
