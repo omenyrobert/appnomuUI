@@ -159,7 +159,7 @@
             <select name="country" id="country">
               <option value="select">select Nationality</option>
               @foreach($countries as $country)
-                <option value="{{country->ISO}}">{{$country->name}}</option>
+                <option value="{{$country->ISO}}">{{$country->name}}</option>
               @endforeach
             </select>
           <input type="email" class="form-control" name"email"placeholder="Enter Email" required/>

@@ -130,7 +130,7 @@ class BusinessLoanController extends Controller
     public function create(){
         $user = User::findOrFail(Auth::id());
         $businesses = $user->businesses()->latest()->get();
-        return view('business_loans.create',['businesses'=>$businesses])->with('page','Business Loan | Create');
+        return view('business_loans.create',['businesses'=>$businesses,'user'=>$user])->with('page','Business Loan | Create');
     }
 
     public function requestLoan($id=null){
