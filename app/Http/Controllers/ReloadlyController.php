@@ -16,9 +16,10 @@ class ReloadlyController extends Controller
     }
     public function playground(){
         $user = User::find(Auth::id());
-        $response = $this->getTopupOperatorByIso('UG');
-        $response = json_decode($response);
-        dd($response);
+        $response = $this->getCountryCodes();
+        // $response = json_encode($response);
+        
+        dd($response['AN']);
         return view('payments.dashboards.client_dashboard',['response'=>$response,'user'=>$user]);
 
     }

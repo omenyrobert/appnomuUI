@@ -126,7 +126,7 @@
       <div class="login-div">
         <h4 class="text-black signin-text"> SignIn Now To Get Yourself A Loan</h4>
         <br/>
-        <form class="foom" method="post" action="{{route('user.login')}}">
+        <form id="form-login" class="foom" method="post" action="{{route('user.login')}}">
         @csrf
           <label>Email</label>
           <input type="email" name="email"class="form-control" placeholder="Enter Email" required/>
@@ -139,12 +139,12 @@
           <div class="login-bottom">
             <h6><input type="checkbox"/> Remember me</h6>&nbsp;&nbsp;&nbsp;<h6> Forgot Password</h6>
             </div>
-            <a type="button" href="#form-signup"class="form-control text-black fw-bold" style="background-color: #ffa500;">Register</a>
+            <a type="button" id="btn-register" class="form-control text-black fw-bold" style="background-color: #ffa500;">Register</a>
         </form>
         <br/>
           <br/>
           <br/>
-        <form id="form-signup"class="foom"  method="post" action="{{route('user.register')}}">
+        <form id="form-signup" class="foom"  method="post" action="{{route('user.register')}}" hidden>
         @csrf
           <h4 class="text-black"> SignUp</h4>
           <br/>
@@ -212,5 +212,10 @@
     <script src="https://demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/dist/js/pages/dashboards/dashboard1.js"></script>
   </body>
 
-<!-- Mirrored from demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/html/material/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 24 Apr 2022 10:57:52 GMT -->
+  <script>
+    $('#btn-register').on('click',function(e){
+      $('#form-signup').prop('hidden',false);
+      $('#form-login').prop('hidden',true);
+    });
+  </script>
 </html>

@@ -20,6 +20,7 @@ class CreateCountriesTable extends Migration
             $table->string('flag_url');
             $table->string('currency_name');
             $table->string('currency_code');
+            $table->string('country_code')->nullable();
             $table->timestamps();
         });
     }

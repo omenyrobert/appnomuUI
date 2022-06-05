@@ -52,8 +52,16 @@ class PopulateCountries extends Command
     }
 
     public function populateCountriesTable($countries){
+        $this->info('fetching country codes');
+        $codes = $this->getCountryCodes();
         $this->info('populating table per country');
         foreach($countries as $country){
+            $this->info("checking if  $country->name exists in the database");
+            $new_country = Country::where('ISO',$country->isoName)->first();
+            if($new_country){
+                $this->info("$country->name already exists in the database");
+                break;
+            }
             $this->info("populating $country->name");
             $new_country = new Country();
             $new_country->ISO = $country->isoName;
@@ -61,7 +69,8 @@ class PopulateCountries extends Command
             $new_country->flag_url = $country->flag;
             $new_country->currency_code = $country->currencyCode; 
             $new_country->currency_name = $country->currencyName; 
-            $new_country->save();
+            $new_country->country_code = array_key_exists($country->isoName, $codes) ? $codes[$country->isoName]: "";
+            $new_country->save();            
             $this->info("successfully populated $country->name");
         }
         $this->info("finished populating countries");

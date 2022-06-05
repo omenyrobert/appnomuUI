@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Http\Controllers\AuthenticationController as Auth;
+use App\Models\User;
 
 class ConfirmMail extends Mailable
 {
@@ -22,7 +23,8 @@ class ConfirmMail extends Mailable
     public $fullname;
     public function __construct($emailx,$codex)
     {
-        //
+        $user = User::where('email',$this->email)->first();
+        $this->fullname = $user->name;
         $this->email = $emailx;
         $this->code = $codex;
     }
@@ -34,13 +36,7 @@ class ConfirmMail extends Mailable
      */
     public function build()
     {
-        $user = Auth::getUserByEmail($this->email);
-        if (sizeof($user)>0) {
-            $this->fullname = $user[0]['name'];
-            return $this->view('email.verify2');
-        }else{
-            return redirect()->back()->withErrors(['Errors'=>'No Such User Found']);
-        }
+        return $this->view('email.verify2');
         
     }
 }
