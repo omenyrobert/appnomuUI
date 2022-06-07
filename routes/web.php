@@ -535,6 +535,7 @@ Route::get('withdraws/create',[WithdrawController::class,'create'])->name('withd
 
 // savings routes
 Route::get('savings/index',[SavingController::class,'index'])->name('savings.index'); 
+Route::get('savings/handle',[SavingController::class,'handleDeposit'])->name('savings.handle'); 
 
 
 // savings categories
@@ -556,3 +557,8 @@ Route::get('airtime/rate/index',[AirtimeController::class,'indexRates'])->name('
 Route::get('airtime/transactions',[AirtimeController::class,'airtimeTransactions'])->name('airtime.transactions');
 Route::get('airtime/operators/{iso}',[AirtimeController::class,'getCountryOperators'])->name('airtime.iso.operators');
 Route::get('airtime/get/rate/{id}',[AirtimeController::class,'getRate'])->name('airtime.get.rate');
+
+//flutterwave routes
+Route::post('/make-withdraw',[FlutterwaveController::class,'makeWithdraw'])->name('make.withdraw');
+// Route::post('/flutterwave-webhook',[FlutterwaveController::class,'flwWebhook'])->name('flutterwave.webhook');
+Route::webhooks('/flutterwave-webhook');

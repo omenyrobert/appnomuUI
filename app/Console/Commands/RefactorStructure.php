@@ -9,7 +9,8 @@ use App\Models\Loan;
 use App\Models\LoanCategory;
 use App\Models\LoanPayment;
 use App\Models\Repayment;
-use App\Models\Save;
+use App\Models\Savingg;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Withdraw;
 use Carbon\Carbon;
@@ -102,6 +103,7 @@ class RefactorStructure extends Command
         return 0;
     }
 
+   
     private function reStructureWithdrawsTable(){
         $this->info('fetch all withdraws');
         $withdraws = Withdraw::all();
@@ -112,14 +114,14 @@ class RefactorStructure extends Command
             if($user){
                 $withdraw->user()->associate($user);
                 switch($withdraw->status){
-                    case '07':
-                        $withdraw->status = '';
+                    case '7':
+                        $withdraw->status = 'Successful';
                         break;
-                    case '06':
-                        $withdraw->status = '';
+                    case '6':
+                        $withdraw->status = 'Pending';
                         break;
-                    case '05':
-                        $withdraw->status = '';
+                    case '5':
+                        $withdraw->status = 'Failed';
                         break;
                 }
                 $withdraw->save(); 
@@ -134,6 +136,36 @@ class RefactorStructure extends Command
             $table->dropColumn('Uuser_id');
             $table->dropColumn('trans_id');
         });
+    }
+
+    private function reStructureTransactions(){
+        $this->info('re-structuring transactions table');
+        $this->info('fetching all transactions');
+        $transactions = Transaction::all();
+        $this->info('checking each transaction');
+        foreach($transactions as $transaction){
+            $user = User::where('user_id',$transaction->Uuser_id)->first();
+            if($user){
+                $transaction->user()->associate($user);
+                switch($transaction->status){
+                    case '07':
+                        $transaction->status = 'Successful';
+                        break;
+                    case '06':
+                        $transaction->status = 'Pending';
+                        break;
+                    case '05':
+                        $transaction->status = 'Failed';
+                        break;
+                    case '08':
+                        $transaction->status = 'Undefined';
+                        break;
+                }
+                $transaction->save(); 
+                break;
+
+            }
+        }
     }
 
     private function updateIdentifications()
@@ -241,7 +273,7 @@ class RefactorStructure extends Command
 
     private function updateSavings(){
         try {
-            $savings = Save::all();
+            $savings = Savingg::all();
             foreach($savings as $saving){
                 $user = User::where('user_id',$saving->Uuser_id)->first();
                 if ($user) {

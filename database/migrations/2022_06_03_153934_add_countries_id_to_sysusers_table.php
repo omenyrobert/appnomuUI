@@ -14,7 +14,7 @@ class AddCountriesIdToSysusersTable extends Migration
     public function up()
     {
         Schema::table('sysusers', function (Blueprint $table) {
-            $table->string('country_id')->nullable();
+            $table->string('country_id')->default('UG');
             $table->foreign('country_id')->references('ISO')->on('countries')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

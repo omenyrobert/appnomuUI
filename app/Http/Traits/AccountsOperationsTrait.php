@@ -32,20 +32,26 @@ trait AccountsOperationsTrait{
                             $account->Outstanding_Balance = $account->Outstanding_Balance + $loan->principal;
                             $account->save();
                             break;
-                            case 'withdraw':
-                                $loan = Loan::findOrFail($id);
-                                $account = $loan->account;
-                                $account->Loan_Balance = $account->Loan_Balance + $loan->principal;
-                                $account->Outstanding_Balance = $account->Outstanding_Balance + $loan->principal;
-                                break;                        
+                        // case 'withdraw':
+                        //     $loan = Loan::findOrFail($id);
+                        //     $account = $loan->account;
+                        //     $account->Loan_Balance = $account->Loan_Balance + $loan->principal;
+                        //     $account->Outstanding_Balance = $account->Outstanding_Balance + $loan->principal;
+                        //     break;                        
                     }    
                     return;
                 case 'debit':
                     switch ($type) {
-                        case 'loan':
+                        case 'loans':
                             $withdraw = withdraw::findOrFail($id);
                             $account = $withdraw->user->account;
-                            $account->available_balance = $account->available_balance - $details['data']['amount'];
+                            if($withdraw->user->telephone == $withdraw->account_number){
+                                $account->Loan_Balance = $account->Loan_Balance  - $details['data']['amount'];
+                                $account->amount_withdrawn = $account->amount_withdrawn  + $details['data']['amount'];
+                                $account->save();
+                                break;
+                            }
+                            $account->Loan_Balance = $account->Loan_Balance  - $details['data']['amount'];
                             $account->amount_withdrawn = $account->amount_withdrawn  + $details['data']['amount'] + $details['data']['fee'];
                             $account->save();
                             break;
@@ -90,29 +96,35 @@ trait AccountsOperationsTrait{
             //throw $th;
         }
     }
-    public function storeWithdraw(Request $request,$refference,$details){
+    public function storeWithdraw(Request $request,$details,User $user){
         try {
             $user = User::findOrFail(Auth::id());
             $withdraw = new Withdraw();
+            $withdraw->withdraw_from = $request->source;
             $withdraw->user()->associate($user);
-            $withdraw->trans_id = $refference;
-            $withdraw->accounts_number = $details->data->account_number;
-            $withdraw->currency = $details->data->currency;
-            $withdraw->amount = $details->data->amount;
-            $withdraw->withdraw_from = $request->account;
-            $withdraw->status = 'Successful';
-            $withdraw->mode = $details->date->amount;
+            $withdraw->amount = $request->amount;
+            
+            $withdraw->status = 'Pending';
+            if($request->type == 'account'){
+                $withdraw->account_number = 'Bank' ;
+                $withdraw->mode = 'transfer';
+            }else{
+                $withdraw->account_number = $request->account_number;
+                $withdraw->mode = $request->account_number == $user->telephone ? 'withdraw' : 'transfer';
+            }
+            $withdraw->currency = $request->currency;
             $withdraw->save();
-            $this->storeTransaction('Withdraw',$withdraw->id,$refference);
-            $this->accountOperation('debit','saving',$withdraw->id,$details);
+            $this->storeTransaction('Withdraw',$withdraw->id,$details);
+            // $this->accountOperation('debit','savings',$withdraw->id,$details);
             return;
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
 
     }
 
-    public function storeTransaction($type,$id,$refference,$details=null){
+
+    public function storeTransaction($type,$id,$response=null){
         $transaction = new Transaction();
         switch ($type) {
             case 'Saving':
@@ -133,19 +145,21 @@ trait AccountsOperationsTrait{
                 break;
         }
 
-        $transaction->user()->associate($operation->user);   
-        $transaction->operation = $type;
-        $transaction->amount = $operation->amount;
-        $transaction->Trans_id = $refference;
-        $transaction->status = 'Successful';
-        if($details){
-            $transaction->FLW_Id = $details->data->id;
-            $transaction->FLW_txref = $details->data->reference;
-            $transaction->mode = $details->data->bank_name;
-            $transaction->flw_charge = $details->data->free;
+        $transaction->user()->associate($operation->user);
+        if($response)
+        {
+            $transaction->Trans_id = $response['data']['reference'];
+            $transaction->flw_charge =  $response['data']['fee'];
+            $transaction->amount =  $response['data']['amount'];
+            $transaction->FLW_Id = $response['data']['id'];
+            $transaction->name = $response['data']['full_name'];
         }
+        // $transaction->mode = $response['data']['full_name'];
+        $transaction->operation =  'Withdraw';
+        $transaction->status = 'Pending';
         $transaction->save();
         return;
+
 
     }
 
@@ -176,5 +190,47 @@ trait AccountsOperationsTrait{
     //     'processing_fees'=>$processing,
     //     'created_at'=> Carbon::now()
     // ]);
+
+    public function checkWithdrawCapability(Request $request,User $user,$fee){
+        $validated = $request->validate([
+            'source'=>'required',
+            'amount'=>'required'
+        ]);
+        $account = $user->account;
+        if (!$user->sms_verified_at) {
+            return redirect()->route('profile')->withErrors(['Errors'=>'No Verified Phone Number Has Been Found Please Verify Your Phone Number Before You Can Withdraw Your Money']);
+        }
+
+        if ($request->amount<1000) {
+            # code...
+            return redirect()->back()->withErrors(['Errors'=>'Your Minimum Value of Withdraw Should be UGX.1000']);
+        }
+
+        if($request->source=='savings'){
+            if(($request->amount+$fee) > $account->available_balance){
+                return  false;
+            
+            }
+        }elseif ($request->source=='loans'){
+            if($request->account_number == $user->telephone){
+                if(($request->amount)>$account->Loan_Balance ){
+                    return  false;
+                }
+
+            }
+            if(($request->amount+$fee)>$account->Loan_Balance ||$request->amount == $account->Loan_Balance){
+                return  false;
+            }
+        }
+       return true;
+    }
+
+    public function updateStatus($reference){
+        $transaction = Transaction::where('Trans_Id',$reference)->first();
+        if($transaction){
+
+        }
+
+    }
 
 }

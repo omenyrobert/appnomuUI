@@ -6,19 +6,20 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Traits\AirtimeTrait;
 use App\Http\Traits\UtilityTrait;
+use App\Http\Traits\FlutterwaveTrait;
 use Illuminate\Support\Facades\Auth;
 
 class ReloadlyController extends Controller
 {
-    use AirtimeTrait, UtilityTrait;
+    use AirtimeTrait, UtilityTrait, FlutterwaveTrait;
     public function buyAirtime(){
         
     }
     public function playground(){
         $user = User::find(Auth::id());
-        $response = $this->getTopupOperatorByIso('UG');
-        $response = json_decode($response);
-        dd($response);
+        $response = $this->getBanks('UG');
+        $response = json_decode($response,true);
+        dd($response['data'][0]);
         return view('payments.dashboards.client_dashboard',['response'=>$response,'user'=>$user]);
 
     }

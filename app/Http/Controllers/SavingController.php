@@ -36,4 +36,8 @@ class SavingController extends Controller
         }
         return redirect()->route('login');
     }
+
+    public function handleDeposit(Request $request){
+        
+    }
 }

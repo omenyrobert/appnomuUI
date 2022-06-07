@@ -10,7 +10,7 @@ class Country extends Model
     use HasFactory;
 
     public function users(){
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class,'country_id','ISO');
     }
 
     public function operators(){
