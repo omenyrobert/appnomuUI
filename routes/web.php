@@ -560,5 +560,7 @@ Route::get('airtime/get/rate/{id}',[AirtimeController::class,'getRate'])->name('
 
 //flutterwave routes
 Route::post('/make-withdraw',[FlutterwaveController::class,'makeWithdraw'])->name('make.withdraw');
-// Route::post('/flutterwave-webhook',[FlutterwaveController::class,'flwWebhook'])->name('flutterwave.webhook');
+Route::post('/make-deposit',[FlutterwaveController::class,'makeDeposit'])->name('make.deposit');
+Route::post('/pay-installment',[FlutterwaveController::class,'payLoanInstallment'])->name('pay.installment');
+
 Route::webhooks('/flutterwave-webhook');

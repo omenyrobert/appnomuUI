@@ -53,6 +53,9 @@
                                 @case('Requested')
                                   <td><span class="btn btn-warning">{{ $loan->status }}</span></td>
                                   @break
+                                  @case('Approved')
+                                  <td><span class="btn btn-primary">{{ $loan->status }}</span></td>
+                                  @break
                               @endswitch
                               @if($loan->status == 'Requested')
                               <td>
@@ -83,6 +86,7 @@
                         
                       </tbody>
                     </table>
+                    {{$loans->links()}}
                   </div>
                 </div>
 </div>

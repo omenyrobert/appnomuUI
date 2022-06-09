@@ -37,10 +37,10 @@ class FlutterwaveController extends BaseController
                 $fee_details = json_decode($fee_details,true);
                 $fee = $fee_details['data'][0]['fee'];
                 // dd($fee_details['data'][0]['fee']);
-                $capable = $this->checkWithdrawCapability($request,$user,$fee);
-                if(!$capable){
-                    return redirect()->back()->withErrors('Error','You have insuffiecient balance in your account to complete this transaction');
-                }
+                // $capable = $this->checkWithdrawCapability($request,$user,$fee);
+                // if(!$capable){
+                //     return redirect()->back()->withErrors('Error','You have insuffiecient balance in your account to complete this transaction');
+                // }
                 $reference =Flutterwave::generateReference().'_wd';
                 $beneficiary = $request->beneficiary;
                 switch ($request->destination) {
@@ -59,7 +59,7 @@ class FlutterwaveController extends BaseController
                     $operator = $request->operator;
                 }       
                 $trans_details = [
-                    'account_bank'=> $request->type,
+                    'account_bank'=> $request->account_bank,
                     'account_number'=> $request->account_number,
                     'amount'=>$request->amount,
                     "narration"=> $narration,
@@ -67,6 +67,7 @@ class FlutterwaveController extends BaseController
                     "reference"=> $reference,
                     "beneficiary_name"=> $beneficiary
                 ];
+                // dd($trans_details);
                 $response = $this->makeTransfer($trans_details);
                 $response = json_decode($response,true);
                 // dd($response);
@@ -107,17 +108,67 @@ class FlutterwaveController extends BaseController
         try {
             $user = User::find(Auth::id());
             if($user){
-                $category = SavingSubCategory::find($requset->category);
-                $saving = new Savingg();
-                $saving->user()->associate($user);
-                $saving->savingSubCategory()->associate($category);
-                $saving->amount = $request->amount;
-                $saving->status = 'Initiated';
-                $saving->duedate = Carbon::now()->addDays($category->Saving_Period);
-                $saving->Interest = $request->amount * $category->Interest /100;
-                $saving->processing_fees = 0;
-                $saving->save();
-                $reference =Flutterwave::generateReference().'_sv';
+                
+                $reference = Flutterwave::generateReference().'_sv';
+                $saving = $this->storeSaving($request,$reference); 
+                // dd($saving);
+                if($saving){
+
+                    $amount = $request->amount;
+                    $currency = $request->currency;
+                    $customer = [
+                        'name'=> $user->name,
+                        'email'=> $user->email,
+                        'phonenumber'=>$user->telephone
+                    ];
+                    $redirect_url = route('savings.handle');
+                    $meta = [
+                        'user_id'=>$user->id,
+                        'model' => 'saving'
+                    ];
+                    $customizations = [
+                        'title'=> 'Make A Saving Deposit',
+                        'logo'=>'',
+                        'description'=>'Ma ke a deposit to your appNomu savings account and earn an interest at the end of the saving period'
+                    ];
+    
+                    $details = [
+                        'tx_ref'=>$reference,
+                        'amount'=> $amount,
+                        'currency'=>$currency,
+                        'customer'=>$customer,
+                        'redirect_url'=>$redirect_url,
+                        'meta'=> $meta,
+                        'customizations'=> $customizations,
+                    ];
+                    // dd($details);
+                    //todo:send saving details to flutterwavepayment
+                    $path_response = $this->collectPayment($details); 
+                    $path_response = json_decode($path_response,true);
+                    // dd($path_response);
+                    if($path_response['status'] == 'success'){
+                        // dd($path_response['data']['link']);
+                        return redirect($path_response['data']['link']);
+                    }
+                }               
+
+                return redirect()->back()->withErrors('Error','Something went wrong processing this transaction');
+                
+                
+
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
+    }
+
+    public function payLoanInstallment(Request $request){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $repayment = Repayment::findOrFail($request->id);
+                $reference = Flutterwave::generateReference().'_ln';
                 $amount = $request->amount;
                 $currency = $request->currency;
                 $customer = [
@@ -128,15 +179,15 @@ class FlutterwaveController extends BaseController
                 $redirect_url = route('savings.handle');
                 $meta = [
                     'user_id'=>$user->id,
-                    'saving_id' => $saving->id
+                    'model' => 'repayment'
                 ];
                 $customizations = [
-                    'title'=> 'Make A Saving Deposit',
+                    'title'=> "Loan Repayment",
                     'logo'=>'',
-                    'description'=>'Ma ke a deposit to your appNomu savings account and earn an interest at the end of the saving period'
+                    'description'=>'Complete your loan payment and stand a chance to have a higher loan limit'
                 ];
 
-                $saving_details = [
+                $details = [
                     'tx_ref'=>$reference,
                     'amount'=> $amount,
                     'currency'=>$currency,
@@ -145,14 +196,18 @@ class FlutterwaveController extends BaseController
                     'meta'=> $meta,
                     'customizations'=> $customizations,
                 ];
-
                 //todo:send saving details to flutterwavepayment
-
+                $path_response = $this->collectPayment($details); 
+                $path_response = json_decode($path_response,true);
+                if($path_response['status'] == 'success'){
+                    return redirect($path_response['data']['link']);
+                }
             }
+            return redirect()->back()->withErrors('Error','Something went wrong processing this transaction');
+
         } catch (\Throwable $th) {
             throw $th;
         }
-        
     }
 
     public function flwWebhook(Request $request){

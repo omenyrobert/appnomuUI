@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Traits\AirtimeTrait;
 use App\Http\Traits\UtilityTrait;
 use App\Http\Traits\FlutterwaveTrait;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 
 class ReloadlyController extends Controller
@@ -17,9 +18,9 @@ class ReloadlyController extends Controller
     }
     public function playground(){
         $user = User::find(Auth::id());
-        $response = $this->getBanks('UG');
+        $response = $this->verifyTransaction(3461904);
         $response = json_decode($response,true);
-        dd($response['data'][0]);
+        dd($response);
         return view('payments.dashboards.client_dashboard',['response'=>$response,'user'=>$user]);
 
     }

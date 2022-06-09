@@ -18,8 +18,8 @@ class Account extends Model
         return $this->hasMany(Loan::class);
     }
 
-    public function savinggs(){
-        return $this->hasMany(Savingg::class);
+    public function savings(){
+        return $this->hasMany(Saving::class);
 
     }
 
