@@ -194,13 +194,17 @@ trait AccountsOperationsTrait{
                 $transaction->flw_charge =  $response['data']['fee'];
                 $transaction->amount =  $response['data']['amount'];
                 $transaction->FLW_Id = $response['data']['id'];
-                $transaction->name = $response['data']['full_name'];
+                $transaction->beneficiary = $response['data']['full_name'];
             }
             // $transaction->mode = $response['data']['full_name'];
-            $transaction->operation =  'Withdraw';
-            $transaction->status = 'Pending';
+            $transaction->operation =  $type;
+            $transaction->status = 'Initiated';
             $transaction->save();
-            return true;
+            if($transaction){
+
+                return true;
+            }
+            return false;
         } catch (\Throwable $th) {
             throw $th;
             // $log = [
