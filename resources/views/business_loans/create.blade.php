@@ -5,5 +5,5 @@
         <a href="{{route('loan.business.request')}}" class="btn btn-primary col-sm-6 col-md-4">Request With A new Business</a>
     </div>
             @include('business_loans.partials.tables.businesses_table')
-
+            @include('business_loans.partials.scripts')
 @endsection

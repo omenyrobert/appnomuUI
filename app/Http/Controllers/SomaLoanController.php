@@ -13,6 +13,7 @@ use App\Models\Repayment;
 use App\Models\Student;
 use Carbon\Carbon;
 use AfricasTalking\SDK\AfricasTalking;
+use App\Models\Country;
 use App\Models\Grade;
 use App\Models\Identification;
 use Illuminate\Support\Facades\Auth;
@@ -54,7 +55,8 @@ class SomaLoanController extends Controller
             $loans = $borrower->somaLoans()->orderBy('created_at','DESC')->get();
             $repayments = $borrower->repayments()->where('repaymentable_type','App\Models\SomaLoan')->where('status','!=','Pending')->get();
             // $installments = $borrower->repayments()->where('status','pending')->orWhere('status','late')->get();
-            return view('soma.borrower_index',['loans'=>$loans,'repayments'=>$repayments,'headteachers'=>$headteachers,'user'=>$borrower,'students'=>$students])->with('page',$borrower->fname.' '.$borrower->lname.' Soma Loans');
+            $countries = Country::all();
+            return view('soma.borrower_index',['countries'=>$countries,'loans'=>$loans,'repayments'=>$repayments,'headteachers'=>$headteachers,'user'=>$borrower,'students'=>$students])->with('page',$borrower->fname.' '.$borrower->lname.' Soma Loans');
         } catch (\Throwable $th) {
             throw $th;
             // return redirect()->back()->withErrors($th->getMessage());
@@ -337,7 +339,8 @@ class SomaLoanController extends Controller
                 $repayments = $loan->status=='Pending'?$loan->repayments()->where('status','pending')->get(): $loan->repayments;
                 $student = $loan->student;
                 $school = $loan->student->headteachers()->latest()->first();
-                return view('soma.show',['loan'=>$loan,'repayments'=>$repayments,'student'=>$student,'school'=>$school])
+                $countries = Country::all();
+                return view('soma.show',['countries'=>$countries,'loan'=>$loan,'repayments'=>$repayments,'student'=>$student,'school'=>$school])
                     ->with('page','Soma Loan | Show');
 
             }

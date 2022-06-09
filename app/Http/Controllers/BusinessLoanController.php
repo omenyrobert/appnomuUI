@@ -7,6 +7,7 @@ use App\Http\Traits\RepaymentsTrait;
 use App\Models\Business;
 use App\Models\BusinessCredential;
 use App\Models\BusinessLoan;
+use App\Models\Country;
 use App\Models\District;
 use App\Models\LoanCategory;
 use App\Models\Repayment;
@@ -45,9 +46,10 @@ class BusinessLoanController extends Controller
             $businesses = $borrower->businesses()->get();
             // dd($students);
             $loans = $borrower->businessLoans()->latest()->get();
+            $countries = Country::all();
             $repayments = $borrower->repayments()->where('repaymentable_type','App\Models\BusinessLoan')->where('status','!=','Paid')->get();
             // $installments = $borrower->repayments()->where('status','pending')->orWhere('status','late')->get();
-            return view('business_loans.borrower_index',['businesses'=>$businesses,'loans'=>$loans,'repayments'=>$repayments,'user'=>$borrower])->with('page',$borrower->fname.' '.$borrower->lname.' Business Loans');
+            return view('business_loans.borrower_index',['countries'=>$countries,'businesses'=>$businesses,'loans'=>$loans,'repayments'=>$repayments,'user'=>$borrower])->with('page',$borrower->fname.' '.$borrower->lname.' Business Loans');
         } catch (\Throwable $th) {
             throw $th;
             // return redirect()->back()->withErrors($th->getMessage());
@@ -254,13 +256,15 @@ class BusinessLoanController extends Controller
                  $business = $loan->business;
                  $credential = $loan->credential;
                  $user = $loan->user;
+                 $countries = Country::all();
                 //  dd($user);
                  return view('business_loans.show',[
                      'loan'=>$loan,
                      'repayments'=>$repayments,
                      'business'=>$business,
                      'user' =>$user,
-                     'credential'=>$credential
+                     'credential'=>$credential,
+                     'countries'=>$countries
                  ])->with('page','Business Loan | '.$loan->BLN_id);
              }
          } catch (\Throwable $th) {

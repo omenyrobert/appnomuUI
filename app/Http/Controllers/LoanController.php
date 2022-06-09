@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use App\Models\User;
 use App\Http\Traits\RepaymentsTrait;
 use App\Http\Traits\SMSTrait;
+use App\Models\Country;
 
 class LoanController extends Controller
 {
@@ -86,7 +87,8 @@ class LoanController extends Controller
                 $user->repayments()->where('repaymentable_type','App\Models\Loan')->where('status','Pending')->latest()->paginate(10);
                 $loans = $user->role == 'admin' ? Loan::latest()->paginate(10) :
                     $user->loans()->latest()->paginate(10);
-                return view('loans.index',['repayments'=> $repayments,'categories'=>$categories,'user'=>$user,'loans'=>$loans])->with('page','Loans | All Loans');
+                $countries = Country::all();
+                return view('loans.index',['countries'=>$countries,'repayments'=> $repayments,'categories'=>$categories,'user'=>$user,'loans'=>$loans])->with('page','Loans | All Loans');
             }
             return redirect()->route('login');
         } catch (\Throwable $th) {
@@ -221,8 +223,9 @@ class LoanController extends Controller
                         $this->createInstallments($loan->id,'loan');
                         $repayments = $loan->repayments;
                     }
+                    $countries = Country::all();
                     // $identifications = $user->identifications;
-                    return view('loans.show',['loan'=>$loan,'user'=>$user,'repayments'=>$repayments])->with('page','View | '.$loan->ULoan_Id);
+                    return view('loans.show',['countries'=>$countries,'loan'=>$loan,'user'=>$user,'repayments'=>$repayments])->with('page','View | '.$loan->ULoan_Id);
                 }
             }
             return redirect()->route('login');
