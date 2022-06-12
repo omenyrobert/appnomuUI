@@ -2,23 +2,25 @@
 
 namespace App\Notifications;
 
+use App\Models\Transaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TransactionNotification extends Notification
+class AccountOperationNotification extends Notification
 {
     use Queueable;
-    public $transaction;
+    public $data;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($transaction)
+    public function __construct(Array $data)
     {
-       $this->transaction = $transaction;
+        $this->data = $data;
     }
 
     /**
@@ -53,20 +55,10 @@ class TransactionNotification extends Notification
      * @return array
      */
     public function toArray($notifiable)
-    {
-        $transaction = $this->transaction;
-        switch($transaction->status){
-            case 'Failed':
-                $status = $transaction->status;
-                break;
-            default:
-                $status = "been $transaction->status";
-                break; 
-        }
-        return [
-            'id'=>$this->transaction->id,
-            'title'=>'Transaction',
-            'message'=>"$transaction->operation Transaction has been $status "
-        ];
+    {   
+        // $data = $this->notificationData($this->transaction);
+        return $this->data;
     }
+
+  
 }

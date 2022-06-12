@@ -16,10 +16,67 @@ class UtilityController extends Controller
     use UtilityTrait,AccountsOperationsTrait;
 
     public function index(){
+        try {
+            $user = User::find(Auth::id());
+            if($user){
+                $billers = $this->getUtilityBillers();
+                $e_rates = ElectricityRate::all();
+                return view('payments.utilities.index',[
+                    'user'=>$user,
+                    'billers'=>$billers,
+                    'e_rates'=>$e_rates
+                ])->with('page','Utilities');
+            }
+            return redirect()->route('login')->withErrors('Error','You need to Login to access this resource');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
 
 
         
-        $billers = $this->getUtilityBillers();
+    }
+
+    public function getElectricityRates(){
+        $e_rates = ElectricityRate::all();
+        return $e_rates;
+    }
+
+    public function storeElectricityRate(Request $request){
+        try {
+            $user = User::find(Auth::id());
+            if($user && $user->role == 'admin'){
+                $rate = new ElectricityRate();
+                $rate->lower_limit = $request->lower_limit;
+                $rate->upper_limit = $request->upper_limit;
+                $rate->bonus = $request->bonus;
+                $rate->save();
+                return redirect()->back()->with('success','New Electricity rate created successfully');
+            }
+            return redirect()->back()->withErrors('Error','You do not have permission to access this resource');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function updateElectricityRate(Request $request){
+        try {
+            $user = User::find(Auth::id());
+            if($user && $user->role == 'admin'){
+                $rate = ElectricityRate::find($request->id);
+                if($rate){
+                    $rate->lower_limit = $request->lower_limit;
+                    $rate->upper_limit = $request->upper_limit;
+                    $rate->bonus = $request->bonus;
+                    $rate->save();
+                    return redirect()->back()->with('success','Electricity rate edited successfully');
+
+                }
+                return redirect()->back()->withErrors('Error','Electricity not found');
+            }
+            return redirect()->back()->withErrors('Error','You do not have permission to access this resource');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     public function payUtility(Request $request){
@@ -49,7 +106,9 @@ class UtilityController extends Controller
                         $umeme->bonus = $rate->bonus * $request->amount/100;
                         $umeme->status = 'Initiated';
                         $umeme->save();
+                        $this->storePayment($umeme,$request->account,$pay_result);
                         UtilityPaymentJob::dispatch($pay_result['id'],$pay_channel,$umeme,$request->source)->delay(now()->addSeconds(5));
+                        return redirect()->back();
                     }
 
 

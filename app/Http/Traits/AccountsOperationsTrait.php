@@ -12,12 +12,14 @@ use App\Models\SavingSubCategory;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Withdraw;
+use App\Notifications\AccountOperationNotification;
+use App\Notifications\TransactionNotification;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 trait AccountsOperationsTrait{
-
+    use SMSTrait;
     public function accountOperation($operation,$type,$id){
         //operation = credit or debit
         //type = loan,soma,business,saving,transaction
@@ -26,28 +28,29 @@ trait AccountsOperationsTrait{
                 case 'credit':
                     switch ($type) {
                         case 'loans':
-                            $loan = Loan::findOrFail($id);
-                            $account = $loan->account;
-                            $account->Loan_Balance +=$loan->principal;
-                            $account->Outstanding_Balance += $loan->principal;
+                            $model = Loan::findOrFail($id);
+                            //todo:create a transaction for loans credited to account
+                            $account = $model->account;
+                            $account->Loan_Balance +=$model->principal;
+                            $account->Outstanding_Balance += $model->principal;
                             $account->save();
 
                             break;
                         case 'savings':
-                            $saving = Saving::findOrFail($id);
-                            $account = $saving->account;
-                            $account->Ledger_Balance += $saving->amount;
-                            $account->Total_Saved += $saving->amount;
+                            $model = Saving::findOrFail($id);
+                            $account = $model->account;
+                            $account->Ledger_Balance += $model->amount;
+                            $account->Total_Saved += $model->amount;
                             $account->save();
                             break;   
                         case 'repayment':
-                            $repayment = Repayment::findOrFail($id);
-                            $loan = $repayment->repaymentable;
-                            $loan->amount_paid +=$repayment->amount_paid;
+                            $model = Repayment::findOrFail($id);
+                            $loan = $model->repaymentable;
+                            $loan->amount_paid +=$model->amount_paid;
                             $loan->save();
-                            $account = $repayment->user->account;
-                            $account->Outstanding_Balance -= $repayment->amount_paid;
-                            $account->Total_Paid += $repayment->amount_paid;
+                            $account = $model->user->account;
+                            $account->Outstanding_Balance -= $model->amount_paid;
+                            $account->Total_Paid += $model->amount_paid;
                             $account->save();
                             break;                             
                     }    
@@ -85,6 +88,11 @@ trait AccountsOperationsTrait{
                     break;  
 
             }
+            $notif_data = $this->notificationData($model->transaction);
+            $user = $model->user;
+            $user->notify(new AccountOperationNotification($notif_data));
+            $sms_status = $this->sendSMS($notif_data['message'],$user->telephone);
+            // $user
             return true;
         } catch (\Throwable $th) {
             throw $th;
@@ -211,7 +219,7 @@ trait AccountsOperationsTrait{
             $transaction->status = 'Initiated';
             $transaction->save();
             if($transaction){
-
+                $transaction->user->notify(new TransactionNotification($transaction));
                 return true;
             }
             return false;
@@ -302,7 +310,8 @@ trait AccountsOperationsTrait{
         $payment = new Payment();
         $payment->paymentable()->associate($type);
         $payment->amount = $type->amount;
-        $payment->source = $request->account == 'savings'? 'savings': 'loans';
+        $payment->status = 'Initiated';
+        $payment->source = $pay_account; // == 'savings'? 'savings': 'loans';
         $payment->save();
         $data = [
             'data'=>[
@@ -317,6 +326,76 @@ trait AccountsOperationsTrait{
         if($transaction){
             $this->accountOperation('debit','payment',$payment->id);
         }
+    }
+
+    public function notificationData($transaction){
+        $model = $transaction->transactionable;
+        switch ($transaction->status) {
+            case 'Successfull':
+                $status = 'has been successfully processed on your account';
+                break;
+            
+            case 'Failed':
+                $status = 'has failed. please try again';
+                break;
+        }
+        switch($transaction->operation){
+            case 'Saving':
+                $title = 'Saving';
+                $message = "Your transaction $transaction->Trans_id for saving $transaction->transactionable->saving_id $status";
+                break;
+            case 'Withdraw':
+                $title = 'Withdraw';
+                $message = "Dear Customer, your account has been debited $model->amount at a fee of $model->withdrawFee->fee";
+                break;
+            case 'Loan Installment':
+                switch ($model->repaymentable_type) {
+                    case 'App\models\Loan':
+                        $loan = $model->repaymentable->ULoan_Id;
+                        break;
+                    case 'App\models\SomaLoan':
+                        $loan = $model->repaymentable->SLN_id;
+                        break;
+                    case 'App\models\Loan':
+                        $loan = $model->repaymentable->BLN_id;
+                        break;
+                    
+                    
+                }
+                
+                $title = 'Loan Installment';
+                $message = "Dear Customer, your payment for loan installment of $model->amount for loan $loan $status.";
+                break;
+            case 'Referal':
+                $title = 'Refferal bonus';
+                $message = "Dear Customer, your account has been credited $model->amount.thank you for refering more clients to appnomu";
+                break;
+            case 'Payment':
+                
+                switch ($model->paymentable_type) {
+                    case 'App\models\Airtime':
+                        $payment = 'airtime';
+                        $title = 'Airtime payment';
+                        break;
+                    case 'App\models\Electricity':
+                        $payment = 'electricity';
+                        $title = 'Utility payment';
+                        break;
+                    // case 'App\models\':
+                    //     $loan = $model->repaymentable->BLN_id;
+                    //     break;
+                    
+                    
+                }
+                
+                $message = "Dear Customer, $payment transaction of $model->amount $status";
+                break;
+        }
+        return [
+            'id'=>$transaction->id,
+            'title'=>$title,
+            'message'=>$message
+        ];
     }
 
 }

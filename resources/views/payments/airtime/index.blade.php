@@ -10,9 +10,7 @@
 <!-- <script src="{{asset('js/airtime.js')}}"></script> -->
 <script>
     $('.buy-airtime').on('click',function(e){
-        console.log("button clicked");
         let rate = $(this).data('rate');
-        console.log('rate',rate);
         $.ajax({
             type:"GET",
             url: "{{route('airtime.iso.operators',['iso'=>'UG'])}}"

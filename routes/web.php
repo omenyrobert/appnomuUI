@@ -15,6 +15,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ReloadlyController;
 use App\Http\Controllers\SavingCategoryController;
 use App\Http\Controllers\SavingController;
+use App\Http\Controllers\UtilityController;
 use App\Http\Controllers\WithdrawController;
 use App\Models\BusinessLoan;
 use App\Models\Country;
@@ -557,6 +558,11 @@ Route::get('airtime/rate/index',[AirtimeController::class,'indexRates'])->name('
 Route::get('airtime/transactions',[AirtimeController::class,'airtimeTransactions'])->name('airtime.transactions');
 Route::get('airtime/operators/{iso}',[AirtimeController::class,'getCountryOperators'])->name('airtime.iso.operators');
 Route::get('airtime/get/rate/{id}',[AirtimeController::class,'getRate'])->name('airtime.get.rate');
+
+//utility routes
+Route::get('utilities/index',[UtilityController::class,'index'])->name('utilities.index');
+Route::post('utilities/pay/electricity',[UtilityController::class,'payBill'])->name('utility.pay.electricity');
+
 
 //flutterwave routes
 Route::post('/make-withdraw',[FlutterwaveController::class,'makeWithdraw'])->name('make.withdraw');

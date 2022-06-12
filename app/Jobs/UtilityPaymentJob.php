@@ -60,10 +60,7 @@ class UtilityPaymentJob implements ShouldQueue
             $payment->status = 'Successful';
             $payment->save();
             $account = $this->accountOperation('debit','payment',$payment->id);
-            if($account){
-                //todo:notifications
-                return;
-            }
+            return;            
         }
         $payment->status = 'Successful';
         $payment->save();

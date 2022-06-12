@@ -1,24 +1,39 @@
-<!-- <div class="p-5 bg-white  col-sm-12 col-md-6 mx-auto"> -->
-<form action="" class="my-auto mx-auto border border-1 my-2 modal-forms">
-            <div class="row mt-5 ">
-                <div class="col-sm-12">
-                    <label>Enter Amount</label>
-                    <input type="number" name="amount"class="form-control mt-2" placeholder="Enter valid amount" />
-                </div>
-                <div class="col-sm-12">
-                    <label>Select Category</label>
-                    <select class="form-control mt-2" name="category">
-                        <option value="select">select Category</option>
-                        @foreach($categories as $category)
-                            <option value="{{$category->id}}">UGX {{$category->savingCategory->lowerlimit}} - UGX {{$category->savingCategory->upperlimit}}  for {{$category->Saving_Period}} days @ {{$category->Interest}}</option>
 
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-sm-12">
-                    <br/>
-                    <button class="btn btn-primary form-control">Make Saving</button>
-                </div>
+        <form action="{{route('airtime.buy')}}" method="POST" class="">
+        @csrf
+        <div class="row mt-5 card">
+            <input id="operator_id" name="operator"type="number" hidden>
+            <!-- <input id="rate_id" name="rate_id"type="number" hidden> -->
+            <div class="col-sm-12">
+                <label>Enter Phone Number</label>
+                <input id="phone" type="number" name="phone"class="form-control mt-2" placeholder="Enter valid Phone number" />
             </div>
-        </form>
-<!-- </div> -->
+            <div class="col-sm-12">
+                  <label>Airtime Offer</label>
+                  <select class="form-control mt-2" id="select_rate_id"name="select_rate_id">
+                        <option value="select">select airtime offer</option>
+                        @foreach($rates as $rate)
+                            <option value="{{$rate->id}}" data-lower="{{$rate->lower_limit}}" data-upper="{{$rate->upper_limit}}">{{$rate->lower_limit.' - '.$rate->upper_limit.' @ '.$rate->bonus.'% bonus'}}</option>
+                        @endforeach
+                  </select>
+            </div>
+            <div class="col-sm-12 div-amount" hidden>
+                <label>Enter Amount</label>
+                <input id="amount_op" type="number" name="amount" class="form-control mt-2" placeholder="Enter valid amount" />
+                <div class="invalid-feedback">Enter an amount within range of airtime offer</div>
+            </div>
+            <div class="col-sm-12">
+                  <label>Select Purchasing Account</label>
+                  <select class="form-control mt-2" name="account">
+                  <option value="select">select purchasing Account</option>
+                      <option value="savings"selected>Savings Account</option>
+                      <option value="loans">Loan Account</option>
+                  </select>
+            </div>
+            <div class="col-sm-12">
+                <br/>
+                <button class="btn btn-primary form-control">Buy Airtime</button>
+            </div>
+        </div>
+    </form>
+</div>
