@@ -3,6 +3,7 @@
 
 namespace App\Http\Traits;
 
+use App\Models\AirTime;
 use App\Models\Loan;
 use App\Models\Payment;
 use App\Models\Repayment;
@@ -41,6 +42,9 @@ trait AccountsOperationsTrait{
                             break;   
                         case 'repayment':
                             $repayment = Repayment::findOrFail($id);
+                            $loan = $repayment->repaymentable;
+                            $loan->amount_paid +=$repayment->amount_paid;
+                            $loan->save();
                             $account = $repayment->user->account;
                             $account->Outstanding_Balance -= $repayment->amount_paid;
                             $account->Total_Paid += $repayment->amount_paid;
@@ -70,7 +74,13 @@ trait AccountsOperationsTrait{
                             $account->available_balance -= $withdraw->amount-$withdraw->withdrawFee->fee;
                             $account->amount_withdrawn += $withdraw->amount ;
                             $account->save();
-                            break;                        
+                            break;    
+                        case 'payment':
+                            $payment = Payment::findOrFail($id);
+                            $account = $payment->user->account;
+                            $account->available_balance -= $payment->amount; //-$withdraw->withdrawFee->fee;
+                            $account->save();
+                            break;
                     }                    
                     break;  
 
@@ -245,7 +255,7 @@ trait AccountsOperationsTrait{
         }
 
     }
-    public function checkWithdrawCapability(Request $request,User $user,$fee){
+    public function checkTransactionCapability(Request $request,User $user,$fee){
         $validated = $request->validate([
             'source'=>'required',
             'amount'=>'required'
@@ -285,6 +295,28 @@ trait AccountsOperationsTrait{
 
         }
 
+    }
+
+    public function storePayment($type,$pay_account,$details){
+       
+        $payment = new Payment();
+        $payment->paymentable()->associate($type);
+        $payment->amount = $type->amount;
+        $payment->source = $request->account == 'savings'? 'savings': 'loans';
+        $payment->save();
+        $data = [
+            'data'=>[
+                'reference'=>$details['customIdentifier'],
+                'fee'=>0,
+                'amount'=>$details['requestedAmount'],
+                'full_name'=> $details['recipientPhone'],
+                'id'=> $details['transactionId']
+            ]
+        ];
+        $transaction = $this->storeTransaction('Payment',$payment->id,$data);
+        if($transaction){
+            $this->accountOperation('debit','payment',$payment->id);
+        }
     }
 
 }

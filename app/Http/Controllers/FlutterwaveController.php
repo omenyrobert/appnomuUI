@@ -37,10 +37,10 @@ class FlutterwaveController extends BaseController
                 $fee_details = json_decode($fee_details,true);
                 $fee = $fee_details['data'][0]['fee'];
                 // dd($fee_details['data'][0]['fee']);
-                // $capable = $this->checkWithdrawCapability($request,$user,$fee);
-                // if(!$capable){
-                //     return redirect()->back()->withErrors('Error','You have insuffiecient balance in your account to complete this transaction');
-                // }
+                $capable = $this->checkTransactionCapability($request,$user,$fee);
+                if(!$capable){
+                    return redirect()->back()->withErrors('Error','You have insuffiecient balance in your account to complete this transaction');
+                }
                 $reference =Flutterwave::generateReference().'_wd';
                 $beneficiary = $request->beneficiary;
                 switch ($request->destination) {

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePaymentsTable extends Migration
+class CreateElectricityRatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreatePaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create('electricity_rates', function (Blueprint $table) {
             $table->id();
-            $table->morphs('paymentable');
-            $table->integer('amount');
-            $table->string('source');
-            $table->string('status');
+            $table->integer('lower_limit')->unsigned();
+            $table->integer('upper_limit')->unsigned();
+            $table->integer('bonus')->unsigned()->default(0);
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreatePaymentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists('electricity_rates');
     }
 }

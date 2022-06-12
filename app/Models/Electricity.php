@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AirTime extends Model
+class Electricity extends Model
 {
     use HasFactory;
 
@@ -13,8 +13,8 @@ class AirTime extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function airTimeRate(){
-        return $this->belongsTo(AirtimeRate::class,'air_time_rate_id','id');
+    public function electricityRate(){
+        return $this->belongsTo(ElectricityRate::class,'electricity_rate_id','id');
     }
 
     public function payment(){

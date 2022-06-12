@@ -276,6 +276,7 @@ trait AirtimeTrait{
     public function makeTopUp($topup_data){
 		$token = $this->getAccessToken('topup');
 		$topup_data = json_encode($topup_data);		
+    // dd($topup_data);
         $curl = curl_init();        
         curl_setopt_array($curl, array(
           CURLOPT_URL => env('RELOADLY_TOPUP'),

@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Traits\UtilityTrait;
+use App\Http\Traits\AccountsOperationsTrait;
 use App\Models\User;
+use App\Models\Electricity;
+use Illuminate\Http\Request;
+use App\Jobs\UtilityPaymentJob;
+use App\Http\Traits\UtilityTrait;
+use App\Models\ElectricityRate;
 use Illuminate\Support\Facades\Auth;
 
 class UtilityController extends Controller
 {
-    use UtilityTrait;
+    use UtilityTrait,AccountsOperationsTrait;
 
     public function index(){
 
@@ -33,24 +37,25 @@ class UtilityController extends Controller
                     "billerId"=>$biller_id,
                     "useLocalAmount"=> false
                 );
-                switch ($$pay_channel) {
-                    case 'savings':
-                        if($amount <= $account->available_balance){
-                           $pay_result = $this->payBill(json_encode($pay_details));
-                            break;
-                        
-                        }
-                        return redirect()->back()->withErrors('Error','you do not have enough funds in your savings account to complete this transaction ');
-                    
-                    case 'loan':
-                        if($amount <= $account->loan_balance){
-                           $pay_result = $this->payBill(json_encode($pay_details));
-                            break;
-                        
-                        }
-                        return redirect()->back()->withErrors('Error','you do not have enough funds in your loan account to complete this transaction ');
-                        
-                }               
+                $pay = $this->checkTransactionCapability($request,$user,0);
+                if($pay){
+                    $pay_result = $this->payBill(json_encode($pay_details));
+                    $pay_result = json_decode($pay_result,true);
+                    if($pay_result['status'] == 'PROCESSING'){
+                        $rate = ElectricityRate::find($request->rate->id);
+                        $umeme = new Electricity();
+                        $umeme->electricityRate()->associate($rate);
+                        $umeme->amount = $request->amount;
+                        $umeme->bonus = $rate->bonus * $request->amount/100;
+                        $umeme->status = 'Initiated';
+                        $umeme->save();
+                        UtilityPaymentJob::dispatch($pay_result['id'],$pay_channel,$umeme,$request->source)->delay(now()->addSeconds(5));
+                    }
+
+
+                }
+                return redirect()->back()->withErrors('Error','you do not have enough funds in your savings account to complete this transaction ');
+               
                 
         
                 // '{

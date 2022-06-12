@@ -563,4 +563,5 @@ Route::post('/make-withdraw',[FlutterwaveController::class,'makeWithdraw'])->nam
 Route::post('/make-deposit',[FlutterwaveController::class,'makeDeposit'])->name('make.deposit');
 Route::post('/pay-installment',[FlutterwaveController::class,'payLoanInstallment'])->name('pay.installment');
 
-Route::webhooks('/flutterwave-webhook');
+Route::webhooks('/flutterwave-webhook','flutterwave');
+Route::webhooks('/reloadly-webhook','reloadly');

@@ -1,6 +1,6 @@
 
         <form action="{{route('airtime.buy')}}" method="POST" class="">
-        
+        @csrf
         <div class="row mt-5 card">
             <input id="operator_id" name="operator"type="number" hidden>
             <!-- <input id="rate_id" name="rate_id"type="number" hidden> -->
