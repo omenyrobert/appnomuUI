@@ -92,7 +92,7 @@ trait AccountsOperationsTrait{
             $notif_data = $this->notificationData($model->transaction);
             $user = $model->user;
             $user->notify(new AccountOperationNotification($notif_data));
-            $sms_status = $this->sendSMS($notif_data['message'],$user->telephone);
+            $sms_status = $this->sendSMS($notif_data['message'],$user->telephone,'Account Transaction');
             // $user
             return true;
         } catch (\Throwable $th) {

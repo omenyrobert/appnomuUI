@@ -34,7 +34,7 @@ trait SMSTrait{
 
     }
 
-    public static function verifyPhone($phone,$code,$userid){
+    public  function verifyPhone($phone,$code,$userid){
         $message = 'Your Appnomu Account Verification Code Is:'.$code;
         $ret = $this->sendSMS($message,$phone,'Telephone Verification',$userid);      
         return $ret;
@@ -58,7 +58,7 @@ trait SMSTrait{
         
     }
 
-    public static function verify_alliases_phone($phone,$code,$userid,$refferer,$all_name){
+    public  function verify_alliases_phone($phone,$code,$userid,$refferer,$all_name){
         
         $message = 'Hello '. $all_name . ' '.$refferer . ' Has Listed YOu as His/Her Alliance on Appnomu For a loan verification, to Approve please send him/her this verification code: '.$code;
         $ret = $this->sendSMS($message,$phone,'Alliace Telephone Verification',$userid); 
