@@ -53,10 +53,7 @@ Route::get('/register', function () {
 
 
 
-Route::get('/forgot', function () {
-    view()->share('page','Forgot Password');
-    return view('view.forgot');
-});
+Route::post('/forgot',[LoginController::class,'forgotPassword']);
 
 Route::get('/reset-password', function () {
     view()->share('page','New Password');

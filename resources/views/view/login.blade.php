@@ -137,7 +137,7 @@
           <button type="submit" class="form-control text-black fw-bold" style="background-color: #ffa500;">Login </button>
           <br/>
           <div class="login-bottom">
-            <h6><input type="checkbox"/> Remember me</h6>&nbsp;&nbsp;&nbsp;<h6> Forgot Password</h6>
+            <h6><input type="checkbox"/> Remember me</h6>&nbsp;&nbsp;&nbsp;<h6 id="forgot"> Forgot Password</h6>
             </div>
             <a type="button" id="btn-register" class="form-control text-black fw-bold" style="background-color: #ffa500;">Register</a>
         </form>
@@ -220,5 +220,57 @@
       $('#form-signup').prop('hidden',false);
       $('#form-login').prop('hidden',true);
     });
+
+    $('#forgot').on('click',function(e){
+      $('#form-signup').prop('hidden',true);
+      $('#form-login').prop('hidden',true);
+      $('#form-forgot').prop('hidden',false);
+    });
+
+    $('#btn-forgot').on('click',function(e){
+      let data = $('#data').val();
+      $.ajax({
+        type:'POST',
+        url: '/forgot',
+        data:{
+          data,
+          _token : '{{csrf_token()}}'
+        },
+        success: function(response){
+          if(response.status == 'success'){
+            alert('a token has been sent to your email.');
+            $('#form-forgot').prop('hidden',true);
+            $('#verify-email').prop('hidden',false);
+            $('#email-email').val(response.email);
+            $('#email-token').val(response.token);
+          }
+        }
+      });
+
+      $('#btn-verify-email').on('click',function(e){
+      let e_token = $('#email-token').val();
+      let token = $('#verify-email-token').val();
+      if(e_token == token){
+        $.ajax({
+          type:'POST',
+          url: '/forgot',
+          data:{
+            data,
+            _token : '{{csrf_token()}}'
+          },
+          success: function(response){
+            if(response.status == 'success'){
+              alert('an sms  token has been sent to your phone.');
+              $('#form-forgot').prop('hidden',true);
+              $('#form-reset').prop('hidden',false);
+              $('#forgot-email').val(response.email);
+              $('#forgot-token').val(response.token);
+            }
+          }
+        });
+      }
+      $('#verify-email-token').addClass('is-invalid');      
+    });
+
   </script>
 </html>

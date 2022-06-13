@@ -143,7 +143,7 @@ class LoginController extends Controller
             'message'=>'wrong token'
             ],200);
     }
-
+//forgot password reset
     public function resetPassword(Request $request){
         $rules = array(
             'password'=>'required|min:6|confirmed',
