@@ -41,7 +41,7 @@ trait SMSTrait{
         
     }
 
-    public static function saveSms($to,$title,$message,$status,$userid){
+    public  function saveSms($to,$title,$message,$status,$userid){
         $sms = 'SMS-'.rand(1111,9999);
         $db = DB::table('smssent')->insert([
             'Sms_Id'=>$sms,
