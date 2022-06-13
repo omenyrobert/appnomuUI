@@ -59,9 +59,9 @@
                               <td>
                                 @if($repayment->status != 'Paid')
                                   @if($user->role == 'admin')
-                                   <a><span>Mark as Paid</span></a>
+                                   <button class="btn btn-primary"><span>Mark as Paid</span></button>
                                   @else
-                                  <a><span>Pay</span></a>
+                                  <button class="btn btn-primary btn-pay" data-amount="{{$repayment->amount}}" data-bs-target="#pay_loan" data-placement="top" data-bs-toggle="modal" data-id="{{$repayment->id}}"><span>Pay</span></button>
                                   @endif
                                 @endif
                               </td>
@@ -73,7 +73,17 @@
                   </div>
                 </div>
 </div>
+<script>
+    $('.btn-pay').on('click',function(e){
+        console.log('payment clicked');
+        let id = $(this).data('id');
+        let amount =  $(this).data('amount');
 
+        $('#repay_id').val(id);
+        $('#repay_amount').val(amount);
+        $('#repay_amount').text(amount);
+    });
+</script>
 
                 
                   <!-- <td><span class="badge $badge  ">$loan->status }}</span></td> -->

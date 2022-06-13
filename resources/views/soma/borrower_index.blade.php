@@ -16,5 +16,5 @@
            @include('soma.partials.tables.repaymentstable')  
        </div>
     </div>
-   
+    @include('soma.partials.scripts')  
 @endsection

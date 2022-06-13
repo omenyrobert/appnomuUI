@@ -15,6 +15,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ReloadlyController;
 use App\Http\Controllers\SavingCategoryController;
 use App\Http\Controllers\SavingController;
+use App\Http\Controllers\UtilityController;
 use App\Http\Controllers\WithdrawController;
 use App\Models\BusinessLoan;
 use App\Models\Country;
@@ -535,6 +536,7 @@ Route::get('withdraws/create',[WithdrawController::class,'create'])->name('withd
 
 // savings routes
 Route::get('savings/index',[SavingController::class,'index'])->name('savings.index'); 
+Route::get('savings/handle',[SavingController::class,'handleDeposit'])->name('savings.handle'); 
 
 
 // savings categories
@@ -556,3 +558,20 @@ Route::get('airtime/rate/index',[AirtimeController::class,'indexRates'])->name('
 Route::get('airtime/transactions',[AirtimeController::class,'airtimeTransactions'])->name('airtime.transactions');
 Route::get('airtime/operators/{iso}',[AirtimeController::class,'getCountryOperators'])->name('airtime.iso.operators');
 Route::get('airtime/get/rate/{id}',[AirtimeController::class,'getRate'])->name('airtime.get.rate');
+
+//utility routes
+Route::get('utilities/index',[UtilityController::class,'index'])->name('utilities.index');
+Route::get('utilities/electricity/rates',[UtilityController::class,'getElectricityRates'])->name('electricity.rate.index');
+
+Route::post('utilities/pay/electricity',[UtilityController::class,'payUtility'])->name('utility.pay.electricity');
+Route::post('utilities/rate/electricity/store',[UtilityController::class,'storeElectricityRate'])->name('electricity.rate.store');
+
+
+
+//flutterwave routes
+Route::post('/make-withdraw',[FlutterwaveController::class,'makeWithdraw'])->name('make.withdraw');
+Route::post('/make-deposit',[FlutterwaveController::class,'makeDeposit'])->name('make.deposit');
+Route::post('/pay-installment',[FlutterwaveController::class,'payLoanInstallment'])->name('pay.installment');
+
+Route::webhooks('/flutterwave-webhook','flutterwave');
+Route::webhooks('/reloadly-webhook','reloadly');

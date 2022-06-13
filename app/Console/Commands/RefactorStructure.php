@@ -10,8 +10,12 @@ use App\Models\LoanCategory;
 use App\Models\LoanPayment;
 use App\Models\Repayment;
 use App\Models\Savingg;
+use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Withdraw;
 use Carbon\Carbon;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Console\Command;
 
 class RefactorStructure extends Command
@@ -95,9 +99,80 @@ class RefactorStructure extends Command
             $this->error($res);
         }
 
-
+        $this->reStructureWithdrawsTable();
+        $this->reStructureTransactions();
         return 0;
     }
+
+   
+    private function reStructureWithdrawsTable(){
+        $this->info('fetch all withdraws');
+        $withdraws = Withdraw::all();
+        $this->info('checking each withdraw');
+        foreach($withdraws as $withdraw){
+            $this->info("checking withdraw $withdraw->id");
+            $user = User::where('user_id',$withdraw->Uuser_id)->first();
+            if($user){
+                $withdraw->user()->associate($user);
+                switch($withdraw->status){
+                    case '7':
+                        $withdraw->status = 'Successful';
+                        break;
+                    case '6':
+                        $withdraw->status = 'Initiated';
+                        break;
+                    case '5':
+                        $withdraw->status = 'Failed';
+                        break;
+                }
+                $withdraw->save(); 
+                $transaction = Transaction::where('Trans_id',$withdraw->trans_id)->first();
+                if($transaction){
+                    $transaction->transactionable()->associate($withdraw);
+                }
+                continue;
+            }
+            $this->info("withdraw $withdraw->id has no registered user");
+            $this->error("deleting withdraw $withdraw->id");
+            // $withdraw->delete();
+        }
+        Schema::table('withdraws', function (Blueprint $table) {
+            $this->info('trimming withdraws table');
+            // $table->dropColumn('Uuser_id');
+            // $table->dropColumn('trans_id');
+        });
+    }
+
+    private function reStructureTransactions(){
+        $this->info('re-structuring transactions table');
+        $this->info('fetching all transactions');
+        $transactions = Transaction::all();
+        $this->info('checking each transaction');
+        foreach($transactions as $transaction){
+            $user = User::where('user_id',$transaction->Uuser_id)->first();
+            if($user){
+                $transaction->user()->associate($user);
+                switch($transaction->status){
+                    case "07":
+                        $transaction->status = 'Successful';
+                        break;
+                    case "06":
+                        $transaction->status = 'Pending';
+                        break;
+                    case "05":
+                        $transaction->status = 'Failed';
+                        break;
+                    default:
+                        $transaction->status = 'Undefined';
+                        break;
+                }
+                $transaction->save(); 
+                // break;
+
+            }
+        }
+    }
+    
 
     private function updateIdentifications()
     {
@@ -168,8 +243,8 @@ class RefactorStructure extends Command
                     $loan->user()->associate($user);
                     $loan->loanCategory()->associate($cat);
                     $loan->account()->associate($user->account);
-                    $loan->approved_at = Carbon::createFromTimestamp($loan->approved_at_time);
-                    $loan->due_date = Carbon::createFromTimestamp($loan->due_date_time);
+                    $loan->approved_at = $loan->approved_at_time ? Carbon::createFromTimestamp($loan->approved_at_time) : null;
+                    $loan->due_date = $loan->due_date_time ? Carbon::createFromTimestamp($loan->due_date_time) : null;
                     switch ($loan->status_num) {
                         case 7:
                             $loan->status = 'Paid';
@@ -189,6 +264,10 @@ class RefactorStructure extends Command
                         case 2:
                             $loan->status = 'On Hold';
                             break;
+                    }
+                    $approver = User::where('user_id',(int)$loan->approver)->first();
+                    if($approver){
+                        $loan->approved_by = $approver->id;
                     }
                     $loan->save();
                 }else{
@@ -210,6 +289,26 @@ class RefactorStructure extends Command
                 if ($user) {
                     $saving->user()->associate($user);
                     $saving->account()->associate($user->account);
+                    switch($saving->status){
+                        case '5':
+                            $saving->status = 'Initiated';
+                            break;
+                        case '9':
+                            $saving->status = 'Failed';
+                            break;
+                        case '7':
+                            $saving->status = 'Successful';
+                            break;
+                        case '6':
+                            $saving->status = 'Matured';
+                            break;
+                        case '8':
+                            $saving->status = 'Paid';
+                            break;
+                        default:
+                        $saving->status = 'Undefined';
+                        break;
+                    }
                     $saving->save();
                 }else{
                     $saving->delete();

@@ -36,4 +36,5 @@
           </div>
         </div>
       </div>
+      @include('loans.partials.modals.pay_modal')
 @endsection

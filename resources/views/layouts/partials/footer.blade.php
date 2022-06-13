@@ -2,7 +2,19 @@
           All Rights Reserved appnomu
           <a href="https://api.whatsapp.com/send?phone=256770557843" style="display: inline-block; padding:16px; border-radius: 8px; background-color: #25D366; color: #fff; text-decoration: none; font-family: sans-serif; font-size: 16px;">Contact us on WhatsApp</a>
 
+  
           <!-- Hotjar Tracking Code for https://www.appnomu.com -->
+
+@include('loans.scripts')
+<!-- <script>
+    $('.btn-pay').on('click',function(e){
+        let id = $(this).data('id');
+        let amount =  $(this).data('amount');
+
+        $('#repay_id').val(id);
+        $('#repay_amount').val(amount);
+    });
+</script> -->
 <script>
     (function(h,o,t,j,a,r){
         h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};

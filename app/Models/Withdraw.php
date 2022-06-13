@@ -19,6 +19,10 @@ class Withdraw extends Model
         return $this->belongsTo(Account::class);
     }
 
+    public function withdrawFee(){
+        return $this->belongsTo(withdrawFee::class);
+    }
+
     public function transaction(){
         return $this->morphOne(Transaction::class,'transactionable');
     }

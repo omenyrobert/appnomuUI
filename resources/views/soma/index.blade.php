@@ -82,4 +82,5 @@
           <!-- end row -->
         </div>
       </div>
+      @include('soma.partials.scripts') 
 @endsection

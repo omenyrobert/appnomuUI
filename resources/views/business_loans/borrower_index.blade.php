@@ -81,4 +81,5 @@
           <!-- end row -->
         </div>
       </div>
+      @include('business_loans.partials.scripts')
 @endsection

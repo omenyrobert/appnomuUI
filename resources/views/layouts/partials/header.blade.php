@@ -161,7 +161,7 @@
                       <p class="mb-0">{{$user->email}}</p>
                     </div>
                   </div>
-                  <a class="dropdown-item" href="#"
+                  <a class="dropdown-item" href="/profile"
                     ><i
                       data-feather="user"
                       class="feather-sm text-info me-1 ms-1"
@@ -200,7 +200,7 @@
                   >
                   <div class="dropdown-divider"></div>
                   <div class="pl-4 p-2">
-                    <a href="#" class="btn d-block w-100 btn-warning rounded-pill"
+                    <a href="/profile" class="btn d-block w-100 btn-warning rounded-pill"
                       >View Profile</a
                     >
                   </div>

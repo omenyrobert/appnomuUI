@@ -83,7 +83,7 @@ class User extends Authenticatable
     }
 
     public function country(){
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::class,'country_id','ISO');
     }
 
     public function repayments(){
@@ -95,7 +95,7 @@ class User extends Authenticatable
     }
 
     public function savings(){
-        return $this->hasMany(Savingg::class);
+        return $this->hasMany(Saving::class);
     }
     
     public function withdraws(){

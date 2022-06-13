@@ -18,6 +18,6 @@ class AirTime extends Model
     }
 
     public function payment(){
-        return $this->morphOne(Transaction::class,'paymentable');
+        return $this->morphOne(Payment::class,'paymentable');
     }
 }

@@ -18,6 +18,8 @@ class CreateAirTimesTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('air_time_rate_id')->unsigned();
             $table->integer('amount')->unsigned();
+            $table->integer('bonus')->unsigned();
+            $table->string('status')->default('Initiated');
             $table->string('reloadly_id');
             $table->foreign('user_id')->references('id')->on('sysusers')
                 ->onDelete('cascade')

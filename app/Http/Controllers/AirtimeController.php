@@ -8,12 +8,15 @@ use App\Models\AirtimeRate;
 use App\Models\AirtimeOperator;
 use Illuminate\Http\Request;
 use App\Http\Traits\AirtimeTrait;
+use App\Models\AirTime;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Traits\AccountsOperationsTrait;
 
 
 class AirtimeController extends Controller
 {
-    use AirtimeTrait;
+    use AirtimeTrait,AccountsOperationsTrait;
 
     public function index(){
         try {
@@ -109,9 +112,27 @@ class AirtimeController extends Controller
         try {
             $user = User::find(Auth::id()); 
             if($user){
+                // dd($request);
                 $rate = $id ? AirtimeRate::find($request->rate_id) : AirtimeRate::find($request->select_rate_id) ;
                 $amount = $request->amount + $request->amount *$rate->bonus/100;
-                $operator = AirTimeOperator::find($request->operator);
+                $fee = 0;
+                $capable = $this->checkTransactionCapability($request,$user,$fee);
+                if(!$capable){
+                    return redirect()->back()->withErrors('Error','You have insuffiecient balance in your account to complete this transaction');
+                }
+                $operator = AirTimeOperator::where('operator_code',$request->operator)->first();
+                if(!$operator){
+                    $operator=$this->getTopupOperator($request->operator);
+                    $new_operator = new AirtimeOperator();
+                    $new_operator->name = $operator->name;
+                    $new_operator->operator_code = $operator->operatorId;
+                    $new_operator->country_id = $operator->country->isoName;
+                    $new_operator->logo_url = $operator->logoUrls ?  $operator->logoUrls[0]: '';
+                    $new_operator->save();
+                    if($new_operator){
+                        $operator= $new_operator;
+                    }
+                }
                 $recipient = array("countryCode"=>$operator->country->ISO,
                                     'number'=>$request->phone
                                 );
@@ -119,19 +140,30 @@ class AirtimeController extends Controller
                                 'number'=>$user->telephone
                             );
                 $top_data= array(
-                        "operatorId" => $operator,
+                        "operatorId" => $operator->operator_code,
                         "amount" => $amount,
                         "useLocalAmount"=> false, 
-                        "customIdentifier"=> $user->id,
+                        "customIdentifier"=> $user->id.'A'.rand(1000,9999),
                         "recipientPhone"=>$recipient,
                         "senderPhone"=>$sender
                             );
                 $transaction_details=$this->makeTopUp($top_data);
-                dd($transaction_details);
+                $transaction_details = json_decode($transaction_details,true);
+                if($transaction_details['status']== 'SUCCESSFUL'){
+                    $airtime = new AirTime();
+                    $airtime->amount = $request->amount;
+                    $airtime->airTimeRate()->associate($rate);
+                    $airtime->user()->associate($user);
+                    $airtime->bonus = $transaction_details['deliverdAmount']-$request->amount;
+                    $airtime->status = 'Successful';
+                    $airtime->save();
+                    $this->storePayment($airtime,$request->account,$transaction_details);
+
+                }
 
                
                
-                return redirect()->back();
+                return redirect()->back()->with('success',"Airtime top up of successfully made for $request->phone");
 
             }
             return redirect()->route('login');
