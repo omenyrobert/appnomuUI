@@ -31,7 +31,7 @@ class ReloadlyController extends Controller
             if($user){
                 if($user->role == 'admin'){
                     
-                    return view('payments.dashboards.index');
+                    return view('payments.dashboards.index')->with('page','Airtime|Utility|Dashboard');
                 }
                 return redirect()->back()->withErrors('Error','UnAuthorised!');
             }

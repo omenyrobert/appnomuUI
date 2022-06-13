@@ -19,6 +19,7 @@ class CreateElectricitiesTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->integer('amount')->unsigned();
             $table->integer('bonus')->unsigned();
+            $table->string('status')->default('Initiated');
             $table->foreign('electricity_rate_id')->references('id')->on('electricity_rates')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

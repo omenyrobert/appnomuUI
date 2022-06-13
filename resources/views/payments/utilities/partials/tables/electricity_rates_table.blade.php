@@ -5,8 +5,8 @@
                   </div> -->
                   
                   <div class="float-left">
-                    <h4 class="card-title">Airtime Offers/Promotions</h4>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-placement="top"data-bs-target="#create_airtime_rate">Create New Offer</button>
+                    <h4 class="card-title">Electricity Offers/Promotions</h4>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-placement="top"data-bs-target="#create_electricity_rate">Create New Offer</button>
                   </div>
                 </div>
                 <div class="card-body">

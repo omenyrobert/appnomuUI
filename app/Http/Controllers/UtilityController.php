@@ -20,6 +20,8 @@ class UtilityController extends Controller
             $user = User::find(Auth::id());
             if($user){
                 $billers = $this->getUtilityBillers();
+                $billers = json_decode($billers,true);
+                // dd($billers);
                 $e_rates = ElectricityRate::all();
                 return view('payments.utilities.index',[
                     'user'=>$user,
@@ -37,13 +39,21 @@ class UtilityController extends Controller
     }
 
     public function getElectricityRates(){
-        $e_rates = ElectricityRate::all();
-        return $e_rates;
+        $user = User::find(Auth::id());
+        if($user && $user->role == 'admin'){
+            $rates = ElectricityRate::paginate(10);
+            
+            return view('payments.utilities.rates',['rates'=>$rates,'user'=>$user,'billers'=>$billers])->with('page','Elctricity| Rates');
+        }
+        return redirect()->back()->withErrors('Error','You do not have permission to access this resource');
+    
+       
     }
 
     public function storeElectricityRate(Request $request){
         try {
             $user = User::find(Auth::id());
+            dd($user);
             if($user && $user->role == 'admin'){
                 $rate = new ElectricityRate();
                 $rate->lower_limit = $request->lower_limit;
@@ -81,6 +91,7 @@ class UtilityController extends Controller
 
     public function payUtility(Request $request){
         try {
+            // dd($request);
             $user = User::find(Auth::id());
             if($user){
                 $account = $user->account;
@@ -95,18 +106,23 @@ class UtilityController extends Controller
                     "useLocalAmount"=> false
                 );
                 $pay = $this->checkTransactionCapability($request,$user,0);
+                // dd($pay);
                 if($pay){
                     $pay_result = $this->payBill(json_encode($pay_details));
                     $pay_result = json_decode($pay_result,true);
+                    // dd($pay_result['status'] == 'PROCESSING');
                     if($pay_result['status'] == 'PROCESSING'){
-                        $rate = ElectricityRate::find($request->rate->id);
+                        $rate = ElectricityRate::find($request->rate_id);
+                        // dd($rate);
                         $umeme = new Electricity();
                         $umeme->electricityRate()->associate($rate);
+                        $umeme->user()->associate($user);
                         $umeme->amount = $request->amount;
                         $umeme->bonus = $rate->bonus * $request->amount/100;
                         $umeme->status = 'Initiated';
                         $umeme->save();
-                        $this->storePayment($umeme,$request->account,$pay_result);
+                        // dd($umeme);
+                        $this->storePayment($umeme,$request->source,$pay_result);
                         UtilityPaymentJob::dispatch($pay_result['id'],$pay_channel,$umeme,$request->source)->delay(now()->addSeconds(5));
                         return redirect()->back();
                     }
@@ -126,7 +142,7 @@ class UtilityController extends Controller
 
             }
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
     

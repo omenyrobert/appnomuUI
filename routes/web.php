@@ -561,7 +561,11 @@ Route::get('airtime/get/rate/{id}',[AirtimeController::class,'getRate'])->name('
 
 //utility routes
 Route::get('utilities/index',[UtilityController::class,'index'])->name('utilities.index');
-Route::post('utilities/pay/electricity',[UtilityController::class,'payBill'])->name('utility.pay.electricity');
+Route::get('utilities/electricity/rates',[UtilityController::class,'getElectricityRates'])->name('electricity.rate.index');
+
+Route::post('utilities/pay/electricity',[UtilityController::class,'payUtility'])->name('utility.pay.electricity');
+Route::post('utilities/rate/electricity/store',[UtilityController::class,'storeElectricityRate'])->name('electricity.rate.store');
+
 
 
 //flutterwave routes

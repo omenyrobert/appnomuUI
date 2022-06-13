@@ -58,30 +58,31 @@ trait AccountsOperationsTrait{
                 case 'debit':
                     switch ($type) {
                         case 'loans':
-                            $withdraw = withdraw::findOrFail($id);
-                            $account = $withdraw->user->account;
-                            if($withdraw->user->telephone == $withdraw->account_number){
-                                $account->Loan_Balance -= $withdraw->amount;
-                                $account->amount_withdrawn += $withdraw->amount;
+                            $model = withdraw::findOrFail($id);
+                            $account = $model->user->account;
+                            if($model->user->telephone == $model->account_number){
+                                $account->Loan_Balance -= $model->amount;
+                                $account->amount_withdrawn += $model->amount;
                                 $account->save();
                                 break;
                             }
                             
-                            $account->Loan_Balance -=$withdraw->amount-$withdraw->withdrawFee->fee;
-                            $account->amount_withdrawn += $withdraw->amount;
+                            $account->Loan_Balance -=$model->amount-$model->withdrawFee->fee;
+                            $account->amount_withdrawn += $model->amount;
                             $account->save();
                             break;
                         case 'savings':
-                            $withdraw = Withdraw::findOrFail($id);
-                            $account = $withdraw->user->account;
-                            $account->available_balance -= $withdraw->amount-$withdraw->withdrawFee->fee;
-                            $account->amount_withdrawn += $withdraw->amount ;
+                            $model = Withdraw::findOrFail($id);
+                            $account = $model->user->account;
+                            $account->available_balance -= $model->amount-$model->withdrawFee->fee;
+                            $account->amount_withdrawn += $model->amount ;
                             $account->save();
                             break;    
                         case 'payment':
-                            $payment = Payment::findOrFail($id);
-                            $account = $payment->user->account;
-                            $account->available_balance -= $payment->amount; //-$withdraw->withdrawFee->fee;
+                            $model = Payment::findOrFail($id);
+                            dd($model);
+                            $account = $model->user->account;
+                            $account->available_balance -= $model->amount; //-$withdraw->withdrawFee->fee;
                             $account->save();
                             break;
                     }                    
@@ -218,6 +219,7 @@ trait AccountsOperationsTrait{
             $transaction->operation =  $type;
             $transaction->status = 'Initiated';
             $transaction->save();
+            // dd($transaction);
             if($transaction){
                 $transaction->user->notify(new TransactionNotification($transaction));
                 return true;
@@ -264,36 +266,36 @@ trait AccountsOperationsTrait{
 
     }
     public function checkTransactionCapability(Request $request,User $user,$fee){
-        $validated = $request->validate([
-            'source'=>'required',
-            'amount'=>'required'
-        ]);
-        $account = $user->account;
-        if (!$user->sms_verified_at) {
-            return redirect()->route('profile')->withErrors(['Errors'=>'No Verified Phone Number Has Been Found Please Verify Your Phone Number Before You Can Withdraw Your Money']);
-        }
+        // $validated = $request->validate([
+        //     'source'=>'required',
+        //     'amount'=>'required'
+        // ]);
+        // $account = $user->account;
+        // if (!$user->sms_verified_at) {
+        //     return redirect()->route('profile')->withErrors(['Errors'=>'No Verified Phone Number Has Been Found Please Verify Your Phone Number Before You Can Withdraw Your Money']);
+        // }
 
-        if ($request->amount<1000) {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'Your Minimum Value of Withdraw Should be UGX.1000']);
-        }
+        // if ($request->amount<1000) {
+        //     # code...
+        //     return redirect()->back()->withErrors(['Errors'=>'Your Minimum Value of Withdraw Should be UGX.1000']);
+        // }
 
-        if($request->source=='savings'){
-            if(($request->amount+$fee) > $account->available_balance){
-                return  false;
+        // if($request->source=='savings'){
+        //     if(($request->amount+$fee) > $account->available_balance){
+        //         return  false;
             
-            }
-        }elseif ($request->source=='loans'){
-            if($request->account_number == $user->telephone){
-                if(($request->amount)>$account->Loan_Balance ){
-                    return  false;
-                }
+        //     }
+        // }elseif ($request->source=='loans'){
+        //     if($request->account_number == $user->telephone){
+        //         if(($request->amount)>$account->Loan_Balance ){
+        //             return  false;
+        //         }
 
-            }
-            if(($request->amount+$fee)>$account->Loan_Balance ||$request->amount == $account->Loan_Balance){
-                return  false;
-            }
-        }
+        //     }
+        //     if(($request->amount+$fee)>$account->Loan_Balance ||$request->amount == $account->Loan_Balance){
+        //         return  false;
+        //     }
+        // }
        return true;
     }
 
@@ -306,20 +308,21 @@ trait AccountsOperationsTrait{
     }
 
     public function storePayment($type,$pay_account,$details){
-       
+    //    dd($details);
         $payment = new Payment();
         $payment->paymentable()->associate($type);
+        $payment->user()->associate($type->user);
         $payment->amount = $type->amount;
         $payment->status = 'Initiated';
         $payment->source = $pay_account; // == 'savings'? 'savings': 'loans';
         $payment->save();
         $data = [
             'data'=>[
-                'reference'=>$details['customIdentifier'],
+                'reference'=> in_array('customIdentifier',$details) ? $details['customIdentifier'] : $details['id'] ,
                 'fee'=>0,
-                'amount'=>$details['requestedAmount'],
-                'full_name'=> $details['recipientPhone'],
-                'id'=> $details['transactionId']
+                'amount'=>in_array('requestedAmount',$details) ?$details['requestedAmount'] :$payment->amount,
+                'full_name'=> in_array('recipientPhone',$details) ?$details['recipientPhone'] :$payment->user->name,
+                'id'=> in_array('transactionId',$details) ? $details['transactionId'] : $details['id']
             ]
         ];
         $transaction = $this->storeTransaction('Payment',$payment->id,$data);
@@ -329,7 +332,9 @@ trait AccountsOperationsTrait{
     }
 
     public function notificationData($transaction){
+        // dd($transaction);
         $model = $transaction->transactionable;
+        // dd($model);
         switch ($transaction->status) {
             case 'Successfull':
                 $status = 'has been successfully processed on your account';
@@ -373,11 +378,11 @@ trait AccountsOperationsTrait{
             case 'Payment':
                 
                 switch ($model->paymentable_type) {
-                    case 'App\models\Airtime':
+                    case 'App\Models\Airtime':
                         $payment = 'airtime';
                         $title = 'Airtime payment';
                         break;
-                    case 'App\models\Electricity':
+                    case 'App\Models\Electricity':
                         $payment = 'electricity';
                         $title = 'Utility payment';
                         break;
