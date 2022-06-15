@@ -34,8 +34,7 @@ use App\Models\Country;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-$auth = new AuthenticationController();
-view()->share('auth',$auth);
+
 
 Route::get('/dashboard',[HomeController::class,'dashboard'])->name('dashboard');
 Route::get('/dashboard/admin',[HomeController::class,'adminDashboard'])->name('dashboard.admin');
@@ -43,13 +42,10 @@ Route::get('/dashboard/client',[HomeController::class,'clientDashboard'])->name(
 Route::get('/login', function () {
     view()->share('page','Login');
     $countries = Country::all();
-    return view('view.login',['countries'=>$countries]);
+    return view('auth.login',['countries'=>$countries]);
 })->name('login');
 
-Route::get('/register', function () {
-    view()->share('page','Register');
-    return view('view.register');
-});
+
 
 
 
@@ -60,30 +56,7 @@ Route::get('/reset-password', function () {
     return view('view.new_pass');
 })->name('reset_pass');
 
-Route::get('/tables', function () {
-    view()->share('page','Tables');
-    return view('view.tables');
-});
 
-Route::get('/savings', function () {
-    view()->share('page','My Savings');
-    return view('view.all-savings');
-})->name('all_savings');
-
-Route::get('/forms', function () {
-    view()->share('page','Forms');
-    return view('view.forms');
-});
-
-Route::get('/alliases', function () {
-    view()->share('page','User Alliase');
-    return view('view.alliases');
-});
-
-Route::get('/my-alliances', function () {
-    view()->share('page','My Alliases');
-    return view('view.my-alias');
-});
 
 Route::get('/profile', function () {
     view()->share('page','User Profile');
@@ -91,155 +64,44 @@ Route::get('/profile', function () {
 })->name('profile');
 
 
-Route::get('/deposit', function () {
-    view()->share('page','Make Deposit');
-    return view('view.deposit');
-});
 
-Route::get('/withdraws', function () {
-  	$sand = 0;
-  	if($sand==1){
-      	return redirect()->route('dashboard')->withErrors(['Errors'=>'System Withdraws Under Review Contact Support For More Information']);
-    }else{
-        view()->share('page','Make Withdraw');
-    	return view('view.withdraws');
-    }
-    
-});
 
-Route::get('/allSavings', function () {
-    view()->share('page','All Savings');
-    return view('view.alSavings');
-});
 
-Route::get('/make-article', function () {
-    view()->share('page','Articles');
-    return view('view.knowledgebase');
-});
-
-Route::get('/all-withdraws', function () {
-    view()->share('page','All Withdraws');
-    return view('view.all-withdraws');
-});
 
 // Route::get('/loans', function () {
 //     view()->share('page','Loans');
 //     return view('view.loans');
 // });
 
-Route::get('/my-refferals', function () {
-    view()->share('page','My Refferals');
-    return view('view.refferals');
-});
 
-Route::get('/users', function () {
-    view()->share('page','All Users');
-    return view('view.users');
-});
 
-// Route::get('/loan-chart', function () {
-//     view()->share('page','Loan Categories');
-//     return view('view.loan-categories');
-// });
+
 //loan categories=======
 Route::get('/loan-chart',[LoanCategoryController::class,'index'])->name('loan.categories.index');
 Route::post('/loan/category/store',[LoanCategoryController::class,'store'])->name('loan.categories.store');
 
-Route::get('/user-loans', function () {
-    view()->share('page','User Loans');
-    return view('view.user-loans');
-});
 
-Route::get('/loan-installments', function () {
-    view()->share('page','My Loan Installements');
-    return view('view.loan-instals');
-})->name('loan-installments');
 
-Route::get('/saving-categories', function () {
-    
-    view()->share('page','Savings Categories');
-    return view('view.saving-categories');
-});
 
-Route::get('/sub-categories', function () {
-    view()->share('page','Savings Sub Categories');
-    return view('view.sub-cate');
-});
 
-Route::get('/general', function () {
-    view()->share('page','Savings Sub Categories');
-    return view('view.general');
-});
 
-Route::get('/api-settings', function () {
-    view()->share('page','Savings Sub Categories');
-    return view('view.api-settings');
-});
+Route::post('/verify-email/{email}/{code}',[LoginController::class,'verifyUserEmail'])->name('verify.email');
+Route::post('/verify-phone',[LoginController::class,'verifyUserPhone'])->name('verify.phone');
+// Route::get('/verify-phone', function () {
+//     view()->share('page','Verify phone');
+//     return view('view.verify-phone');
+// })->name('verify2');
 
-Route::get('/verify', function () {
-    if (isset($_GET['e']) && isset($_GET['c'])) {
-        $ret = AuthenticationController::verifyUserEmail($_GET['e'],$_GET['c']);
-        if ($ret==1) {
-            view()->share('page','Verify Phone Number');
-            return view('view.verify-phone');
-        }
-    } else {
-        view()->share('page','Verify Email');
-        return view('view.verify');
-    }
-})->name('verify');
 
-Route::get('/verify-phone', function () {
-    view()->share('page','Verify phone');
-    return view('view.verify-phone');
-})->name('verify2');
-
-Route::get('/logout', function () {
-    $log = AuthenticationController::logout(session('user_id'));
-    view()->share('page','Verify phone');
-    return redirect()->route('login');
-});
 
 Route::get('/send_sms',function(){
     $sms = SmsController::sms_test(env('AFRICASTALKING_USERNAME'),env('AFRICASTALKING_APIKEY'));
     echo $sms;
 });
 
-Route::get('/approve', function () {
-    if (isset($_GET['l'])) {
-        # code...
-        $ret= AuthenticationController::approveLoan($_GET['l']);
-        if ($ret==1) {
-            # code...
-            return redirect()->back()->with('Success','Loan Has Been Approved Successfully');
-        } else {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'Loan Has Not Been Approved Successfully']);
-        }
-        
-    }else {
-        return redirect()->back()->withErrors(['Errors'=>'No Loans Selected']);
-        
-    }
-});
 
-Route::get('/deny', function () {
-    if (isset($_GET['l'])) {
-        # code...
-        $ret= AuthenticationController::denyLoan($_GET['l']);
-        if ($ret==1) {
-            # code...
-            return redirect()->back()->with('Success','Loan Has Been denied Successfully');
-        } else {
-            # code...
-            return redirect()->back()->withErrors(['Errors'=>'Loan Has Not Been denied Successfully']);
-        }
-        
-    }else {
-        return redirect()->back()->withErrors(['Errors'=>'No Loans Selected']);
-        
-    }
-});
+
+
 
 Route::get('/sendSms', function () {
     view()->share('page','Send SMS');
@@ -251,54 +113,10 @@ Route::get('/allSms', function () {
     return view('view.sentSms');
 });
 
-Route::get('/knowledge-base', function () {
-    view()->share('page','Knowledge Base Preview');
-    return view('view.know');
-})->name('man-k');
 
-Route::get('/manage-knowledge', function () {
-    if (isset($_GET['a']) && isset($_GET['s'])) {
-        # code...
-        $ret = AuthenticationController::manageknowlegebase($_GET['a'],$_GET['s']);
-        return redirect()->route('man-k');
-    } else {
-        # code...
-        return redirect()->back();
-    }
-    
-    view()->share('page','Knowledge Base Preview');
-    return view('view.know');
-});
 
-Route::get('/user-profile', function () {
-    if (isset($_GET['u'])) {
-        $user_idnt = AuthenticationController::getIdentifications($_GET['u']);
-        $User = AuthenticationController::getUserById($_GET['u']);
-        $user_accounts = AuthenticationController::getAccount($_GET['u']);
-        view()->share('page',$User[0]['name']);
-        view()->share('User',$User);
-        view()->share('user_accounts',$user_accounts);
-        view()->share('user_idnt',$user_idnt[0]);
-        return view('view.view-profile');
-    }
-    return redirect()->back()->withErrors(['Errors'=>'No User Selected']);
-});
 
-Route::get('/loan-view', function () {
-    if (isset($_GET['l'])) {
-        $loan = AuthenticationController::getLoanId($_GET['l']);
-        $installs = AuthenticationController::getloanInstallsbyloanId($_GET['l']);
-        $User = AuthenticationController::getUserById($loan[0]['user_id'] );
-        $user_accounts = AuthenticationController::getAccount($loan[0]['user_id']);
-        view()->share('page',$User[0]['name']);
-        view()->share('User',$User);
-        view()->share('user_accounts',$user_accounts);
-        view()->share('loan_installs',$installs );
-        view()->share('loan',$loan);
-        return view('view.viewLoan');
-    }
-    return redirect()->back()->withErrors(['Errors'=>'No Loan Selected']);
-});
+
 
 // loan routes
 Route::post('/request_loan',[LoanController::class,'requestLoan'])->name('loan.request'); 
@@ -351,44 +169,7 @@ Route::post('/backface', [AuthenticationController::class, 'storebackFace']);
 Route::post('/passport', [AuthenticationController::class, 'passport']);
 Route::post('/article', [AuthenticationController::class, 'giveknowlegebase']);
 
-Route::get('/pay_loan',function(){
-    if (isset($_GET['l']) && isset($_GET['m'])) {
-        if ($_GET['m']=='momo'){
-            $pay = FlutterwaveController::pay_loan($_GET['l']);
-            if ($pay==1) {
-                return redirect()->back()->withErrors(['Errors'=>'We cant Find the installement']);
-            }elseif ($pay==2) {
-                return redirect()->back()->withErrors(['Errors'=>'This Installement Cannot be Paid for now']);
-            }elseif ($pay==3) {
-                return redirect()->back()->withErrors(['Errors'=>'Transaction Failed To Start']);
-            }else{
-                return redirect($pay);
-            }
-        }elseif ($_GET['m']=='dash') {
-            # code...
-            $pay = AuthenticationController::payLoanByDash($_GET['l']);
-            if ($pay==1) {
-                return redirect()->back()->withErrors(['Errors'=>'We cant Find the installement']);
-            }elseif ($pay==2) {
-                return redirect()->back()->withErrors(['Errors'=>'This Installement Cannot be Paid for now']);
-            }elseif ($pay==3) {
-                return redirect()->back()->withErrors(['Errors'=>'No User Account Found Contact Support Please']);
-            } elseif ($pay==4) {
-                return redirect()->back()->withErrors(['Errors'=>'Account Balance Too Low To Complete This Loan Payment Please Choose another Payment Format']);
-            } elseif ($pay==6) {
-                return redirect()->back()->withErrors(['Errors'=>'User Loan Error Contact Support Please']);
-            } elseif ($pay==5) {
-                return redirect()->back()->withErrors(['Errors'=>'Transaction Failed To Start Try Again Latter Or Contact Support']);
 
-            } else{
-                return redirect()->route('loan-installments')->with('Success','Loan Payment Succesful');            
-            }
-        }
-        
-    }else {
-        return redirect()->back()->withErrors(['Errors'=>'Expected Parameters Missing ---- Broken URL']);
-    }
-});
 
 //Website routes
 
@@ -404,69 +185,8 @@ Route::get('/contact-us', function () {
     return view('view.contactus');
 });
 
-Route::get('/blogs', function () {
-    return view('view.blog');
-});
 
-Route::get('/terms', function () {
-    return view('view.terms');
-});
 
-Route::get('/Knowledge', function () {
-    return view('view.knowledge');
-});
-
-Route::get('/knowl-base', function () {
-    if (isset($_GET['id'])) {
-        $article = AuthenticationController::getknowlegebaseParticular($_GET['id']);
-        $paragrahs = AuthenticationController::getknowlegebaseParaphs($_GET['id']);
-        view()->share('paras',$paragrahs);
-        view()->share('articles',$article);
-        
-        return view('view.blog');
-    }else {
-        return redirect()->route('kb1');
-    }
-});
-
-Route::get('/knbase', function () {
-    if (isset($_GET['id'])) {
-        $article = AuthenticationController::getknowlegebaseParticular($_GET['id']);
-        $paragrahs = AuthenticationController::getknowlegebaseParaphs($_GET['id']);
-        view()->share('paras',$paragrahs);
-        view()->share('articles',$article);
-        session(['art_id'=>$_GET['id']]);
-        view()->share('page','Knowledge Base Paragraph Preview');
-        return view('view.knParagh');
-    }else {
-        return redirect()->route('kb1');
-    }
-})->name('nan-k');
-
-Route::get('/manage-para', function () {
-    if (isset($_GET['a']) && isset($_GET['s'])) {
-        # code...
-        $ret = AuthenticationController::manageknowlegebaseParagraph($_GET['a'],$_GET['s']);
-        return redirect()->back();
-    } else {
-        # code...
-        return redirect()->back();
-    }
-});
-
-Route::post('/paragraph',[AuthenticationController::class,'makeKnowledgeBaseParagrah']);
-
-Route::get('/privacy', function () {
-    return view('view.privacy');
-});
-
-Route::get('/faqs', function () {
-    return view('view.faq');
-});
-
-Route::get('/commercials', function () {
-    return view('view.commercial');
-});
 
 // Route::get('/foo', function () {
 //     Artisan::call('storage:link');

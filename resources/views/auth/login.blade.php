@@ -123,69 +123,43 @@
        </div>
       </div>
       <div class="col-md-6 login-left" >
-      <div class="login-div">
+      <div id="div-signin"  class="login-div">
         <h4 class="text-black signin-text"> SignIn Now To Get Yourself A Loan</h4>
         <br/>
-        <form id="form-login" class="foom" method="post" action="{{route('user.login')}}">
-        	@csrf
-          <label>Email</label>
-          <input type="email" name="email"class="form-control" placeholder="Enter Email" required/>
-          <br/>
-          <label>Password</label>
-          <input type="password" name="password" class="form-control" placeholder="Enter Password" required />
-          <br/>
-          <button type="submit" class="form-control text-black fw-bold" style="background-color: #ffa500;">Login </button>
-          <br/>
-          <div class="login-bottom">
-            <h6><input type="checkbox"/> Remember me</h6>&nbsp;&nbsp;&nbsp;<h6 id="forgot"> Forgot Password</h6>
-            </div>
-            <a type="button" id="btn-register" class="form-control text-black fw-bold" style="background-color: #ffa500;">Register</a>
-        </form>
+        @include('auth.partials.forms.signin')
+      </div>
+      <br>
+      <br>
+      <br>
+	  <div id="div-signup" class="login-div" hidden>
+        <h4 class="text-black signin-text"> SignUp Now To Get Yourself A Loan</h4>
         <br/>
-          <br/>
-          <br/>
-        <form id="form-signup" class="foom"  method="post" action="{{route('user.register')}}" hidden>
-        @csrf
-          <h4 class="text-black"> SignUp</h4>
-          <br/>
-          <label>Full Names</label>
-          <input type="text" class="form-control" name="name" placeholder="Enter your Full Names" required/>
-          <div class="invalid-feedback">you must choose a country</div>
-          <br/>
-          <label>Phone</label>
-          <input type="text" class="form-control" name="telephone" placeholder="Enter Phone Number" required/>
-          <div class="invalid-feedback">you must choose a country</div>
-          <br/>
-          <label>Email</label>
-          <input type="email" class="form-control" name"email"placeholder="Enter Email" required/>
-          <div class="invalid-feedback">you must choose a country</div>
-          <br/>
-          <label>Nationality</label>
-            <select name="country" id="country" class="form-select" aria-label="Default select example" >
-              <option value="select">select Nationality</option>
-              @foreach($countries as $country)
-                <option value="{{$country->ISO}}">{{$country->name}}</option>
-              @endforeach
-            </select>
-            <div class="invalid-feedback">you must choose a country</div>
-          <br/>
-          <label>refferer</label>
-          <input type="text" class="form-control" name"refferer" placeholder="Enter refferers code" />
-          <br/>
-          <label>Password</label>
-          <input type="password" class="form-control" name="password" placeholder="Enter Password" required />
-          <br/>
-          <label>Repeat Password</label>
-          <input type="password" class="form-control" placeholder="Repeat Password" required/>
-          <br/>
-          <button class="form-control text-black fw-bold" style="background-color: #ffa500;">Sign Up </button>
-          <br/>
-          <div class="login-bottom">
-            <h6><input type="checkbox"/> Remember me</h6>&nbsp;&nbsp;&nbsp;
-			/* <h6> Forgot Password</h6> */
-          </div>
-        </form>
-        
+          @include('auth.partials.forms.signup')
+	  </div>
+	  <div id="div-reset"  class="login-div" hidden>
+        <h4 class="text-black signin-text"> Reset Password And Login</h4>
+        <br/>
+          @include('auth.partials.forms.reset_password')
+	  </div>
+	  <div id="div-forgot"  class="login-div" hidden>
+        <h4 class="text-black signin-text"> Reset Password And Login</h4>
+        <br/>
+          @include('auth.partials.forms.forgot')
+	  </div>
+	  <div id="div-email"  class="login-div" hidden>
+        <h4 class="text-black signin-text"> Reset Password And Login</h4>
+        <br/>
+          @include('auth.partials.forms.emailtoken')
+	  </div>
+	  <div id="div-sms"  class="login-div" hidden>
+        <h4 class="text-black signin-text"> Reset Password And Login</h4>
+        <br/>
+          @include('auth.partials.forms.smstoken')
+	  </div>
+	 
+	
+         
+
       </div>
       </div>
     </div>
@@ -214,66 +188,100 @@
     <script src="https://demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/assets/libs/apexcharts/dist/apexcharts.min.js"></script>
     <!-- Chart JS -->
     <script src="https://demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/dist/js/pages/dashboards/dashboard1.js"></script>
-  </body>
+    <script>
+      $('#btn-register').on('click',function(e){
+      console.log('register clicked');
+        $('#form-signup').prop('hidden',false);
+		$('#div-signup').prop('hidden',false);
+		$('#div-signin').prop('hidden',true);
+		$('#form-login').prop('hidden',true);
+      });
+  
+      $('#forgot').on('click',function(e){
+      console.log('forgot clicked')
+	  $('#form-signup').prop('hidden',true);
+		$('#div-signup').prop('hidden',true);
+		$('#form-login').prop('hidden',true);
+		$('#div-signin').prop('hidden',true);
+		$('#div-forgot').prop('hidden',false);
+        $('#form-forgot').prop('hidden',false);
+		
+      });
 
-  <script>
-    $('#btn-register').on('click',function(e){
-		console.log('register clicked');
-      $('#form-signup').prop('hidden',false);
-      $('#form-login').prop('hidden',true);
-    });
-
-    $('#forgot').on('click',function(e){
-		console.log('forgot clicked')
-      $('#form-signup').prop('hidden',true);
-      $('#form-login').prop('hidden',true);
-      $('#form-forgot').prop('hidden',false);
-    });
-
-    /* $('#btn-forgot').on('click',function(e){
-      let data = $('#data').val();
-      $.ajax({
-        type:'POST',
-        url: '/forgot',
-        data:{
-          data,
-          _token : '{{csrf_token()}}'
-        },
-        success: function(response){
-          if(response.status == 'success'){
-            alert('a token has been sent to your email.');
-            $('#form-forgot').prop('hidden',true);
-            $('#verify-email').prop('hidden',false);
-            $('#email-email').val(response.email);
-            $('#email-token').val(response.token);
-          }
-        }
-      }); */
-
-      /* $('#btn-verify-email').on('click',function(e){
-      let e_token = $('#email-token').val();
-      let token = $('#verify-email-token').val();
-      if(e_token == token){
+	  
+  
+      $('#btn-forgot').on('click',function(e){
+        let data = $('#data_email').val();
+		console.log('email',data);
         $.ajax({
-          type:'POST',
+          type:'GET',
           url: '/forgot',
-          data:{
-            data,
-            _token : '{{csrf_token()}}'
-          },
+          data:{ data, _token: "{{csrf_token()}}"},
           success: function(response){
-            if(response.status == 'success'){
-              alert('an sms  token has been sent to your phone.');
-              $('#form-forgot').prop('hidden',true);
-              $('#form-reset').prop('hidden',false);
-              $('#forgot-email').val(response.email);
-              $('#forgot-token').val(response.token);
-            }
+			  console.log(response);
+            	if(response.status == 'success'){
+            		alert('a token has been sent to your email.');
+					$('#div-forgot').prop('hidden',true);
+            		$('#form-forgot').prop('hidden',true);
+					$('#div-email').prop('hidden',false);
+            		$('#verify-email').prop('hidden',false);
+            		$('#email-email').val(response.email);
+            		$('#email-token').val(response.token);
+            	}
           }
         });
-      }
-      $('#verify-email-token').addClass('is-invalid');      
-    }); */
+  
+        $('#btn-verify-email').on('click',function(e){
+        let e_token = $('#e_token').val();
+        let token = $('#email-token').val();
+		let email = $('#email-email').val();
+        if(e_token == token){
+          $.ajax({
+            type:'POST',
+            url: `/verify-email/{email}/{e_token}`,
+            data:{   '_token' : '{{csrf_token()}}'},
+            success: function(response){
+              if(response.status == 'success'){
+                alert('an sms  token has been sent to your phone.');
+                $('#div-email').prop('hidden',true);
+            	$('#verify-email').prop('hidden',true);
+				$('#div-sms').prop('hidden',false);
+            	$('#verify-sms').prop('hidden',false);
+            	$('#sms-email').val(response.email);
+            	$('#sms-token').val(response.token);
+              }
+            }
+          });
+        }
+        $('#verify-email-token').addClass('is-invalid');      
+      });
 
-  </script>
+	  $('#btn-sms').on('click',function(e){
+        let sms_token = $('#sms_token').val();
+        let token = $('#sms-token').val();
+		let email = $('#sms-email').val();
+        if(sms_token == token){
+          $.ajax({
+            type:'POST',
+            url: `/veriy-phone`,
+            data:{ email, sms_token,  '_token' : '{{csrf_token()}}'},
+            success: function(response){
+              if(response.status == 'success'){
+                /* alert('an sms  token has been sent to your phone.');
+                $('#div-email').prop('hidden',true);
+            	$('#verify-email').prop('hidden',true);
+				$('#div-sms').prop('hidden',false);
+            	$('#verify-sms').prop('hidden',false);
+            	$('#sms-email').val(response.email);
+            	$('#sms-token').val(response.token); */
+              }
+            }
+          });
+        }
+        $('#sms_token').addClass('is-invalid');      
+      });
+  
+    </script>
+  </body>
+
 </html>
