@@ -23,10 +23,10 @@ class ConfirmMail extends Mailable
     public $fullname;
     public function __construct($emailx,$codex)
     {
-        $user = User::where('email',$this->email)->first();
-        $this->fullname = $user->name;
         $this->email = $emailx;
         $this->code = $codex;
+        $user = User::where('email',$this->email)->first();
+        $this->fullname = $user->name;
     }
 
     /**

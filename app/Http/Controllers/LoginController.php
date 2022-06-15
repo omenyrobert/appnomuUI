@@ -111,7 +111,7 @@ class LoginController extends Controller
             $code = rand(111111,999999);
             $user->verify_token = $code;
             $user->save();
-            Mail::to($email)->send(new ConfirmMail($request->email,$code));
+            Mail::to($email)->send(new ConfirmMail($data,$code));
             // return redirect()->route('verify')->with(['email'=>$request->email]);
 
             return response()->json([
@@ -128,7 +128,8 @@ class LoginController extends Controller
     }
 
     public function verifyUserPhone(Request $request){
-        $user = User::find($request->id);
+        $data = $request->email;
+        $user = User::where('email',$data)->orWhere('telephone',$data)->first();
         if($user && $user->sms_token == $request->sms_token){
             $user->sms_verified_at = Carbon::now();
             $user->save();
