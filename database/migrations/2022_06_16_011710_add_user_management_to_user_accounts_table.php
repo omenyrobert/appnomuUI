@@ -13,13 +13,17 @@ class AddUserManagementToUserAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_accounts', function (Blueprint $table) {
-            $table->boolean('suspended')->default('false');
-            $table->boolean('blacklisted')->default('false');
+        Schema::table('user_account', function (Blueprint $table) {
+            $table->boolean('suspended')->default(false);
+            $table->boolean('blacklisted')->default(false);
+            $table->string('suspend_reason')->nullable();
             $table->timestamp('suspended_at')->nullable();
             $table->timestamp('unsuspended_at')->nullable();
+            $table->string('unsuspend_reason')->nullable();
             $table->timestamp('blacklisted_at')->nullable();
+            $table->string('blacklist_reason')->nullable();
             $table->timestamp('unblacklisted_at')->nullable();
+            $table->string('unblacklist_reason')->nullable();
         });
     }
 
@@ -30,7 +34,7 @@ class AddUserManagementToUserAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_accounts', function (Blueprint $table) {
+        Schema::table('user_account', function (Blueprint $table) {
             //
         });
     }
