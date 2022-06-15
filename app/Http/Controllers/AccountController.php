@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Loan;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,6 +44,79 @@ class AccountController extends Controller
             throw $th;
         }
         
+    }
+
+    public function suspendUser(Request $request,$id){
+        try {
+            $user = User::find(Auth::id());
+            if($user && $user->role == 'admin'){
+                $culprit = User::findOrFail($id);
+                $culprit->suspended = true;
+                $culprit->suspended_at = Carbon::now();
+                $culprit->unsuspended_at = Carbon::now()->addDays($request->period);
+                $culprit->suspend_reason = $request->reason;
+                $culprit->save();
+                return redirect()->back()->with('success','User suspended successfully');
+            }
+            return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function unSuspendUser(Request $request,$id){
+        try {
+            $user = User::find(Auth::id());
+            if($user && $user->role == 'admin'){
+                $culprit = User::findOrFail($id);
+                $culprit->suspended = false;
+                $culprit->unsuspended_at = Carbon::now();
+                $culprit->unsuspend_reason = $request->reason;
+                $culprit->save();
+                return redirect()->back()->with('success','User unsuspended successfully');
+            }
+            return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function blacklistUser(Request $request,$id){
+        try {
+            $user = User::find(Auth::id());
+            if($user && $user->role == 'admin'){
+                $culprit = User::findOrFail($id);
+                $culprit->blacklisted = true;
+                $culprit->blacklisted_at = Carbon::now();
+                $culprit->blacklist_reason = $request->reason;
+                $culprit->save();
+                return redirect()->back()->with('success','User blacklisted successfully');
+            }
+            return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function unBlacklistUser(Request $request,$id){
+        try {
+            $user = User::find(Auth::id());
+            if($user && $user->role == 'admin'){
+                $culprit = User::findOrFail($id);
+                $culprit->blacklisted = false;
+                $culprit->unblacklisted_at = Carbon::now();
+                $culprit->unblacklist_reason = $request->reason;
+                $culprit->save();
+                return redirect()->back()->with('success','User unblacklisted successfully');
+            }
+            return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 
     //show an account

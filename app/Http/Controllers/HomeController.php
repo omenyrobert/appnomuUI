@@ -37,7 +37,7 @@ class HomeController extends Controller
                 $withdraws = $user->withdraws()->orderBy('created_at','desc')->paginate(10);
                 $savings = $user->savings()->orderBy('created_at','desc')->paginate(10);
                 $identification = $user->identification;
-                return view('view.index',['user'=>$user,'loans'=>$loans,'withdraws'=>$withdraws,'savings'=>$savings,'identification'=>$identification])
+                return view('accounts.client_index',['user'=>$user,'loans'=>$loans,'withdraws'=>$withdraws,'savings'=>$savings,'identification'=>$identification])
                     ->with('page','dashboard');
             }
             return redirect()->route('login')->withErrors('errors','please login to access your account');

@@ -113,7 +113,9 @@ class User extends Authenticatable
     public function airtimes(){
         return $this->hasMany(AirTime::class);
     }
-
+    public function electricities(){
+        return $this->hasMany(Electricity::class);
+    }
     public function payments(){
         return $this->hasMany(Payment::class);
     }
