@@ -141,19 +141,7 @@ Route::get('/rave/callback', [FlutterwaveController::class, 'callback'])->name('
 Route::post('/loginty',[LoginController::class,'authenticate'])->name('user.login');
 Route::post('/register_user',[LoginController::class,'register'])->name('user.register');
 Route::get('/logout',[LoginController::class,'logout'])->name('user.logout');
-// Route::post('/register_user',[AuthenticationController::class,'signUpUser']);
-// Route::post('/loginty',[AuthenticationController::class,'loginUserx']);
-// Route::post('/request_loan',[AuthenticationController::class,'requestLoan']);  //request loan
-// Route::post('/save-alliaces',[AuthenticationController::class,'saveAliases']);
-// Route::get('/dashboard', function () {
-//     if (session('dashboard')==null) {
-//         return redirect()->route('login');
-//     }else {
-//         view()->share('page','Dashboard');
-//         return view('view.index');
-//     }
-// })->name('dashboard');
-// Route::post('/confirm-alliaces',[AuthenticationController::class,'confirmAlliances']);
+//====alliance routes
 Route::post('/save-alliaces',[AllianceController::class,'store'])->name('alliance.store');
 Route::post('/confirm-alliaces',[AllianceController::class,'confirmAlliance'])->name('alliance.confirm');
 Route::get('alliances',[AllianceController::class,'index'])->name('alliance.index');
@@ -292,3 +280,5 @@ Route::post('/pay-installment',[FlutterwaveController::class,'payLoanInstallment
 
 Route::webhooks('/flutterwave-webhook','flutterwave');
 Route::webhooks('/reloadly-webhook','reloadly');
+
+//account mgt routes

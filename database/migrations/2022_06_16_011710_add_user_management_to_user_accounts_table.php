@@ -14,8 +14,7 @@ class AddUserManagementToUserAccountsTable extends Migration
     public function up()
     {
         Schema::table('user_account', function (Blueprint $table) {
-            $table->boolean('suspended')->default(false);
-            $table->boolean('blacklisted')->default(false);
+            $table->enum('status',['active','inactive','suspended','blacklisted'])->default('inactive');
             $table->string('suspend_reason')->nullable();
             $table->timestamp('suspended_at')->nullable();
             $table->timestamp('unsuspended_at')->nullable();
