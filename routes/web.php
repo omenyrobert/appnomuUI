@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AirtimeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticationController;
@@ -282,3 +283,8 @@ Route::webhooks('/flutterwave-webhook','flutterwave');
 Route::webhooks('/reloadly-webhook','reloadly');
 
 //account mgt routes
+Route::post('/account/change/limit',[AccountController::class,'changeLoanLimit'])->name('account.change.limit');
+Route::post('/account/blacklist',[AccountController::class,'blacklistUser'])->name('account.blacklist');
+Route::post('/account/unblacklist',[AccountController::class,'unBlacklistUser'])->name('account.unblacklist');
+Route::post('/account/suspend',[AccountController::class,'suspendUser'])->name('account.suspend');
+Route::post('/account/unsuspend',[AccountController::class,'unSuspendUser'])->name('account.unsuspend');

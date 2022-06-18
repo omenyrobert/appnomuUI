@@ -1,4 +1,4 @@
-<form action="{{route('account.status',['action'=>'unsuspend'])}}" method="post" class="my-auto mx-auto border border-1 my-2 modal-forms">
+<form action="{{route('account.unsuspend')}}" method="post" class="my-auto mx-auto border border-1 my-2 modal-forms">
     @csrf
     <div class="row mt-5 ">
     <input id="id_account_unsuspend" type="number" name="id"class="form-control mt-2 account_id" hidden />

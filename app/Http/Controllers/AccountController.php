@@ -25,35 +25,25 @@ class AccountController extends Controller
             //throw $th;
         }
     }
-    //change loan limit
-    public function updateLoanLimit(Request $request,$id){
-        try {
-            $logged = User::find(Auth::id());
-            if($logged->role == 'admin'){
-                $user = User::find($id);
 
-                if($user){
-                    $account = $user->account;
-                    $account->loan_limit = (int)$request->loan_limit;
-                    $account->save();
-                }
-                return response('user account does not exist',401);
-            }
-            return response('unathorized',401);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-        
-    }
-
-    public function suspendUser(Request $request,$id){
+    public function suspendUser(Request $request){
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $culprit = User::findOrFail($id);
-                $culprit->suspended = true;
+                $culprit = Account::findOrFail($request->id);
+                $culprit->status = 'suspended';
                 $culprit->suspended_at = Carbon::now();
-                $culprit->unsuspended_at = Carbon::now()->addDays($request->period);
+                switch($request->duration){
+                    case 'days':
+                        $culprit->unsuspended_at = Carbon::now()->addDays($request->period);
+                        break;
+                    case 'weeks':
+                        $culprit->unsuspended_at = Carbon::now()->addWeeks($request->period);
+                        break;
+                    case 'months':
+                        $culprit->unsuspended_at = Carbon::now()->addMonths($request->period);
+                        break;
+                    }
                 $culprit->suspend_reason = $request->reason;
                 $culprit->save();
                 return redirect()->back()->with('success','User suspended successfully');
@@ -69,8 +59,8 @@ class AccountController extends Controller
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $culprit = User::findOrFail($id);
-                $culprit->suspended = false;
+                $culprit = Account::findOrFail($request->id);
+                $culprit->status = 'inactive';
                 $culprit->unsuspended_at = Carbon::now();
                 $culprit->unsuspend_reason = $request->reason;
                 $culprit->save();
@@ -83,16 +73,16 @@ class AccountController extends Controller
         }
     }
 
-    public function blacklistUser(Request $request,$id){
+    public function blacklistUser(Request $request){
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $culprit = User::findOrFail($id);
-                $culprit->blacklisted = true;
+                $culprit = Account::findOrFail($request->id);
+                $culprit->status = 'blacklisted';
                 $culprit->blacklisted_at = Carbon::now();
                 $culprit->blacklist_reason = $request->reason;
                 $culprit->save();
-                return redirect()->back()->with('success','User blacklisted successfully');
+                return redirect()->back()->with('success','User Account blacklisted successfully');
             }
             return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
 
@@ -101,12 +91,12 @@ class AccountController extends Controller
         }
     }
 
-    public function unBlacklistUser(Request $request,$id){
+    public function unBlacklistUser(Request $request){
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $culprit = User::findOrFail($id);
-                $culprit->blacklisted = false;
+                $culprit = Account::findOrFail($request->id);
+                $culprit->status = 'inactive';
                 $culprit->unblacklisted_at = Carbon::now();
                 $culprit->unblacklist_reason = $request->reason;
                 $culprit->save();
@@ -162,12 +152,12 @@ class AccountController extends Controller
 
     }
 
-    public function changeLoanLimit(Request $request,$id){
+    public function changeLoanLimit(Request $request){
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $account = Account::findOrFail($id);
-                $account->Loan_Limit = (int)$request->loan_limit;
+                $account = Account::findOrFail($request->id);
+                $account->Loan_Limit = (int)$request->new_limit;
                 $account->save();
                 return redirect()->back()->with('success','loan limit reset successfully');
             }

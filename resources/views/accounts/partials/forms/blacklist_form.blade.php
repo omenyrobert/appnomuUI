@@ -1,4 +1,4 @@
-<form action="{{route('account.status',['action'=>'blacklist'])}}" method="post" class="my-auto mx-auto border border-1 my-2 modal-forms">
+<form action="{{route('account.blacklist')}}" method="post" class="my-auto mx-auto border border-1 my-2 modal-forms">
     @csrf
     <div class="row mt-5 ">
     <input id="id_account_blacklist" type="number" name="id"class="form-control mt-2 account_id" hidden />
