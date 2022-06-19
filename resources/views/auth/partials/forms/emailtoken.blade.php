@@ -1,9 +1,9 @@
 <form id="veriy-email" class="foom" method="post" action="{{route('user.login')}}" >
         	@csrf
-    <h4>Email Verification Token</h4>
+    <!-- <h4>Email Verification Token</h4> -->
     <label>Token</label>
     <input type="number" id="e_token"  name="token"class="form-control" placeholder="Enter Email Token" required/>
-    <div class="invalid-feedback">enter correct oken</div>
+    <div class="invalid-feedback">enter correct token</div>
 
     <input type="email" id="email-email" name="email"class="form-control" placeholder="Enter Email Token" hidden/>
     <input type="number" id="email-token" name="email-token"class="form-control" placeholder="Enter Email Token" hidden/>

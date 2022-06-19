@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\LoanTrait;
 use App\Models\Loan;
 use App\Models\LoanCategory;
 use App\Models\Repayment;
@@ -16,7 +17,7 @@ use App\Models\Country;
 class LoanController extends Controller
 {
     
-    use RepaymentsTrait,SMSTrait;
+    use RepaymentsTrait,SMSTrait,LoanTrait;
 
     public function create(){
 
@@ -28,29 +29,11 @@ class LoanController extends Controller
             ]);
     
             $user = User::findOrFail(Auth::id());
-            if ($user->NIN ==null || $user->card_no == null || $user->address == null) {
-                return redirect()->route('profile')->withErrors(['Errors'=>'Your Profile Is not Set Up fully ']);
-            }
-    
-            $outstanding_loan_count = $user->loans()->where('status',6)->orWhere('status',4)->count();
-            // $loan_cat = AuthenticationController::getLoanByCatID($request['category']);
             $category = LoanCategory::find($request->category);
-            if ($outstanding_loan_count  > 0) {
-                return redirect()->back()->withErrors(['Errors'=>'You Have an Outstanding Loan ']);
-            }
-            
-            $ally_count = $user->alliances()->count();
-            if ($ally_count < 2) {
-                # code...
-                return redirect()->back()->withErrors(['Errors'=>'You Dont Have enough Allianses to qualify For a loan,Add alliance and try again later']);
-    
-            }
+            $this->checkLoanLegibilityStatus($category,$user);
             $uloan = 'LN-'.rand(11111,99999);
             $pay = 0;
             $status = 5;
-            if($user->account->Loan_Limit < $category->loan_amount){
-                return redirect()->back()->withErrors(['Errors'=>'Your loan limit is '.$user->loan_limit .'you cannot borrow above your loan limit']);
-            }
     
             $loan = new Loan();
             $loan->user()->associate($user);

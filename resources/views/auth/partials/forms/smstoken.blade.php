@@ -1,14 +1,14 @@
 <form id="verify-sms" class="foom" method="post" action="{{route('user.login')}}" >
         	@csrf
     <label>Token</label>
-    <input type="number" id="sms_token"  name="token"class="form-control" placeholder="Enter Email Token" required/>
+    <input type="number" id="sms-token"  name="token"class="form-control" placeholder="Enter SMS Token" required/>
     <div class="invalid-feedback">enter correct token</div>
 
     <input type="email" id="sms-email" name="email"class="form-control" placeholder="Enter Email Token" hidden/>
     <input type="number" id="sms-token" name="email-token"class="form-control" placeholder="Enter Email Token" hidden/>
     <br/>
     
-    <button type="btn-sms" class="form-control text-black fw-bold" style="background-color: #ffa500;">Enter </button>
+    <button id="btn-sms" type="button" class="form-control text-black fw-bold" style="background-color: #ffa500;">Enter </button>
     <br/>
     <!-- <div class="login-bottom">
          <h6><input type="checkbox"/> Remember me</h6>&nbsp;&nbsp;&nbsp;<h6 id="forgot"> Forgot Password</h6> -->

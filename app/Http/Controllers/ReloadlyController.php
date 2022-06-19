@@ -18,8 +18,11 @@ class ReloadlyController extends Controller
     }
     public function playground(){
         $user = User::find(Auth::id());
-        $response = $this->payBill($user);
+        $response = $this->getUtilityBillers();
         $response = json_decode($response,true);
+        // foreach($response['content'] as $key){
+        //     dump($key['name']);
+        // }
         dd($response);
         return view('payments.dashboards.client_dashboard',['response'=>$response,'user'=>$user]);
 

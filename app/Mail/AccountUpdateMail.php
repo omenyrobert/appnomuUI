@@ -6,27 +6,19 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Http\Controllers\AuthenticationController as Auth;
-use App\Models\User;
 
-class ResetPassword extends Mailable
+class AccountUpdateMail extends Mailable 
 {
     use Queueable, SerializesModels;
-
+    public $update;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public $email;
-    public $code;
-    public $fullname;
-    public function __construct($codex,User $user)
+    public function __construct($update)
     {
-        //
-        $this->email = $user->email;
-        $this->code = $codex;
-        $this->fullname = $user->name;
+        $this->update = $update;
     }
 
     /**
@@ -36,7 +28,6 @@ class ResetPassword extends Mailable
      */
     public function build()
     {
-        return $this->view('email.resetPass');
-        
+        return $this->view('email.account_update');
     }
 }

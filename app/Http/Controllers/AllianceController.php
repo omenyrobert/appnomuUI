@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\SMSTrait;
 use Illuminate\Http\Request;
 use App\Models\Alliance;
 use App\Models\User;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AllianceController extends Controller
 {
-    
+    use SMSTrait;
 
     public function store(Request $request){
         try {
@@ -31,22 +32,25 @@ class AllianceController extends Controller
                 if($user->NIN == $request->nin){
                     return redirect()->back()->withErrors(['Errors'=>'You can not use your own NIN']);
                 }
-                $user_id = rand(111111,999999);
+                $alliance = Alliance::where('NIN',$request->nin)->first();
+                if($alliance){
+                    return redirect()->back()->withErrors(['Errors'=>'this alliance/Guarantor is already in use in the system. Enter a new one']);
+
+                }
                 $sms_code = rand(111111,999999);
                 $alliance = new Alliance();
                 $alliance->user()->associate($user);
-                $alliance->refferer = $user->user_id;
                 $alliance->relationship = $request->relationship;
                 $alliance->NIN =  $request->nin;
                 $alliance->Card_No =$request->card_no;
                 $alliance->name = $request->name;
                 $alliance->sms_token = $sms_code;
                 $alliance->Phone_Number = $request->telephone;
-                $alliance->Uuser_id = $user_id;
                 $alliance->save();
                 if ($alliance) {
                     # code...
-                    $ret = SmsController::verify_alliases_phone($alliance->Phone_Number,$sms_code,session('user_id'),$user->name,$alliance->name);
+                    $ret = $this->verifyAlliance($alliance->Phone_Number,$sms_code,$user,$alliance->name);
+                    // $ret = SmsController::verify_alliases_phone($alliance->Phone_Number,$sms_code,session('user_id'),$user->name,$alliance->name);
                     return redirect()->back()->with('Success','Alliance Saved Successfully');
                 }else {
                     # code...
@@ -67,6 +71,7 @@ class AllianceController extends Controller
             $alliance = $user->alliances()->where('sms_token',$request->token)->first();
             if($alliance)  {
                $alliance->sms_verified_at = Carbon::now();
+               $alliance->save();
                return redirect()->back()->with('Success','Alliance Successfully Confirmed');
             }
             return redirect()->back()->withErrors(['Errors'=>'Unknown alliance or Wrong Token']);

@@ -13,6 +13,7 @@ use App\Models\Repayment;
 use App\Models\Student;
 use Carbon\Carbon;
 use AfricasTalking\SDK\AfricasTalking;
+use App\Http\Traits\LoanTrait;
 use App\Models\Country;
 use App\Models\Grade;
 use App\Models\Identification;
@@ -21,7 +22,7 @@ use Illuminate\Http\Request;
 
 class SomaLoanController extends Controller
 {
-    use SMSTrait,RepaymentsTrait;
+    use SMSTrait,RepaymentsTrait,LoanTrait;
     //dashboard access
     public function somaDashboard(){
         $user = User::findOrFail(Auth::id());
@@ -249,7 +250,7 @@ class SomaLoanController extends Controller
             if($user){
                 $student = Student::findOrFail($id);
                 $loan_category = LoanCategory::find($request->loan_category);
-                // dd($loan_category);
+                $this->checkLoanLegibilityStatus($loan_category,$user);
                 $soma = new SomaLoan();
                 $soma->user()->associate($user);
                 $soma->student()->associate($student);
@@ -280,9 +281,9 @@ class SomaLoanController extends Controller
                 if($soma){
                     // dd($soma);
                     
-                    // $message = 'Dear '. $user->name .', Your '.$soma->SLN_id .' of '.$soma->principal .' has been requested pending approval';
+                    $message = 'Dear '. $user->name .', Your '.$soma->SLN_id .' of '.$soma->principal .' has been requested pending approval';
                     
-                    // $smsStatus = $this->sendSMS($message,$user->telephone);
+                    $smsStatus = $this->sendSMS($message,$user->telephone,'Soma Loan Request',$user);
                     // $this->show($soma->id);
                     return redirect()->route('soma.show',['id'=>$soma->id]);
                 }
@@ -308,7 +309,7 @@ class SomaLoanController extends Controller
                     $user = $loan->user; 
                     $last_message_string = $loan_n_string['last_message_string'];
                     $message = 'Dear '. $user->name .', Your '.$loan->SLN_id .' of '.$loan->principal .' has been '.$loan->status .$last_message_string;                    
-                    $sms_status = $this->sendSMS($message,$user->telephone);
+                    $sms_status = $this->sendSMS($message,$user->telephone,'Loan Processing',$user);
                     // for(;$sms_status != 'success';){
                     //     $sms_status = $this->sendSMS($message,$user->telephone);
                     // }

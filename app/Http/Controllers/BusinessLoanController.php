@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\LoanTrait;
 use App\Http\Traits\SMSTrait;
 use App\Http\Traits\RepaymentsTrait;
 use App\Models\Business;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BusinessLoanController extends Controller
 {
-    use SMSTrait,RepaymentsTrait;
+    use SMSTrait,RepaymentsTrait,LoanTrait;
     //show all business loans
     public function index(){
         try {
@@ -199,9 +200,10 @@ class BusinessLoanController extends Controller
             $user = User::findOrFail(Auth::id());
             if($user){
                 // dd($user->created_at->addDays(5) < Carbon::now());
-                if ($user->created_at->addDays(5) < Carbon::now()) {
+                if ($user->created_at->addDays(90) < Carbon::now()) {
                     $business = Business::find($id);
                     $loan_category = LoanCategory::find($request->loan_category);
+                    $this->checkLoanLegibilityStatus($loan_category,$user);
                     $loan = new BusinessLoan();
                     $loan->user()->associate($user);
                     $loan->business()->associate($business);

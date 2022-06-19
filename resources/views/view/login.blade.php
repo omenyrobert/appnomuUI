@@ -187,6 +187,27 @@
         </form>
         
       </div>
+      /* 
+	  <div id="div-reset"  class="login-div" hidden>
+        <h4 class="text-black signin-text"> Reset Password And Login</h4>
+        <br/>
+          @include('auth.partials.forms.reset_password')
+	  </div>
+	  <div id="div-forgot"  class="login-div" hidden>
+        <h4 class="text-black signin-text"> Reset Password And Login</h4>
+        <br/>
+          @include('auth.partials.forms.forgot')
+	  </div>
+	  <div id="div-email"  class="login-div" hidden>
+        <h4 class="text-black signin-text"> Reset Password And Login</h4>
+        <br/>
+          @include('auth.partials.forms.emailtoken')
+	  </div>
+	  <div id="div-sms"  class="login-div" hidden>
+        <h4 class="text-black signin-text"> Reset Password And Login</h4>
+        <br/>
+          @include('auth.partials.forms.smstoken')
+	  </div> */
       </div>
     </div>
     <div class="chat-windows"></div>

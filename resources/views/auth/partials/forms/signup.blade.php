@@ -3,15 +3,15 @@
           <h4 class="text-black"> SignUp</h4>
           <br/>
           <label>Full Names</label>
-          <input type="text" class="form-control" name="name" placeholder="Enter your Full Names" required/>
+          <input type="text" id="name" class="form-control" name="name" placeholder="Enter your Full Names" required/>
           <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>Phone</label>
-          <input type="text" class="form-control" name="telephone" placeholder="Enter Phone Number" required/>
+          <input type="text" id="telephone" class="form-control" name="telephone" placeholder="Enter Phone Number" required/>
           <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>Email</label>
-          <input type="email" class="form-control" name"email"placeholder="Enter Email" required/>
+          <input type="email" id="email" class="form-control" name="email"placeholder="Enter Email" required/>
           <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>Nationality</label>
@@ -24,15 +24,15 @@
             <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>refferer</label>
-          <input type="text" class="form-control" name"refferer" placeholder="Enter refferers code" />
+          <input type="number" id="referrer" class="form-control" name="refferer" placeholder="Enter refferers code" />
           <br/>
           <label>Password</label>
-          <input type="password" class="form-control" name="password" placeholder="Enter Password" required />
+          <input type="password" id="password" class="form-control" name="password" placeholder="Enter Password" required />
           <br/>
           <label>Repeat Password</label>
-          <input type="password" class="form-control" placeholder="Repeat Password" required/>
+          <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Repeat Password" required/>
           <br/>
-          <button class="form-control text-black fw-bold" style="background-color: #ffa500;">Sign Up </button>
+          <button id="btn-signup" class="form-control text-black fw-bold" style="background-color: #ffa500;">Sign Up </button>
           <br/>
           <div class="login-bottom">
             <h6><input type="checkbox"/> Remember me</h6>&nbsp;&nbsp;&nbsp;

@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\SMSTrait;
+use App\Mail\AccountUpdateMail;
 use App\Models\Account;
 use App\Models\Loan;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AccountController extends Controller
 {
+    use SMSTrait;
     public function index(){
         try {
             $user=User::find(Auth::id());
@@ -22,7 +26,7 @@ class AccountController extends Controller
 
             
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -30,28 +34,31 @@ class AccountController extends Controller
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $culprit = Account::findOrFail($request->id);
-                $culprit->status = 'suspended';
-                $culprit->suspended_at = Carbon::now();
+                $account = Account::findOrFail($request->id);
+                $account->status = 'suspended';
+                $account->suspended_at = Carbon::now();
                 switch($request->duration){
                     case 'days':
-                        $culprit->unsuspended_at = Carbon::now()->addDays($request->period);
+                        $account->unsuspended_at = Carbon::now()->addDays($request->period);
                         break;
                     case 'weeks':
-                        $culprit->unsuspended_at = Carbon::now()->addWeeks($request->period);
+                        $account->unsuspended_at = Carbon::now()->addWeeks($request->period);
                         break;
                     case 'months':
-                        $culprit->unsuspended_at = Carbon::now()->addMonths($request->period);
+                        $account->unsuspended_at = Carbon::now()->addMonths($request->period);
                         break;
                     }
-                $culprit->suspend_reason = $request->reason;
-                $culprit->save();
+                $account->suspend_reason = $request->reason;
+                $account->save();
+                $suspend_date = Carbon::parse($account->unsuspended_at)->toFormattedDateString();
+                $message = "Dear $account->user->name your account at Appnomu has been suspended for $request->period $request->duration until $suspend_date due to $account->suspend_reason";
+                $this->sendSMS($message,$account->user->phone,'Account Suspension',$account->user);
                 return redirect()->back()->with('success','User suspended successfully');
             }
             return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
 
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -59,17 +66,19 @@ class AccountController extends Controller
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $culprit = Account::findOrFail($request->id);
-                $culprit->status = 'inactive';
-                $culprit->unsuspended_at = Carbon::now();
-                $culprit->unsuspend_reason = $request->reason;
-                $culprit->save();
+                $account = Account::findOrFail($request->id);
+                $account->status = 'inactive';
+                $account->unsuspended_at = Carbon::now();
+                $account->unsuspend_reason = $request->reason;
+                $account->save();
+                $message = "Dear $account->user->name suspension of your account at Appnomu has been lifted. You can now transact normally";
+                $this->sendSMS($message,$account->user->phone,'Account Unsuspension',$account->user);
                 return redirect()->back()->with('success','User unsuspended successfully');
             }
             return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
 
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -77,11 +86,14 @@ class AccountController extends Controller
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $culprit = Account::findOrFail($request->id);
-                $culprit->status = 'blacklisted';
-                $culprit->blacklisted_at = Carbon::now();
-                $culprit->blacklist_reason = $request->reason;
-                $culprit->save();
+                $account = Account::findOrFail($request->id);
+                $account->status = 'blacklisted';
+                $account->blacklisted_at = Carbon::now();
+                $account->blacklist_reason = $request->reason;
+                $account->save();
+                $message = "Dear $account->user->name your account at Appnomu has been blacklisted due to $account->blacklist_reason .Contact admin for any petitions";
+                $this->sendSMS($message,$account->user->phone,'Account Blacklisting',$account->user);
+                Mail::to($account->user)->send(new AccountUpdateMail($message));
                 return redirect()->back()->with('success','User Account blacklisted successfully');
             }
             return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
@@ -95,17 +107,20 @@ class AccountController extends Controller
         try {
             $user = User::find(Auth::id());
             if($user && $user->role == 'admin'){
-                $culprit = Account::findOrFail($request->id);
-                $culprit->status = 'inactive';
-                $culprit->unblacklisted_at = Carbon::now();
-                $culprit->unblacklist_reason = $request->reason;
-                $culprit->save();
+                $account = Account::findOrFail($request->id);
+                $account->status = 'inactive';
+                $account->unblacklisted_at = Carbon::now();
+                $account->unblacklist_reason = $request->reason;
+                $account->save();
+                $message = "Dear $account->user->name your account at Appnomu has been unblacklisted. You can now resume transactions normally";
+                $this->sendSMS($message,$account->user->phone,'Account Unblacklisting',$account->user);
+                Mail::to($account->user)->send(new AccountUpdateMail($message));
                 return redirect()->back()->with('success','User unblacklisted successfully');
             }
             return redirect()->back()->withErrors('Error','you do not have permission to perform this action');
 
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
     }
 
@@ -159,6 +174,10 @@ class AccountController extends Controller
                 $account = Account::findOrFail($request->id);
                 $account->Loan_Limit = (int)$request->new_limit;
                 $account->save();
+                $country = $account->user->country;
+                $message = "Dear $account->user->name your account at Appnomu has received a new loan limit of $account->Loan_Limit $country->currency_code. You can now borrow loan to a maximum tune of $account->Loan_Limit $country->currency_code";
+                $this->sendSMS($message,$account->user->phone,'New Loan Limit',$account->user);
+                Mail::to($account->user)->send(new AccountUpdateMail($message));
                 return redirect()->back()->with('success','loan limit reset successfully');
             }
             return redirect()->route('login')->withErrors('error','Unauthorised');

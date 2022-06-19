@@ -12,6 +12,7 @@ use App\Models\Repayment;
 use App\Models\Saving;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\SMS;
 use App\Models\Withdraw;
 use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
@@ -101,9 +102,27 @@ class RefactorStructure extends Command
 
         $this->reStructureWithdrawsTable();
         $this->reStructureTransactions();
+        $this->smsTableRestrucrure();
         return 0;
     }
 
+   
+    private function smsTableRestrucrure(){
+        $this->info('fetching all sent SMSes');
+        $all_sms = SMS::all();
+        $this->info('finished fetching all sent SMSes');
+        $this->info('Attaching each  SMS to a user');
+        foreach($all_sms as $sms){
+            $user = User::where('user_id',$sms->User_id)->first();
+            if($user){
+                $sms->user()->associate($user);
+                $sms->save();
+            }
+            $this->error("user for this sms not found");
+        }
+
+
+    }
    
     private function reStructureWithdrawsTable(){
         $this->info('fetch all withdraws');

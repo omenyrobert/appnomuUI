@@ -2,13 +2,14 @@
 namespace App\Http\Traits;
 
 use AfricasTalking\SDK\AfricasTalking;
+use App\Models\SMS;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 trait SMSTrait{
 
-    public function sendSMS($message,$phone,$title,$user_id=null){
+    public function sendSMS($message,$phone,$title,$user){
         try {
             if(substr($phone,0,1)=='0'){
                 $user = User::where('telephone',$phone)->first();
@@ -20,70 +21,47 @@ trait SMSTrait{
             }
     
             $sms = new AfricasTalking(env('AFRICASTALKING_USERNAME') ,env('AFRICASTALKING_APIKEY'));
-            $result = $sms->sms()->send(['to'=>$tel,'message'=>$message,'from'=>'Appnomu']);
-            if($result['status'] == 'success'){
-                $this->saveSms($tel,$title,$message,$result['status'],$user_id ? $user_id:$user->user_id);
-                return $result['status'];
+            $result = $sms->sms()->send(['to'=>$phone,'message'=>$message]);
+            // dd($result);
+            $sms_data = json_decode(json_encode($result['data'],true));
+            $sms_status = get_object_vars(get_object_vars(get_object_vars($sms_data)['SMSMessageData'])['Recipients'][0])['status'];
+            if($sms_status == 'Success'){
+                $this->saveSms($phone,$title,$message,$result['status'],$user);
             }
-            return $result['status'];
+            return $sms_status;
         } catch (\Throwable $th) {
-            //throw $th;
-            return 'failed';
+            throw $th;
+            // return 'failed';
         }
         
 
     }
 
-    public  function verifyPhone($phone,$code,$userid){
-        $message = 'Your Appnomu Account Verification Code Is:'.$code;
-        $ret = $this->sendSMS($message,$phone,'Telephone Verification',$userid);      
+    public  function verifyPhone($phone,$code,$user){
+        $message = "Dear $user->name ,Your Appnomu Account Verification Code Is: $code";
+        $ret = $this->sendSMS($message,$phone,'Telephone Verification',$user);      
         return $ret;
         
     }
 
-    public  function saveSms($to,$title,$message,$status,$userid){
-        $sms = 'SMS-'.rand(1111,9999);
-        $db = DB::table('smssent')->insert([
-            'Sms_Id'=>$sms,
-            'user_Id'=>$userid,
-            'To'=>$to,
-            'Title'=>$title,
-            'Message'=>$message,
-            'Status'=>$status,
-            'created_at'=>Carbon::now()
-
-        ]);
-        return;
-
-        
+    public  function saveSms($to,$title,$message,$status,$user){
+        $sms = new SMS();
+        $sms->Title = $title;
+        $sms->Message = $message;
+        $sms->To = $to;
+        $sms->Status = $status;
+        $sms->user()->associate($user);
+        $sms->save();
+        return;        
     }
 
-    public  function verify_alliases_phone($phone,$code,$userid,$refferer,$all_name){
+    public  function verifyAlliance($phone,$code,$user,$all_name){
         
-        $message = 'Hello '. $all_name . ' '.$refferer . ' Has Listed YOu as His/Her Alliance on Appnomu For a loan verification, to Approve please send him/her this verification code: '.$code;
-        $ret = $this->sendSMS($message,$phone,'Alliace Telephone Verification',$userid); 
+        $message = 'Hello '. $all_name . ' '.$user->name . ' Has Listed YOu as His/Her Alliance on Appnomu For a loan verification, to Approve please send him/her this verification code: '.$code;
+        $ret = $this->sendSMS($message,$phone,'Alliace Telephone Verification',$user); 
         return $ret;
         
     }
 
-    // public static function saveSms($to,$title,$message,$status,$userid){
-    //     $sms = 'SMS-'.rand(1111,9999);
-
-    //     $db = DB::table('smssent')->insert([
-    //         'Sms_Id'=>$sms,
-    //         'user_Id'=>$userid,
-    //         'To'=>$to,
-    //         'Title'=>$title,
-    //         'Message'=>$message,
-    //         'Status'=>$status,
-    //         'created_at'=>date('Y-m-d H:i:s', time())
-
-    //     ]);
-
-    //     if($db){
-    //         return 1;
-    //     }else{
-    //         return 0;
-    //     }
-    // }
+    
 }

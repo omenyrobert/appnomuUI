@@ -62,28 +62,11 @@
         <br/>
           @include('auth.partials.forms.signup')
 	  </div>
-	  <div id="div-reset"  class="login-div" hidden>
-        <h4 class="text-black signin-text"> Reset Password And Login</h4>
-        <br/>
-          @include('auth.partials.forms.reset_password')
-	  </div>
-	  <div id="div-forgot"  class="login-div" hidden>
-        <h4 class="text-black signin-text"> Reset Password And Login</h4>
-        <br/>
-          @include('auth.partials.forms.forgot')
-	  </div>
-	  <div id="div-email"  class="login-div" hidden>
-        <h4 class="text-black signin-text"> Reset Password And Login</h4>
-        <br/>
-          @include('auth.partials.forms.emailtoken')
-	  </div>
-	  <div id="div-sms"  class="login-div" hidden>
-        <h4 class="text-black signin-text"> Reset Password And Login</h4>
-        <br/>
-          @include('auth.partials.forms.smstoken')
-	  </div>
 	 
-	
+	  @include('auth.partials.modals.forgot_modal')
+	  @include('auth.partials.modals.email_modal')
+	  @include('auth.partials.modals.sms_modal')
+	  @include('auth.partials.modals.reset_password_modal')
          
 
       </div>
@@ -116,11 +99,45 @@
     <script src="https://demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/dist/js/pages/dashboards/dashboard1.js"></script>
     <script>
       $('#btn-register').on('click',function(e){
-      console.log('register clicked');
-        $('#form-signup').prop('hidden',false);
-		$('#div-signup').prop('hidden',false);
-		$('#div-signin').prop('hidden',true);
-		$('#form-login').prop('hidden',true);
+      		console.log('register clicked');
+        	$('#form-signup').prop('hidden',false);
+		    $('#div-signup').prop('hidden',false);
+		    $('#div-signin').prop('hidden',true);
+		    $('#form-login').prop('hidden',true);
+    });
+
+	$('#btn-signup').on('click',function(e){
+		e.preventDefault();
+    	console.log('sign up clicked')
+		let name = $('#name').val();
+		let email = $('#email').val();
+		let telephone = $('#telephone').val();
+		let country = $('#country :selected').val();
+		let referrer = $('#referrer').val();
+		let password = $('#password').val();
+		let password_confirmation = $('#password_confirmation').val();
+		$.ajax({
+			type:'POST',
+			url: "{{route('user.register')}}",
+			data: {
+				name,
+				telephone,
+				email,
+				country,
+				referrer,
+				password,
+				password_confirmation,
+				 _token: '{{csrf_token()}}',
+				 forgot:false
+			},
+			success: function(response){
+				console.log(response);
+         		$('#email_modal').modal('show');
+				$('#email-email').val(response.email);
+         		$('#email-token').val(response.token);
+			}
+		});
+		
       });
   
       $('#forgot').on('click',function(e){
@@ -142,12 +159,12 @@
         $.ajax({
           type:'POST',
           url: '/forgot',
-          data:{ data, _token: "{{csrf_token()}}"},
+          data:{ 'forgot':true,data, _token: "{{csrf_token()}}"},
           success: function(response){
 			  console.log(response);
             	if(response.status == 'success'){
             		alert('a token has been sent to your email.');
-					$('#div-forgot').prop('hidden',true);
+					    $('#div-forgot').prop('hidden',true);
             		$('#form-forgot').prop('hidden',true);
 					$('#div-email').prop('hidden',false);
             		$('#verify-email').prop('hidden',false);
@@ -159,23 +176,23 @@
 	});
   
         $('#btn-verify-email').on('click',function(e){
-        let e_token = $('#e_token').val();
+		console.log('verify email token btn clicked');	
+        let code = $('#e_token').val();
         let token = $('#email-token').val();
 		let email = $('#email-email').val();
-        if(e_token == token){
+        if(code == token){
           $.ajax({
             type:'POST',
-            url: `/verify-email/{email}/{e_token}`,
-            data:{   '_token' : '{{csrf_token()}}'},
+            url: "{{route('verify.email')}}",
+            data:{  email,code, _token : '{{csrf_token()}}'},
             success: function(response){
+				console.log(response);
               if(response.status == 'success'){
                 alert('an sms  token has been sent to your phone.');
-                $('#div-email').prop('hidden',true);
-            	$('#verify-email').prop('hidden',true);
-				$('#div-sms').prop('hidden',false);
-            	$('#verify-sms').prop('hidden',false);
+				$('#email_modal').modal('toggle');
+				$('#sms_modal').modal('show');
             	$('#sms-email').val(response.email);
-            	$('#sms-token').val(response.token);
+            	$('#sms_token').val(response.token);
               }
             }
           });
@@ -184,24 +201,28 @@
       });
 
 	  $('#btn-sms').on('click',function(e){
-        let sms_token = $('#sms_token').val();
+		  e.preventDefault();
+        let sms_token = $('#sms-token').val();
         let token = $('#sms-token').val();
 		let email = $('#sms-email').val();
         if(sms_token == token){
           $.ajax({
             type:'POST',
-            url: `/veriy-phone`,
+            url: `/verify-phone`,
             data:{ email, sms_token,  '_token' : '{{csrf_token()}}'},
             success: function(response){
               if(response.status == 'success'){
-                /* alert('an sms  token has been sent to your phone.');
-                $('#div-email').prop('hidden',true);
-            	$('#verify-email').prop('hidden',true);
-				$('#div-sms').prop('hidden',false);
-            	$('#verify-sms').prop('hidden',false);
-            	$('#sms-email').val(response.email);
-            	$('#sms-token').val(response.token); */
-              }
+					$('#sms_modal').modal('toggle');
+					if(response.forgot == true){						
+						$('#reset_password').modal('show');
+						$('#email-reset').val(response.email);
+				  	}else{
+						$('#div-signin').prop('hidden',false);
+						$('#form-login').prop('hidden',false);
+						$('#div-signup').prop('hidden',true);
+						$('#form-signup').prop('hidden',true);
+				    }
+              	}
             }
           });
         }

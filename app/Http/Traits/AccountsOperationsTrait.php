@@ -92,7 +92,7 @@ trait AccountsOperationsTrait{
             $notif_data = $this->notificationData($model->transaction);
             $user = $model->user;
             $user->notify(new AccountOperationNotification($notif_data));
-            $sms_status = $this->sendSMS($notif_data['message'],$user->telephone,'Account Transaction');
+            $sms_status = $this->sendSMS($notif_data['message'],$user->telephone,'Account Transaction',$user);
             // $user
             return true;
         } catch (\Throwable $th) {
@@ -266,36 +266,36 @@ trait AccountsOperationsTrait{
 
     }
     public function checkTransactionCapability(Request $request,User $user,$fee){
-        // $validated = $request->validate([
-        //     'source'=>'required',
-        //     'amount'=>'required'
-        // ]);
-        // $account = $user->account;
-        // if (!$user->sms_verified_at) {
-        //     return redirect()->route('profile')->withErrors(['Errors'=>'No Verified Phone Number Has Been Found Please Verify Your Phone Number Before You Can Withdraw Your Money']);
-        // }
+        $validated = $request->validate([
+            'source'=>'required',
+            'amount'=>'required'
+        ]);
+        $account = $user->account;
+        if (!$user->sms_verified_at) {
+            return redirect()->route('profile')->withErrors(['Errors'=>'No Verified Phone Number Has Been Found Please Verify Your Phone Number Before You Can Withdraw Your Money']);
+        }
 
-        // if ($request->amount<1000) {
-        //     # code...
-        //     return redirect()->back()->withErrors(['Errors'=>'Your Minimum Value of Withdraw Should be UGX.1000']);
-        // }
+        if ($request->amount<1000) {
+            # code...
+            return redirect()->back()->withErrors(['Errors'=>'Your Minimum Value of Withdraw Should be UGX.1000']);
+        }
 
-        // if($request->source=='savings'){
-        //     if(($request->amount+$fee) > $account->available_balance){
-        //         return  false;
+        if($request->source=='savings'){
+            if(($request->amount+$fee) > $account->available_balance){
+                return  false;
             
-        //     }
-        // }elseif ($request->source=='loans'){
-        //     if($request->account_number == $user->telephone){
-        //         if(($request->amount)>$account->Loan_Balance ){
-        //             return  false;
-        //         }
+            }
+        }elseif ($request->source=='loans'){
+            if($request->account_number == $user->telephone){
+                if(($request->amount)>$account->Loan_Balance ){
+                    return  false;
+                }
 
-        //     }
-        //     if(($request->amount+$fee)>$account->Loan_Balance ||$request->amount == $account->Loan_Balance){
-        //         return  false;
-        //     }
-        // }
+            }
+            if(($request->amount+$fee)>$account->Loan_Balance ||$request->amount == $account->Loan_Balance){
+                return  false;
+            }
+        }
        return true;
     }
 
@@ -355,13 +355,13 @@ trait AccountsOperationsTrait{
                 break;
             case 'Loan Installment':
                 switch ($model->repaymentable_type) {
-                    case 'App\models\Loan':
+                    case 'App\Models\Loan':
                         $loan = $model->repaymentable->ULoan_Id;
                         break;
-                    case 'App\models\SomaLoan':
+                    case 'App\Models\SomaLoan':
                         $loan = $model->repaymentable->SLN_id;
                         break;
-                    case 'App\models\Loan':
+                    case 'App\Models\Loan':
                         $loan = $model->repaymentable->BLN_id;
                         break;
                     

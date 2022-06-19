@@ -86,7 +86,7 @@ Route::post('/loan/category/store',[LoanCategoryController::class,'store'])->nam
 
 
 
-Route::post('/verify-email/{email}/{code}',[LoginController::class,'verifyUserEmail'])->name('verify.email');
+Route::post('/user/verify-email/',[LoginController::class,'verifyUserEmail'])->name('verify.email');
 Route::post('/verify-phone',[LoginController::class,'verifyUserPhone'])->name('verify.phone');
 // Route::get('/verify-phone', function () {
 //     view()->share('page','Verify phone');

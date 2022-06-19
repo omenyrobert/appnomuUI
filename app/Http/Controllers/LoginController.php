@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmMail;
+use App\Mail\ResetPassword;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -18,7 +19,10 @@ class LoginController extends Controller
     //authenticate the user  
     public function authenticate(Request $request){
         $credentials = $request->only('email','password');
-
+        $user = User::where('email',$request->email)->first();
+        if($user && $user->status == 'blacklisted'){
+            return redirect()->back()->withErrors('Error','You have been blacklisted from this application');
+        }
         if(Auth::attempt($credentials)){
             $request->session()->regenerate();
             $user = User::find(Auth::id());
@@ -41,10 +45,12 @@ class LoginController extends Controller
             'email'=>'required',
             'telephone'=>'required',
             'country'=>'required',
-            'password'=>'required|min:8'
+            'password'=>'required|confirmed|min:8',
+            'password_confirmation'=>'required'
         ]);
         if($validated){
             $user = User::where('email',$request->email)->orWhere('telephone',$request->telephone)->first();
+            // dd($user);
             if(!$user){
                 $user_id = rand(100000,999999);
                 $refferer = User::where('user_id',$request->refferer)->first();
@@ -62,7 +68,13 @@ class LoginController extends Controller
                 $user->save();
                 if($user){
                     Mail::to($request->email)->send(new ConfirmMail($request->email,$verify_token));
-                    return redirect()->route('verify')->with(['email'=>$request->email]);
+                    // return redirect()->route('verify')->with(['email'=>$request->email]);
+                    return response()->json([
+                        'success'=>true,
+                        'email'=>$request->email,
+                        'token'=>$verify_token,
+                        'message'=>"A verification code has been sent to your to $request->email"
+                    ]);
                 }
              
             } else {
@@ -77,19 +89,19 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 
-    public  function verifyUserEmail($email,$code){
+    public  function verifyUserEmail(Request $request){
         try {
-            $user = User::where('email',$email)->first();
+            $user = User::where('email',$request->email)->first();
             if ($user) {
-                if ($user->verify_token == $code) {
+                if ($user->verify_token == $request->code) {
                     $sms_token = rand(111111,999999);
                     $user->email_verified_at = Carbon::now();
                     $user->sms_token = $sms_token;
                     $user->save();                   
-                    $this->verifyPhone($user->telephone,$sms_token,$user->user_id);
+                    $this->verifyPhone($user->telephone,$sms_token,$user);
                     return response()->json([
                         'status'=>'success',
-                        'email'=>$email,
+                        'email'=>$request->email,
                         'token'=>$sms_token,
                         'id'=>$user->id
                     ],200);          
@@ -111,7 +123,7 @@ class LoginController extends Controller
             $code = rand(111111,999999);
             $user->verify_token = $code;
             $user->save();
-            Mail::to($email)->send(new ConfirmMail($data,$code));
+            Mail::to($email)->send(new ResetPassword($code,$user));
             // return redirect()->route('verify')->with(['email'=>$request->email]);
 
             return response()->json([
@@ -128,15 +140,15 @@ class LoginController extends Controller
     }
 
     public function verifyUserPhone(Request $request){
-        $data = $request->email;
-        $user = User::where('email',$data)->orWhere('telephone',$data)->first();
+        $user = User::where('email',$request->email)->first();
         if($user && $user->sms_token == $request->sms_token){
             $user->sms_verified_at = Carbon::now();
             $user->save();
             return response()->json([
                 'status'=>'success',
                 'email'=>$user->email,
-                'message'=>''
+                'message'=>'Phone verified',
+                'forgot'=>$request->forgot
             ],200);
         }
         return response()->json([
@@ -147,11 +159,12 @@ class LoginController extends Controller
 //forgot password reset
     public function resetPassword(Request $request){
         $rules = array(
+            'email'=>'required',
             'password'=>'required|min:6|confirmed',
             'password_confirmation'=>'required'
         );
         $validated = $request->validate($rules);
-        $user = User::find($request->id);
+        $user = User::where('email',$request->email)->first();
         if($user){
             $user->password = bcrypt($request->password);
             $user->save();
@@ -163,7 +176,7 @@ class LoginController extends Controller
             ],200);
     }
 
-    public function passwordReset(Request $request){
+    public function changePassword(Request $request){
         $rules = array(
             'new_password'=>'required|min:6|confirmed',
             'new_password_confirmation'=>'required',
