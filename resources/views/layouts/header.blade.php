@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="/assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    {{ env('APP_NAME','APPNOMU SAVINGS & LOANS') }} || {{ $page}}
+    APPNOMU SAVINGS & LOANS
   </title>
   <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
   <!-- Extra details for Live View on GitHub Pages -->
@@ -34,7 +34,7 @@
   <!-- End Google Tag Manager -->
 </head>
 
-<body class="">
+<body>
 
   <div class="wrapper ">
     <div class="sidebar" data-color="rose" data-background-color="black" data-image="assets/img/sidebar-1.jpg">
@@ -47,25 +47,25 @@
           CT
         </a>
         <a href="#" class="simple-text logo-normal">
-          {{ env('APP_NAME','APPNOMU SAVINGS & LOANS') }}
+         appnomu
         </a></div>
       <div class="sidebar-wrapper">
         <div class="user">
           <div class="photo">
-            <img src="{{session('dashboard')['user-identification']['passport'] ?? '../../uploads/faces/img.png'}}" />
+            <img src="" />
           </div>
           <div class="user-info">
             <a data-toggle="collapse" href="#collapseExample" class="username">
              <?php
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-                $user = User::find(Auth::id()); 
+// use App\Models\User;
+// use Illuminate\Support\Facades\Auth;
+//                 $user = User::find(Auth::id()); 
              ?>
              
               <span>
-                {{$user->name}}</br>
-                {{$user->user_id }}
+                Omeny Robert</br>
+                admin
                 <b class="caret"></b>
               </span>
             </a>
@@ -104,7 +104,7 @@ use Illuminate\Support\Facades\Auth;
             <div class="collapse" id="pagesExamples">
               <ul class="nav">
                 
-                  @if($user->role != 'admin') 
+                  <!-- @if($user->role != 'admin')  -->
                   
                 
                 <li class="nav-item ">
@@ -113,7 +113,7 @@ use Illuminate\Support\Facades\Auth;
                     <span class="sidebar-normal"> My Savings </span>
                   </a>
                 </li>
-                @else
+                <!-- @else -->
                 <li class="nav-item ">
                   <a class="nav-link" href="/allSavings">
                     <span class="sidebar-mini"> AS </span>
@@ -132,7 +132,7 @@ use Illuminate\Support\Facades\Auth;
                     <span class="sidebar-normal"> Sub Categories </span>
                   </a>
                 </li>
-                @endif
+                <!-- @endif -->
               </ul>
             </div>
           </li>
@@ -145,7 +145,7 @@ use Illuminate\Support\Facades\Auth;
             </a>
             <div class="collapse" id="componentsExamples">
               <ul class="nav">
-                @if($user->role != 'admin')
+                <!-- @if($user->role != 'admin') -->
                 <li class="nav-item ">
                   <a class="nav-link" href="/withdraws">
                     <span class="sidebar-mini"> AW </span>
@@ -153,14 +153,14 @@ use Illuminate\Support\Facades\Auth;
                   </a>
                 </li>
                 
-                 @else
+                 <!-- @else -->
                 <li class="nav-item ">
                   <a class="nav-link" href="/all-withdraws">
                     <span class="sidebar-mini"> SW </span>
                     <span class="sidebar-normal">All Withdraws  </span>
                   </a>
                 </li>
-               @endif
+               <!-- @endif -->
                 <!-- <li class="nav-item ">
                   <a class="nav-link" href="/withdraw">
                     <span class="sidebar-mini"> WC </span>
@@ -182,28 +182,28 @@ use Illuminate\Support\Facades\Auth;
             </a>
             <div class="collapse" id="formsExamples">
               <ul class="nav">
-                @if($user->role != 'admin')
+                <!-- @if($user->role != 'admin') -->
                 <li class="nav-item ">
                   <a class="nav-link" href="/loans">
                     <span class="sidebar-mini"> ML </span>
                     <span class="sidebar-normal"> My Loans </span>
                   </a>
                 </li>
-                @endif
+                <!-- @endif -->
                 <li class="nav-item ">
                   <a class="nav-link" href="{{route('soma.index')}}">
                     <span class="sidebar-mini"> ML </span>
                     <span class="sidebar-normal"> Soma Loans </span>
                   </a>
                 </li>
-                @if($user->role != 'admin')
+                <!-- @if($user->role != 'admin') -->
                 <li class="nav-item ">
                   <a class="nav-link" href="/loan-installments">
                     <span class="sidebar-mini"> ML </span>
                     <span class="sidebar-normal"> My Loans Installements </span>
                   </a>
                 </li>
-              @else
+              <!-- @else -->
                 <li class="nav-item ">
                   <a class="nav-link" href="/loan-chart">
                     <span class="sidebar-mini"> RL </span>
@@ -216,11 +216,11 @@ use Illuminate\Support\Facades\Auth;
                     <span class="sidebar-normal"> User Loans</span>
                   </a>
                 </li>
-                @endif
+                <!-- @endif -->
               </ul>
             </div>
           </li>
-          @if($user->role != 'admin')
+          <!-- @if($user->role != 'admin') -->
           <li class="nav-item ">
             <a class="nav-link" data-toggle="collapse" href="#reffer">
               <i class="material-icons">group_add</i>
@@ -263,7 +263,7 @@ use Illuminate\Support\Facades\Auth;
               </ul>
             </div>
           </li>
-         @else
+         <!-- @else -->
           <li class="nav-item ">
             <a class="nav-link" data-toggle="collapse" href="#users">
               <i class="material-icons">people</i>
@@ -282,7 +282,7 @@ use Illuminate\Support\Facades\Auth;
               </ul>
             </div>
           </li>
-          @endif
+          <!-- @endif -->
           <li class="nav-item ">
             <a class="nav-link" data-toggle="collapse" href="#knowledge">
               <i class="material-icons">assignment</i>
@@ -362,7 +362,7 @@ use Illuminate\Support\Facades\Auth;
                 <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
               </button>
             </div>
-            <a class="navbar-brand" href="javascript:;">{{$page}}</a>
+            <a class="navbar-brand" href="javascript:;"></a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="sr-only">Toggle navigation</span>
@@ -433,14 +433,14 @@ use Illuminate\Support\Facades\Auth;
                   @endforeach
               </ul>
           </div>
-      @endif
+      <!-- @endif -->
       @if (session('Success'))
           <div class="alert alert-success">
               <ul>
                   <li>{!! session('Success') !!}</li>
               </ul>
           </div>
-      @endif
+      <!-- @endif -->
             <h4>
         <marquee>Dear Valued Client, Please note these;
          , All new clients start with a loan of UGX20,000, Please upload your national ID both sides,Upload selfie/passport photos, Add alliances before requesting for a loan, Repay your loan on time to qualify for bigger loans. We are open for support from Monday to Friday 8.30 AM to 5.30 PM, Email help@appnou.net, Whatsapp +256775383963, join our telegram channel for news and updates, self guides >> blog.appnomu.com.Thank You for choosing us !</marquee>

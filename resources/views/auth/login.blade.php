@@ -26,40 +26,63 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
    @include('auth.styles')
+   <style>
+    #title-appnomu{
+      font-size: 35px; margin-left: 20%; margin-top: 20px; font-weight: bold;
+    }
+    #listt{
+      color: #1d9ff0; font-weight: bold; font-size: 20px; margin-top: 50px;  border: 2px #1d9ff0 solid; border-radius: 20px; width: 350px; margin-left: 20%;
+    }
+    .signinDiv{
+      background-color: #030b21; border-radius: 25px; padding: 10px; margin: 50px;
+    }
+    .signin-title{
+      color: #fff;
+      margin-top: 50px;
+      margin-bottom: -50px;
+    }
+    @media only screen and (max-width: 600px) {
+      #title-appnomu{
+      font-size: 25px; margin-left: 5%; width: 95%; font-weight: bold;
+      margin-top: -30px;
+    }
+    #listt{
+      color: #1d9ff0; margin-top: 20px; margin-left: 15px; font-weight: bold; font-size: 10px;  border: 1px #1d9ff0 solid; padding: 5px; border-radius: 10px; width: 90%;
+    }
+    .signinDiv{
+      background-color: #030b21; border-radius: 20px; padding: 5px; margin: 10px;
+    }
+  }
+   </style>
   </head>
 
-  <body>
-    <div class="preloader" style="background-color: #ffa500;">
-      <center>
-        <img src="logo.png" style="width: 250px; margin-top: 50vh;"/>
-      </center>
+  <body style="background-image: url('https://res.cloudinary.com/dtlkiv19d/image/upload/v1655928585/Kallery/bhh2_i4fvdq.jpg'); background-size: cover;">
+    <div class="preloader" style="background-color: #202A44;">
     </div>
-    <div class="row bg-white">
-      <div class="col-md-6 left-div">
+    <div class="row">
+      <div class="col-md-6" style="">
         <br/><br/>
-       <div class="caption-div">
-        <h1 class="text-white fw-bold">Get  Loans From UGX.15,000 to UGX. 15,000,000 Instantly On Your Smartphone</h1>
-        <h4 class="text-white fw-bold ">Soma Loan, Business Loan etc</h4>
-        <div class="cap-down">
-          <h6 class="text-black"> Pay Bills</h6>
-          <h6 class="text-black">Buy Airtime & data</h6>
-          <h6 class="text-black">Transfer money</h6>
-
-        </div>
+        <h1 class="text-white" id="title-appnomu">Get  Loans From UGX.15,000 to UGX. 15,000,000 Instantly On Your Smartphone</h1>
+       <div>
+        <ul id="listt">
+          <li style="margin-left: 20px; margin-top: 2%;">Soma Loans</li>
+          <li style="margin-left: 20px;">Business Loans</li>
+          <li style="margin-left: 20px;">Savings</li>
+          <li style="margin-left: 20px;">Pay Bills</li>
+          <li style="margin-left: 20px;">Buy Airtime and Data</li>
+          <li style="margin-left: 20px; margin-bottom: 2%;">Transfer money</li>
+        </ul>
        </div>
       </div>
-      <div class="col-md-6 login-left" >
-      <div id="div-signin"  class="login-div">
-        <h4 class="text-black signin-text"> SignIn Now To Get Yourself A Loan</h4>
-        <br/>
+      <div class="col-md-6" >
+      <div id="div-signin"  class="signinDiv">
+        <h3 class="signin-title">
+        <center><h1 style="color: #fff; font-weight: bold;">Logo</h1><br/>  SignIn Now To Get Yourself A Loan</center></h3>
         @include('auth.partials.forms.signin')
       </div>
-      <br>
-      <br>
-      <br>
-	  <div id="div-signup" class="login-div" hidden>
-        <h4 class="text-black signin-text"> SignUp Now To Get Yourself A Loan</h4>
-        <br/>
+	  <div id="div-signup" class="signinDiv" hidden>
+    <h3 class="signin-title">
+        <center>  SignUp Now To Get Yourself A Loan</center></h3>
           @include('auth.partials.forms.signup')
 	  </div>
 	 

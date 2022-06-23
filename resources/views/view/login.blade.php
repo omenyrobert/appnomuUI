@@ -28,9 +28,7 @@
   <style>
      @media only screen and (max-width: 600px) {
     .left-div{
-    background-image: url('../img/loginbg.png');
-    background-size: 100%;
-    height: 60vh;
+    background-color: #202A44;
   }
   .caption-div{
     background: none;
@@ -39,6 +37,7 @@
   }
   .login-div{
     margin: 1px;
+    background-color: #020e2e;
   }
   .signin-text{
     margin-left: 30px;
@@ -60,9 +59,7 @@
    }
    @media only screen and (min-width: 600px) {
     .left-div{
-      background-image: url('{{asset('../images/backg.png')}}');
-    background-size: 100%;
-    height: 100vh;
+      background-color: #202A44;
   }
   h1{
     font-size: xx-large;
@@ -84,6 +81,7 @@
   }
   .login-div{
     margin: 50px;
+    background-color: #020e2e;
   }
   .login-bottom{
     display: flex;
@@ -103,7 +101,7 @@
   </head>
 
   <body>
-    <div class="preloader" style="background-color: #ffa500;">
+    <div class="preloader" style="background-color: #202A44;">
       <center>
         <img src="logo.png" style="width: 250px; margin-top: 50vh;"/>
       </center>
@@ -123,13 +121,13 @@
        </div>
       </div>
       <div class="col-md-6 login-left" >
-      <div class="login-div">
+      <div class="login-div" style="background-color: #030b21;">
         <h4 class="text-black signin-text"> SignIn Now To Get Yourself A Loan</h4>
         <br/>
         <form id="form-login" class="foom" method="post" action="{{route('user.login')}}">
         	@csrf
-          <label>Email</label>
-          <input type="email" name="email"class="form-control" placeholder="Enter Email" required/>
+          <label>Emaill</label>
+          <input type="text" name="email" class="form-control" placeholder="Enter Email" required/>
           <br/>
           <label>Password</label>
           <input type="password" name="password" class="form-control" placeholder="Enter Password" required />
@@ -156,8 +154,8 @@
           <input type="text" class="form-control" name="telephone" placeholder="Enter Phone Number" required/>
           <div class="invalid-feedback">you must choose a country</div>
           <br/>
-          <label>Email</label>
-          <input type="email" class="form-control" name"email"placeholder="Enter Email" required/>
+          <label>Emaill</label>
+          <input type="text" class="form-control" name"email"placeholder="Enter Email" required/>
           <div class="invalid-feedback">you must choose a country</div>
           <br/>
           <label>Nationality</label>

@@ -7,26 +7,18 @@
   <body>
   <?php
 
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-                $user = User::find(Auth::id()); 
+// use App\Models\User;
+// use Illuminate\Support\Facades\Auth;
+//                 $user = User::find(Auth::id()); 
              ?>
     <div id="main-wrapper">
      @include('layouts.partials.header')
      @include('layouts.partials.sidebar')
     
-      <div class="page-wrapper " >
+      <div class="page-wrapper "style="background-color: #294658;" >
         <!-- ============================================================== -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- ============================================================== -->
-        <div class="col-md-5 col-12 bg-white align-self-center">
-          <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item">
-              <a href="javascript:void(0)">Home</a>
-            </li>
-            <li class="breadcrumb-item active">Dashboard</li>
-          </ol>
-        </div>
           @yield('content')
         <!-- ============================================================== -->
         <!-- End Bread crumb and right sidebar toggle -->

@@ -1,6 +1,6 @@
 <header class="topbar">
-        <nav class="navbar top-navbar navbar-expand-md navbar-light" style="background-color: #ffa500;">
-          <div class="navbar-header" style="background-color: #ffa500; color: #fff;">
+        <nav class="navbar top-navbar navbar-expand-md" style="background-color: #294658;">
+          <div class="navbar-header" style="background-color: #294658; color: #fff;">
             <!-- This is for the sidebar toggle which is visible on mobile only -->
             <a
               class="nav-toggler waves-effect waves-light d-block bg-black d-md-none"
@@ -37,15 +37,11 @@
           <!-- ============================================================== -->
           <!-- End Logo -->
           <!-- ============================================================== -->
-          <div class="navbar-collapse collapse" id="navbarSupportedContent" style="background-color: #fdf2dd;">
+          <div class="navbar-collapse collapse" id="navbarSupportedContent" style="background-color: #113c56;">
             <!-- ============================================================== -->
             <!-- toggle and nav items -->
             <!-- ============================================================== -->
             <ul class="navbar-nav" style="margin-left: 20px; width: 90%;">
-            
-    <input type="text" placeholder="search..." class="form-control bg-white" style="width: 70%; border: #ffa500;"><div class="form-control" style="background-color: #ffa500; width: 40px;"><img src="{{asset('../images/img/search.svg')}}"/></div>
-            
-            
             </ul>
             <!-- ============================================================== -->
             <!-- Right side toggle and nav items -->
@@ -61,7 +57,7 @@
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
-                  style="background-color: #ffa500; border-radius: 5px; height: 35px; margin-top: 20px;"
+                  style="background-color: #294658; border-radius: 5px; height: 35px; margin-top: 20px;"
                 >
                   <img src="{{asset('../images/img/bell.svg')}}" style="margin-top: -42px;">
                   <div class="notify" style="margin-top: -20px;">
@@ -76,7 +72,7 @@
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
-                  style="background-color: #ffa500; border-radius: 5px; height: 35px; margin-top: 20px; margin-left: 8px;"
+                  style="background-color: #294658; border-radius: 5px; height: 35px; margin-top: 20px; margin-left: 8px;"
                 >
                   <img src="{{asset('../images/img/chat.svg')}}" style="margin-top: -42px;">
                   <div class="notify" style="margin-top: -20px;">
@@ -91,7 +87,7 @@
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
-                  style="background-color: #ffa500; border-radius: 5px; height: 35px; margin-top: 20px; margin-left: 8px;"
+                  style="background-color: #294658; border-radius: 5px; height: 35px; margin-top: 20px; margin-left: 8px;"
                 >
                   <img src="{{asset('../images/img/gift.svg')}}" style="margin-top: -42px;">
                   <div class="notify" style="margin-top: -20px;">
@@ -106,7 +102,7 @@
                   data-bs-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
-                  style="background-color: #ffa500; border-radius: 5px; height: 35px; margin-top: 20px; margin-left: 8px;"
+                  style="background-color: #294658; border-radius: 5px; height: 35px; margin-top: 20px; margin-left: 8px;"
                 >
                   <img src="{{asset('../images/img/envelope.svg')}}" style="margin-top: -42px;">
                   <div class="notify" style="margin-top: -20px;">
@@ -157,8 +153,8 @@
                       />
                     </div>
                     <div class="ms-2">
-                      <h4 class="mb-0 text-white">{{$user->name}}</h4>
-                      <p class="mb-0">{{$user->email}}</p>
+                      <h4 class="mb-0 text-white">Omeny Robert</h4>
+                      <p class="mb-0">robert@gmail.com</p>
                     </div>
                   </div>
                   <a class="dropdown-item" href="/profile"

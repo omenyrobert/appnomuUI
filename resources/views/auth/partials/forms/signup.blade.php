@@ -32,7 +32,7 @@
           <label>Repeat Password</label>
           <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Repeat Password" required/>
           <br/>
-          <button id="btn-signup" class="form-control text-black fw-bold" style="background-color: #ffa500;">Sign Up </button>
+          <button id="btn-signup" class="form-control text-black fw-bold" style="background-color: #1d9ff0; color: #fff; border: none; border-radius: 10px">Sign Up </button>
           <br/>
           <div class="login-bottom">
             <h6><input type="checkbox"/> Remember me</h6>&nbsp;&nbsp;&nbsp;

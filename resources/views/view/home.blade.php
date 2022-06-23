@@ -153,21 +153,10 @@
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10">
                     <div class="h1-testimonial-active dot-style">
-                        <?php
-                            $testimonials = $auth::getTestimonials();
-                            foreach ($testimonials as $key) {
-                                # code...
-                                if ($key['status']=='feature') {
-                                    # code...
-                                
-                                $user = $auth::getUserById($key['user_id']);
-                                $user_image = $auth::getIdentifications($key['user_id']);
-                        ?>
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
                                 <img src="assets/img/icon/quotes-sign.png" alt="" class="quotes-sign" />
                                 <p>
-                                    "{{$key['text']}}"
                                 </p>
                             </div>
                             <!-- <img class="img" src="{{$user_idnt['passport'] ?? '/assets/img/default-avatar.png'}}" /> -->
@@ -176,15 +165,12 @@
                                     <img src="{{ $user_image['passport'] ?? 'assets/img/icon/testimonial.png'}}" alt="" style="width: 100px; border-radius: 50%;" />
                                 </div>
                                 <div class="founder-text">
-                                    <span>{{$user['name']}}</span>
-                                    <p>{{$user['role'] ?? ' '}}</p>
+                                    <span>Omeny Robert</span></span>
+                                    <p>Admin</p>
                                 </div>
                             </div>
                         </div>
-                        <?php
-                            }
-                        }
-                        ?>
+
 
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
@@ -217,21 +203,10 @@
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10">
                     <div class="h1-testimonial-active dot-style">
-                        <?php
-                            $testimonials = $auth::getTestimonials();
-                            foreach ($testimonials as $key) {
-                                # code...
-                                if ($key['status']=='feature') {
-                                    # code...
-                                
-                                $user = $auth::getUserById($key['user_id']);
-                                $user_image = $auth::getIdentifications($key['user_id']);
-                        ?>
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
                                 <img src="assets/img/icon/quotes-sign.png" alt="" class="quotes-sign" />
                                 <p>
-                                    "{{$key['text']}}"
                                 </p>
                             </div>
                             <!-- <img class="img" src="{{$user_idnt['passport'] ?? '/assets/img/default-avatar.png'}}" /> -->
@@ -240,15 +215,11 @@
                                     <img src="{{ $user_image['passport'] ?? 'assets/img/icon/testimonial.png'}}" alt="" style="width: 100px; border-radius: 50%;" />
                                 </div>
                                 <div class="founder-text">
-                                    <span>{{$user['name']}}</span>
-                                    <p>{{$user['role'] ?? ' '}}</p>
+                                    <span>Macrobert </span>
+                                    <p>user</p>
                                 </div>
                             </div>
                         </div>
-                        <?php
-                            }
-                        }
-                        ?>
 
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
@@ -281,21 +252,10 @@
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10">
                     <div class="h1-testimonial-active dot-style">
-                        <?php
-                            $testimonials = $auth::getTestimonials();
-                            foreach ($testimonials as $key) {
-                                # code...
-                                if ($key['status']=='feature') {
-                                    # code...
-                                
-                                $user = $auth::getUserById($key['user_id']);
-                                $user_image = $auth::getIdentifications($key['user_id']);
-                        ?>
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
                                 <img src="assets/img/icon/quotes-sign.png" alt="" class="quotes-sign" />
                                 <p>
-                                    "{{$key['text']}}"
                                 </p>
                             </div>
                             <!-- <img class="img" src="{{$user_idnt['passport'] ?? '/assets/img/default-avatar.png'}}" /> -->
@@ -304,15 +264,11 @@
                                     <img src="{{ $user_image['passport'] ?? 'assets/img/icon/testimonial.png'}}" alt="" style="width: 100px; border-radius: 50%;" />
                                 </div>
                                 <div class="founder-text">
-                                    <span>{{$user['name']}}</span>
-                                    <p>{{$user['role'] ?? ' '}}</p>
+                                    <span>Isaac Otim</span>
+                                    <p>Programmer</p>
                                 </div>
                             </div>
                         </div>
-                        <?php
-                            }
-                        }
-                        ?>
 
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
@@ -345,21 +301,10 @@
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10">
                     <div class="h1-testimonial-active dot-style">
-                        <?php
-                            $testimonials = $auth::getTestimonials();
-                            foreach ($testimonials as $key) {
-                                # code...
-                                if ($key['status']=='feature') {
-                                    # code...
-                                
-                                $user = $auth::getUserById($key['user_id']);
-                                $user_image = $auth::getIdentifications($key['user_id']);
-                        ?>
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
                                 <img src="assets/img/icon/quotes-sign.png" alt="" class="quotes-sign" />
                                 <p>
-                                    "{{$key['text']}}"
                                 </p>
                             </div>
                             <!-- <img class="img" src="{{$user_idnt['passport'] ?? '/assets/img/default-avatar.png'}}" /> -->
@@ -368,15 +313,11 @@
                                     <img src="{{ $user_image['passport'] ?? 'assets/img/icon/testimonial.png'}}" alt="" style="width: 100px; border-radius: 50%;" />
                                 </div>
                                 <div class="founder-text">
-                                    <span>{{$user['name']}}</span>
-                                    <p>{{$user['role'] ?? ' '}}</p>
+                                    <span>Bahati Asher</span>
+                                    <p>Super admin</p>
                                 </div>
                             </div>
                         </div>
-                        <?php
-                            }
-                        }
-                        ?>
 
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
@@ -409,21 +350,11 @@
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10">
                     <div class="h1-testimonial-active dot-style">
-                        <?php
-                            $testimonials = $auth::getTestimonials();
-                            foreach ($testimonials as $key) {
-                                # code...
-                                if ($key['status']=='feature') {
-                                    # code...
-                                
-                                $user = $auth::getUserById($key['user_id']);
-                                $user_image = $auth::getIdentifications($key['user_id']);
-                        ?>
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
                                 <img src="assets/img/icon/quotes-sign.png" alt="" class="quotes-sign" />
                                 <p>
-                                    "{{$key['text']}}"
+                                    
                                 </p>
                             </div>
                             <!-- <img class="img" src="{{$user_idnt['passport'] ?? '/assets/img/default-avatar.png'}}" /> -->
@@ -432,15 +363,11 @@
                                     <img src="{{ $user_image['passport'] ?? 'assets/img/icon/testimonial.png'}}" alt="" style="width: 100px; border-radius: 50%;" />
                                 </div>
                                 <div class="founder-text">
-                                    <span>{{$user['name']}}</span>
-                                    <p>{{$user['role'] ?? ' '}}</p>
+                                    <span>Omeny Robert</span>
+                                    <p>User</p>
                                 </div>
                             </div>
                         </div>
-                        <?php
-                            }
-                        }
-                        ?>
 
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
@@ -478,21 +405,11 @@ I have worked with Appnomu since the beginning and through that experience I hav
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10">
                     <div class="h1-testimonial-active dot-style">
-                        <?php
-                            $testimonials = $auth::getTestimonials();
-                            foreach ($testimonials as $key) {
-                                # code...
-                                if ($key['status']=='feature') {
-                                    # code...
-                                
-                                $user = $auth::getUserById($key['user_id']);
-                                $user_image = $auth::getIdentifications($key['user_id']);
-                        ?>
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
                                 <img src="assets/img/icon/quotes-sign.png" alt="" class="quotes-sign" />
                                 <p>
-                                    "{{$key['text']}}"
+                                    
                                 </p>
                             </div>
                             <!-- <img class="img" src="{{$user_idnt['passport'] ?? '/assets/img/default-avatar.png'}}" /> -->
@@ -501,16 +418,11 @@ I have worked with Appnomu since the beginning and through that experience I hav
                                     <img src="{{ $user_image['passport'] ?? 'assets/img/icon/testimonial.png'}}" alt="" style="width: 100px; border-radius: 50%;" />
                                 </div>
                                 <div class="founder-text">
-                                    <span>{{$user['name']}}</span>
-                                    <p>{{$user['role'] ?? ' '}}</p>
+                                    <span>Omeny Robert</span>
+                                    <p>User</p>
                                 </div>
                             </div>
                         </div>
-                        <?php
-                            }
-                        }
-                        ?>
-
                         <div class="single-testimonial position-relative">
                             <div class="testimonial-caption">
                                 <img src="assets/img/icon/quotes-sign.png" alt="" class="quotes-sign" />

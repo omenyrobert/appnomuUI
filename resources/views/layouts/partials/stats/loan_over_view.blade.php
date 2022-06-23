@@ -1,5 +1,5 @@
 <div class="col-lg-8 d-flex align-items-stretch">
-              <div class="card w-100">
+              <div class="card w-100" style="background-color: #113c56;">
                 <div class="card-body">
                   <div class="row">
                     <div class="col-12">

@@ -12,7 +12,7 @@
     content="appnomu is a microfinace company in uganda that offers quick loans, savings, and payment services at the comfort of your phone"
   />
   <meta name="robots" content="noindex,nofollow" />
-  <title>>{{$page ? $page : "Appnomu Saving and loan"}}</title>
+  <title>>Appnomu Saving and loan</title>
   <link rel="canonical" href="https://www.wrappixel.com/templates/materialpro/"/>
   <!-- Favicon icon -->
   <link rel="icon" type="image/png" sizes="16x16" href="https://demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/assets/images/favicon.png"/>
