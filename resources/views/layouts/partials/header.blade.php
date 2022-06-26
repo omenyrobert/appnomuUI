@@ -11,13 +11,14 @@
             <!-- ============================================================== -->
             <!-- Logo -->
             <!-- ============================================================== -->
-            <a class="navbar-brand" href="https://demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/html/material/index.html">
+            <a class="navbar-brand">
               <!-- Logo icon -->
-              <b class="logo-icon">
-                <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
-                <!-- Dark Logo icon -->
-            <img src="{{asset('../images/img/logo.png')}}" style="width: 200px;">
+              <h2>
+              <b class="logo-icon text-white">
+                AppNomu
               </b>
+              </h2>
+          
               <!--End Logo icon -->
               <!-- Logo text -->
             </a>

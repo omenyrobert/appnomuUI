@@ -1,83 +1,73 @@
 @extends('layouts.master')
 @section('content')
-    <!-- <div class="row  bg-light">
-        <button data-bs-toggle="modal" data-placement="top" data-bs-target="#create_saving" class="btn btn-primary col-sm-12 col-md-2 m-auto">
-            Deposit To Your Savings
-        </button>
-        <button data-bs-toggle="modal" data-placement="top" data-bs-target="#create_saving" class="btn btn-primary col-sm-12 col-md-2 m-auto">
-            Withdraw From Savings
-        </button>
-        <button data-bs-toggle="modal" data-placement="top" data-bs-target="#create_saving" class="btn btn-primary col-sm-12 col-md-2 m-auto">
-            Send Money
-        </button>
-        <button data-bs-toggle="modal" data-placement="top" data-bs-target="#create_saving" class="btn btn-primary col-sm-12 col-md-2 m-auto">
-            Airtime and Data
-        </button>
-        <button data-bs-toggle="modal" data-placement="top" data-bs-target="#create_saving" class="btn btn-primary col-sm-12 col-md-2 m-auto">
-           Pay for  Utilities
-        </button>
-    </div> -->
-    <div class="row">
-        
-    </div>
-    <div class="row card-group">
-        <h4>Savings Account</h4>
-        <div class="col-sm-12 col-md-3 card" style="display: inline-block;">
-            <h5>Available Balance(matured savings)</h5>
-            <p>{{$user->account->available_balance}}</p>
+<div style="background-color: #113c56; border-radius: 20px;" class="row card-group m-3 p-5">
+        <h4 class="text-white">Savings Account</h4>
+        <br/><br/>
+        <div class="row">
+        <div class="col-md-4">
+        <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
+        <h5>Available Balance(matured savings)</h5>
+            <p>200,000</p>
         </div>
-        <div class="col-sm-12 col-md-3 card" style="display: inline-block;">
+        </div>
+        <div class="col-md-4">
+        <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
             <h5>Ledger Balance(unmatured savings)</h5>
-            <p>{{$user->account->Ledger_Balance}}</p>
+            <p>55,000</p>
+          </div>
         </div>
-        <div class="col-sm-12 col-md-3 card" style="display: inline-block ;">
+        <div class="col-md-4">
+        <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
             <h5>Total Savings</h5>
-            <p>{{$user->account->Total_Saved}}</p>
+            <p>7,000</p>
         </div>
-        <!-- <div class="col-sm-12 col-md-3 card">
-            <h5>Available Balance(matured savings)</h5>
-            <p>$user->account-></p>
-        </div> -->
+      </div>
     </div>
 
-    <div class="row card-group">
-        <h4>Loans Account</h4>
-        <div class="col-sm-12 col-md-3 card mx-auto">
-            <h5>Withdrawable Balance</h5>
-            <p>{{$user->account->Loan_Balance}}</p>
+    <h4 class="text-white" style="margin-top: 20px;">Loans Account</h4>
+        <br/><br/>
+        <div class="row">
+        <div class="col-md-4">
+        <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
+        <h5>Withdrawable Balance</h5>
+            <p>200,000</p>
         </div>
-        <div class="col-sm-12 col-md-3 card">
+        </div>
+        <div class="col-md-4">
+        <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
             <h5>Outstanding Balance</h5>
-            <p>{{$user->account->Outstanding_Balance}}</p>
+            <p>55,000</p>
+          </div>
         </div>
-        <div class="col-sm-12 col-md-3 card">
+        <div class="col-md-4">
+          <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
             <h5>Total Paid Loans</h5>
-            <p>{{$user->account->Total_Paid}}</p>
-        </div>
-        <div class="col-sm-12 col-md-3 card">
+            <p>7,000</p>
+          </div>
+      </div>
+      <div class="col-md-4 mt-3">
+          <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
             <h5>Loan Limit</h5>
-            <p>{{$user->account->Loan_Limit}}</p>
-        </div>
+            <p>7,000</p>
+          </div>
+      </div>
     </div>
 
-    <div class="row card-group">
-        <h4>transactions</h4>
-        <div class="col-sm-12 col-md-3 card">
+    <h4 class="text-white" style="margin-top: 20px;">Payments</h4>
+    <div class="row">
+    <div class="col-md-4">
+          <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
             <h5>Airtime</h5>
-            <p>{{$user->airtimes()->where('status','successful')->count()}}</p>
-        </div>
-        <div class="col-sm-12 col-md-3 card">
+            <p>7,000</p>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="border border-primary p-3 text-white" style="border-radius: 10px;">
             <h5>Electricity</h5>
-            <p>{{$user->electricities()->where('status','successful')->count()}}</p>
-        </div>
-        <!-- <div class="col-sm-12 col-md-3 card">
-            <h5>Total Paid Loans</h5>
-            <p>{{$user->account->Total_Paid}}</p>
-        </div>
-        <div class="col-sm-12 col-md-3 card">
-            <h5>Loan Limit</h5>
-            <p>{{$user->account->Loan_Limit}}</p>
-        </div> -->
+            <p>7,000</p>
+          </div>
+      </div>
     </div>
+</div>
 
 @endsection

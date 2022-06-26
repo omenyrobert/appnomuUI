@@ -27,68 +27,41 @@
                       </thead>
                      
                       <tbody>
-                        @if(count($loans) == 0)
+                     
                         <tr><h5>You have no Loans</h5></tr>
-
-                        @else
-                          @foreach ($loans as $loan ) 
-                         
                             <tr>
-                              <td>{{$loan->due_date}}</td>
-                              <td><a href="{{route('loan.business.show',['id'=>$loan->id])}}">{{$loan->BLN_id}}</a></td>
-                              <td>{{$loan->principal}}</td>
-                              <td>{{$loan->amount_paid}} </td>
-                              @switch($loan->status )
-                                @case('Paid')
-                                  <td><span class="btn btn-success">{{ $loan->status }}</span></td>
-                                  @break
-                                @case('Over Due')
-                                  <td><span class="btn btn-rose">{{ $loan->status }}</span></td>
-                                  @break
-                                @case('Requested')
-                                  <td><span class="btn btn-warning">{{ $loan->status }}</span></td>
-                                  @break
-                                @case('On Hold')
-                                  <td><span class="btn btn-secondary">{{ $loan->status }}</span></td>
-                                  @break
-                                @case('Approved')
-                                  <td><span class="btn btn-primary">{{ $loan->status }}</span></td>
-                                @break
-                                @case('Denied')
-                                  <td><span class="btn btn-danger">{{ $loan->status }}</span></td>
-                                @break
-                              @endswitch
-                              @if($loan->status == 'Requested' || $loan->status == 'Approved')
+                              <td>20-07-22</td>
+                              <td><a href="">BLN02</a></td>
+                              <td>Isaac Otim</td>
+                              <td> Robert Omeny</td>
+                  
+                                  <td><span class="btn btn-success">pending</span></td>
+   
+                                  <td><span class="btn btn-rose">Approved</span></td>
+                                  <td><span class="btn btn-warning">Paid</span></td>
+                                  <td><span class="btn btn-secondary">overdue</span></td>
+                                  <td><span class="btn btn-primary">Completed</span></td>
+                                  <td><span class="btn btn-danger">Rejected</span></td>
                               <td>
                               <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                   Choose Action
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                @if($user->role == 'admin')
-                                @if($loan->status != 'Approved')
-                                  <li><a class="dropdown-item"href="{{route('business.loan.status',['action'=>'Approve','id'=>$loan->id])}}">Approve</a></li>
-                                  <li><a class="dropdown-item" href="{{route('business.loan.status',['action'=>'Deny','id'=>$loan->id])}}">Deny</a></li>
-                                @endif  
-                                  <li><a class="dropdown-item" href="{{route('business.loan.status',['action'=>'Hold','id'=>$loan->id])}}">Put On Hold</a></li>
-                                @else
-                                @if($loan->status != 'Approved')
-                                <li><a class="dropdown-item" href="{{route('business.loan.status',['action'=>'Cancel','id'=>$loan->id])}}">Cancel Request</a></li>
-                                @endif
-                                @endif
+    )
+                                  <li><a class="dropdown-item"href="">Approve</a></li>
+                                  <li><a class="dropdown-item" href="'Deny','id'=>$loan->id])}}">Deny</a></li>
+                      
+                                  <li><a class="dropdown-item" href=""></a>
+                                <li><a class="dropdown-item" href=">Cancel Request</a></li>
+                         
                                 </ul>
                               </div>
                                   
                               </td>
-                              @endif
-                              @if($loan->status == 'Cancelled' && $user->role != 'admin')
-                              <td><a href="{{route('loan.status',['action'=>'Re-submit','id'=>$loan->id])}}">Re-submit Request</a></span></td>
-                              @endif
+                              <td><a href="">Re-submit Request</a></span></td>
+                         
                             </tr>
-                            @endforeach
-                           @endif
-  
-                        
                       </tbody>
                     </table>
                   </div>

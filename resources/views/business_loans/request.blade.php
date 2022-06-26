@@ -1,7 +1,7 @@
 @extends('layouts.master')
 @section('content')
     @include('business_loans.partials.wizard.cards')
-    <div class="p-5 bg-white card">
+    <div class="p-5 m-4" style="border-radius: 15px; background-color: #113c56;">
         <form  class="row g-3 " method="post" action="{{route('loan.business.loan.store')}}"> 
             @csrf
             <div class="row">
@@ -13,7 +13,7 @@
             </div>
              <div class="row">   
             <div>
-                <button  type="submit"  class="btn btn-success" class="form-control">
+                <button  type="submit"  class="btn btn-primary col-md-4 ml-5"  class="form-control">
                     Request Loan
                 </button>
             </div>

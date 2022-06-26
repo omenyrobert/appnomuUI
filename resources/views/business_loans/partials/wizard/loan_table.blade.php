@@ -1,106 +1,62 @@
-<div class="row">
-    <div class="col-md-6 col-sm-12 card" style="background-color: white;">
-        <h5>Loan Details</h5>
-        <div>
-            <div style="border-bottom: thin solid black; padding:20px; ">
-                <span>Loan Type:</span>
-                <span style="margin-left:25px ; text-align:end;">Business Loan </span>
-            </div>
-            <div style="border-bottom: thin solid black; padding:20px; ">
-                <span>Loan Amount:</span>
-                <span>{{$loan->principal}} UGX</span>
-            </div>
-            <div style="border-bottom: thin solid black; padding:20px; ">
-                <span>Loan Period:</span>
-                <span>{{$loan->payment_period}} days</span>
-            </div>
-            <div style="border-bottom: thin solid black; padding:20px; ">
-                <span>Interest Rate:</span>
-                <span>{{$loan->interest_rate}} %</span>
-            </div>
-            <div style="border-bottom: thin solid black; padding:20px; ">
-                <span>Loan Installments</span>
-                <span>{{$loan->installments}} </span>
-            </div>
-            <div style="border-bottom: thin solid black; padding:20px; ">
-                <span>Application Date</span>
-                <span>{{$loan->created_at}} </span>
-            </div>
-            <div style="border-bottom: thin solid black; padding:20px; ">
-                <span>Loan Status:</span>
-                <span>{{$loan->status}} </span>
-            </div>
-            @if($loan->status != 'Requested' && $loan->status != 'Cancelled')
-           
-                <div style="border-bottom: thin solid black; padding:20px; ">
-                    <span>Approval date:</span>
-                    <span>{{$loan->approved_at}} </span>
-                </div>
-                <div style="border-bottom: thin solid black; padding:20px; ">
-                    <span>Processing Fee:</span>
-                    <span>{{$loan->loanCategory->processing_fees}} </span>
-                </div>
-                <div style="border-bottom: thin solid black; padding:20px; ">
-                    <span>Repayable Amount:</span>
-                    <span>{{$loan->payment_amount}} </span>
-                </div>
-                <div style="border-bottom: thin solid black; padding:20px; ">
-                    <span>Due Date:</span>
-                    <span>{{$loan->due_date}} </span>
-                </div>
-            
-            @endif
-            
-        </div>
-    </div>
+<br/>
+<h5 class="text-white">Loan Details</h5>
+<div style="overflow-x: auto; overflow-y: hidden;"><table class="table" style="color: #1d9ff0; width: 1700px;">
+              <thead>
+                <th>Loan Type:</th>
+                <th>Loan Amount</th>
+                <th>Loan Period:</th>
+                <th>Interest Rate:</th>
+                <th>Loan Installments</th>
+                <th>Application Date</th>
+                <th>Loan Status:</th>
+                <th>Approval date:</th>
+                <th>Processing Fee</th>
+                <th>Repayable Amount:</th>
+                <th>Due Date:</th>
+                <th>Action</th>
+              </thead>
+              <tbody>
 
-    <div class="col-md-6 col-sm-12 card" style="background-color: white;">
-        <h5>Repayments</h5>
-        <div>
-            @if(count($loan->repayments) != 0)
-            @foreach($repayments as $repayment)
-                <div style=" padding:20px; " class=" row card">
-                    <div class="col-sm-3" >
-                        <span>
-                            <h6>Amount</h6>
-                        </span>
-                        <span>
-                            {{$repayment->amount}}
-                        </span>
-                    </div>
-                    <div class="col-sm-3">
-                        <div>
-                            <h6>Due Date</h6>
-                        </div>
-                        <div>
-                            {{$repayment->due_date}}
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div>
-                            <h6>status</h6>
-                        </div>
-                        <div>
-                            {{$repayment->status}}
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div>
-                            <h6></h6>
-                        </div>
-                        <div>
-                            @if($repayment->status != 'Paid' || $repayment->status != 'On Hold' )
-                                <a href="" class="btn {{$repayment->status == 'Over Due' ? 'btn-danger' : 'btn-warning'}}">Pay</a>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-                <span><a href="">view all repayments</a></span>
-            @else
-            <h6>No Installments Available Yet For This Loan, Until Its Approved</h6>
-            @endif
+                <tr><td colspan="5">No Business Registered In Your Account Yet. Register A Business to Qualify to borrow an appnomu Business Loan</td></tr>
+
+                <tr>
+                  <td><a href="">Business</a></td>
+                  <td><a href="">10,000,000</a> </td>
+                  <td><a href="">25days</a></td>
+                  <td>25%</td>
+                  <td>5</td>
+                  <td>10-20-33</td>
+                  <td>Paid</td>
+                  <td>21-06-22</td>
+                  <th>10,000</th>
+                  <td>56,000</td>
+                  <td>06-12-22</td>
+                  <td>
+                    Edit
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+</div>
+
+            <br/><br/>
+        <h5 class="text-white">Repayments</h5>
+          <table class="table" style="color: #1d9ff0;">
+            <thead>
+                <th>Amount</th>
+                <th>Due Date</th>
+                <th>Status</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>300,000</td>
+                    <td>02-33-22</td>
+                    <td>Pending</td>
+                </tr>
+            </tbody>
+          </table>
+
             
+                <button class="btn btn-primary">view all repayments</button>
         </div>
     </div>
-</div>

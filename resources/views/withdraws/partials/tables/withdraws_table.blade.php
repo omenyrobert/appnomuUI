@@ -1,5 +1,5 @@
-<div class="container bg-white">
-            <table class="table table-striped table-hover">
+<div class="container mx-3 my-3 p-5" style="background-color: #294658; width: 97%; border-radius: 20px; ">
+            <table class="table" style="width: 90%; background-color: #294658; color: #fff;">
               <thead>
                 <th>Date</th>
                 <th>Transaction ID</th>
@@ -9,17 +9,54 @@
                
               </thead>
               <tbody>
-                  @foreach($withdraws as $withdraw)
                 <tr>
-                  <td>{{$withdraw->created_at}}</td>
-                  <td>{{$withdraw->transaction ? $withdraw->transaction->id : ""}}</td>
-                  <td>{{$withdraw->user}}</td>
-                  <td>{{$withdraw->amount}}</td>
-                  <td>{{$withdraw->fee}}</td>
+                  <td>06-07-2022</td>
+                  <td>06-07-2022</td>
+                  <td>Omeny Robery</td>
+                  <td>120,000</td>
+                  <td>50,000</td>
                  
                 </tr>
-               @endforeach
+                <tr>
+                  <td>06-07-2022</td>
+                  <td>06-07-2022</td>
+                  <td>Omeny Robery</td>
+                  <td>120,000</td>
+                  <td>50,000</td>
+                 
+                </tr>
+                <tr>
+                  <td>06-07-2022</td>
+                  <td>06-07-2022</td>
+                  <td>Omeny Robery</td>
+                  <td>120,000</td>
+                  <td>50,000</td>
+                 
+                </tr>
+                <tr>
+                  <td>06-07-2022</td>
+                  <td>06-07-2022</td>
+                  <td>Omeny Robery</td>
+                  <td>120,000</td>
+                  <td>50,000</td>
+                 
+                </tr>
+                <tr>
+                  <td>06-07-2022</td>
+                  <td>06-07-2022</td>
+                  <td>Omeny Robery</td>
+                  <td>120,000</td>
+                  <td>50,000</td>
+                 
+                </tr>
+                <tr>
+                  <td>06-07-2022</td>
+                  <td>06-07-2022</td>
+                  <td>Omeny Robery</td>
+                  <td>120,000</td>
+                  <td>50,000</td>
+                 
+                </tr>
               </tbody>
             </table>
-
-          </div>
+<br/>

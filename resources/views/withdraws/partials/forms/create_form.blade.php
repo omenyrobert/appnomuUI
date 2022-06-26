@@ -1,34 +1,49 @@
-<div class="p-5 bg-white card col-sm-12 col-md-6 mx-auto">
-        <form action="{{route('make.withdraw')}}" method="POST"class="">
+<style>
+</style>
+
+<div style="background-color: #113c56;" class="card col-sm-12 col-md-11 p-5 m-3">
+        <form action="" method="POST"class="">
             @csrf
-           <h4>Make A withDraw</h4>
-            <div class="row mt-5 card">
-                <div class="col-sm-12">
-                    <label>Enter Amount</label>
-                    <input type="number" id="amount" name="amount" class="form-control mt-2" placeholder="Enter valid amount" required/>
+           <h4 class="text-primary">Make A withDraw</h4>
+            <div class="mt-5">
+                <div class="row">
+                    <div class="col-md-4">
+                      <label class="text-white">Enter Amount</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input type="number" id="amount" name="amount" style="background-color: #113c56;"  class="form-control" placeholder="Enter valid amount" required/>
+                    </div>
                 </div>
-                <div class="col-sm-12">
-                      <label>Select Currency </label>
-                      <select class="form-control mt-2 single-select" id="currency" name="currency" required>
+                <div class="row mt-5">
+                  <div class="col-md-4">
+                      <label class="text-white">Select Currency </label>
+                  </div>    
+                  <div class="col-md-8">
+                      <select class="form-control single-select" style="background-color: #113c56; color: #fff;"  id="currency" name=" currency" required>
                       <option value="select">select currency to withdraw</option>
-                      <option value="{{$user->country->currency_code}}">{{$user->country->currency_code}}</option>
-                            @foreach($countries as $currency)
-                                <option value="{{$currency->currency_code}}">{{$currency->currency_code}}</option>
-                            @endforeach
+                      <option value=""></option>
+                            
+                                <option value=""></option>
+                            
                       
                       </select>
+                    </div>
                 </div>
-                <div class="col-sm-12">
-                      <label>Select Withdraw Account</label>
-                      <select class="form-control mt-2" id="source" name="source" required>
+                <div class="row mt-5">
+                <div class="col-md-4">
+                      <label class="text-white">Select Withdraw Account</label>
+                </div>
+                <div class="col-md-8">
+                      <select class="form-control" id="source" style="background-color: #113c56; color: #fff;" name="source" required>
                       <option value="select">select Account</option>
                           <option value="savings">Savings Account</option>
                           <option value="loans">Loan Account</option>
                       </select>
+                </div>      
                 </div>
                 <div class="col-sm-12">
                       <label>Select Destination Account Type</label>
-                      <select class="form-control mt-2" id="type" name="type" required>
+                      <select class="form-control" id="type" name="type" required>
                       <option value="select">select destination account type</option>
                           <option value="account">Bank</option>
                           <option value="mobilemoney">Mobile Money</option>
@@ -36,7 +51,7 @@
                 </div>
                 <div class="col-sm-12">
                       <label>Select Destination </label>
-                      <select class="form-control mt-2" id="destination" name="destination" required>
+                      <select class="form-control" id="destination" name="destination" required>
                       <option value="select">select destination</option>
                           <option value="withdraw">Withdraw to my account</option>
                           <option value="transfer">Withdraw to another account</option>
@@ -44,15 +59,10 @@
                 </div>
                 <div class="col-sm-12">
                       <label>Select Bank or mobile money operator </label>
-                      <select class="form-control mt-2 single-select" id="account_bank" name="account_bank" required>
+                      <select class="form-control single-select" id="account_bank" name="account_bank" required>
                       <option value="select">select Bank or mobileMoney operator</option>
-                        @if(count($banks) > 0 )
-                            @foreach($banks as $bank)
-                                <option value="{{$bank['code']}}">{{$bank['name']}}</option>
-                            @endforeach
-                        @else
+                                <option value=""></option>
                             <option value=""></option>
-                        @endif
                       </select>
                 </div>
                 <div class="col-sm-12">
@@ -70,35 +80,3 @@
             </div>
         </form>
 </div>
-<script>
-    function autofillValues(){
-        if($('#type option:selected').val() == 'mobilemoney' && $('#destination option:selected').val() == 'withdraw'){
-            $('#account_number').val('{{$user->telephone}}');
-            $('#account_number').text('{{$user->telephone}}');
-            $('#beneficiary').text('{{$user->name}}');
-            $('#beneficiary').val('{{$user->name}}');
-
-        }
-    }
-    $('#type').on('click change',function(e){
-        autofillValues();
-    });
-    $('#destination').on('click change',function(e){
-        autofillValues();
-    });
-</script>
-
-<script>
-        $('.single-select').select2({
-            theme: 'bootstrap4',
-            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-            placeholder: $(this).data('placeholder'),
-            allowClear: Boolean($(this).data('allow-clear')),
-        });
-        $('.multiple-select').select2({
-            theme: 'bootstrap4',
-            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-            placeholder: $(this).data('placeholder'),
-            allowClear: Boolean($(this).data('allow-clear')),
-        });
-    </script>

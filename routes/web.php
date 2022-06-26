@@ -37,18 +37,24 @@ use App\Models\Country;
 // });
 
 
-Route::get('/dashboard',[HomeController::class,'dashboard'])->name('dashboard');
+// Route::get('/dashboard',[HomeController::class,'dashboard'])->name('dashboard');
 // Route::get('/dashboard/admin',[HomeController::class,'adminDashboard'])->name('dashboard.admin');
-Route::get('/dashboard/client',[HomeController::class,'clientDashboard'])->name('dashboard.client');
-Route::get('/login', function () {
-    view()->share('page','Login');
-    $countries = Country::all();
-    return view('auth.login',['countries'=>$countries]);
-})->name('login');
+// Route::get('/dashboard/client',[HomeController::class,'clientDashboard'])->name('dashboard.client');
+// Route::get('/login', function () {
+//     view()->share('page','Login');
+//     $countries = Country::all();
+//     return view('auth.login',['countries'=>$countries]);
+// })->name('login');
+
 // dashboard route
 Route::get('/dashboard-admin', function () {
     return view('dashboard');
 })->name('/dashboard-admin');
+
+// dashbarod client
+Route::get('/accounts-page', function () {
+    return view('alliances.index');
+})->name('/accounts-page');
 
 
 
