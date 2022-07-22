@@ -1,33 +1,52 @@
-<div class="container bg-white">
+<div class="container p-5" style="background-color: #04273d; color: #fff;">
             <table class="table table-striped table-hover">
-              <thead>
+              <thead class="text-white">
                 <th>Date</th>
                 <th>Transaction ID</th>
-                @if($user->role == 'admin')
                     <th>User</th>
-                @endif
+     
                 <th>Saving Amount</th>
                 <th>Interest</th>
                
               </thead>
               <tbody>
-                @if(count($savings) == 0)
-                  <tr>
-                    <td colspan="4">No Savings In Your Account Yet. Make Some Savings And Earn Interest On Your Savings</td>
-                  </tr>
-                @endif
-                  @foreach($savings as $saving)
-                <tr>
-                  <td>{{$saving->created_at}}</td>
-                  <td>{{$saving->saving_id}}</td>
-                  @if($user->role == 'admin')
-                    <td>{{$saving->user->name}}</td>
-                  @endif
-                  <td>{{$saving->amount}}</td>
-                  <td>{{$saving->Interest}}</td>
-                  
+                
+                 
+                <tr class="text-white">
+                  <td class="text-white">12-04-2022</td>
+                  <td class="text-white">2</td>
+                    <td class="text-white">Omeny Robert</td>
+                  <td class="text-white">205,000</td>
+                  <td class="text-white">10%</td>
                 </tr>
-                  @endforeach
+                <tr class="text-white">
+                  <td class="text-white">12-04-2022</td>
+                  <td class="text-white">2</td>
+                    <td class="text-white">Omeny Robert</td>
+                  <td class="text-white">205,000</td>
+                  <td class="text-white">10%</td>
+                </tr>
+                <tr class="text-white">
+                  <td class="text-white">12-04-2022</td>
+                  <td class="text-white">2</td>
+                    <td class="text-white">Omeny Robert</td>
+                  <td class="text-white">205,000</td>
+                  <td class="text-white">10%</td>
+                </tr>
+                <tr class="text-white">
+                  <td class="text-white">12-04-2022</td>
+                  <td class="text-white">2</td>
+                    <td class="text-white">Omeny Robert</td>
+                  <td class="text-white">205,000</td>
+                  <td class="text-white">10%</td>
+                </tr>
+                <tr class="text-white">
+                  <td class="text-white">12-04-2022</td>
+                  <td class="text-white">2</td>
+                    <td class="text-white">Omeny Robert</td>
+                  <td class="text-white">205,000</td>
+                  <td class="text-white">10%</td>
+                </tr>
               </tbody>
             </table>
 

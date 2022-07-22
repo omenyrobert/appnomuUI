@@ -56,37 +56,62 @@
 <button class="accordion">
     <i style="color: #fff;" class="bi bi-wallet-fill"></i>&nbsp;&nbsp;&nbsp;Withdraw</button>
   <div class="panel" style="background-color: #04273d; margin-left: 30px; margin-top: 5px;">
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;All Withdraw</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;My Withdraws</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Make Withdraw</a><br/><br/>
+  <a href="/withdraws" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;All Withdraw</a><br/><br/>
+  <a href="/withdraws" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;My Withdraws</a><br/><br/>
+  <a href="/withdraws" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Make Withdraw</a><br/><br/>
 </div>
 
 <button class="accordion">
 <i style="color: #fff;" class="bi bi-droplet-fill"></i>&nbsp;&nbsp;&nbsp;Airtime & Utilities</button>
 <div class="panel" style="background-color: #04273d; margin-left: 30px; margin-top: 5px;">
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Buy Airtime</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Pay Water Bill</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Pay Electricity Bill</a><br/><br/>
+  <a href="/airtime" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Buy Airtime</a><br/><br/>
+  <a href="/payments" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Pay Water Bill</a><br/><br/>
+  <a href="/payments" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Pay Electricity Bill</a><br/><br/>
 </div>
 
 <button class="accordion">
 <i style="color: #fff;" class="bi bi-piggy-bank-fill"></i>&nbsp;&nbsp;&nbsp;Savings</button>
 <div class="panel" style="background-color: #04273d; margin-left: 30px; margin-top: 5px;">
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Saving Categories</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Saving Sub Categories</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Enter Saving</a><br/><br/>
+  <a href="/savings" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Saving Categories</a><br/><br/>
+  <a href="/savings" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Saving Sub Categories</a><br/><br/>
+  <a href="/savings" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Enter Saving</a><br/><br/>
 </div>
+
+<!-- // business loans -->
+<button class="accordion">
+<i style="color: #fff;" class="bi bi-briefcase-fill"></i>&nbsp;&nbsp;&nbsp;Business Loans</button>
+<div class="panel" style="background-color: #04273d; margin-left: 30px; margin-top: 5px;">
+  <a href="/business" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;All Business Loans</a><br/><br/>
+  <a href="/business" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;View All</a><br/><br/>
+  <a href="/business" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;loans</a><br/><br/>
+</div>
+
+<button class="accordion">
+<i style="color: #fff;" class="bi bi-briefcase-fill"></i>&nbsp;&nbsp;&nbsp;Soma Loans</button>
+<div class="panel" style="background-color: #04273d; margin-left: 30px; margin-top: 5px;">
+  <a href="/soma" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;All soma Loans</a><br/><br/>
+  <a href="/soma" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;View All</a><br/><br/>
+  <a href="/soma" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Print</a><br/><br/>
+</div>
+
+
+
+<button class="accordion">
+<i style="color: #fff;" class="bi bi-people-fill"></i>&nbsp;&nbsp;&nbsp;Alliances</button>
 <button class="accordion">
     <i style="color: #fff;" class="bi bi-cash"></i>&nbsp;&nbsp;&nbsp;Loans</button>
   <div class="panel" style="background-color: #04273d; margin-left: 30px; margin-top: 5px;">
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Personal Loans</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Soma Loans</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Business Loans</a><br/><br/>
-  <a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Loans Categories</a><br/><br/>
-<a href="" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Loans sub Categories</a>
+  <a href="/loans" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Personal Loans</a><br/><br/>
+  <a href="/loans" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Soma Loans</a><br/><br/>
+  <a href="/loans" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Business Loans</a><br/><br/>
+  <a href="/loans" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Loans Categories</a><br/><br/>
+<a href="/loans" style="color: #1d9ff0;" id="link"><i style="color: #1d9ff0;" class="bi bi-check2-circle"></i>&nbsp;&nbsp;&nbsp;Loans sub Categories</a>
 </div>
 
 <hr style="color: #fff;">
+
+<a href="/accounts-page" class="accordion" style="margin-left: 20px; width: 200px; text-decoration: none;">
+<i style="color: #fff;" class="bi bi-people-fill"></i>&nbsp;&nbsp;&nbsp;Users' Accounts</a>
 
 <button class="accordion">
 <i style="color: #fff;" class="bi bi-headset"></i>&nbsp;&nbsp;&nbsp;Support</button>

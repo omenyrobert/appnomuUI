@@ -12,9 +12,7 @@
                   <label>Airtime Offer</label>
                   <select class="form-control mt-2" id="select_rate_id"name="select_rate_id">
                         <option value="select">select airtime offer</option>
-                        @foreach($rates as $rate)
-                            <option value="{{$rate->id}}" data-lower="{{$rate->lower_limit}}" data-upper="{{$rate->upper_limit}}">{{$rate->lower_limit.' - '.$rate->upper_limit.' @ '.$rate->bonus.'% bonus'}}</option>
-                        @endforeach
+                            <option value="" data-lower="" data-upper=""></option>
                   </select>
             </div>
             <div class="col-sm-12 div-amount" hidden>

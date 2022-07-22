@@ -6,20 +6,12 @@
                     <label>Select Provider</label>
                     <select class="form-control mt-2" name="biller_id">
                         <option value="select">select provider</option>
-                        @foreach($billers['content'] as $biller)
-                            <option value="{{$biller['id']}}">{{$biller['name']}}</option>
-
-                        @endforeach
                     </select>
                 </div>
                 <div class="col-sm-12">
                     <label>Select Offer</label>
                     <select class="form-control mt-2" name="rate_id">
                         <option value="select">select Offer</option>
-                        @foreach($e_rates as $e_rate)
-                            <option value="{{$e_rate->id}}">UGX {{$e_rate->lower_limit}} - UGX {{$e_rate->upper_limit}}  for {{$e_rate->bonus}}% bonus</option>
-
-                        @endforeach
                     </select>
                 </div>
                 <div class="col-sm-12">

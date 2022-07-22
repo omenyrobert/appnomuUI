@@ -9,31 +9,31 @@
             <div class="p-4 m-4" style="background-color: #113c56; border-radius: 15px;">
             <div class="row">
               <div class="col-md-4">
-                <label class="text-white">Business Name</label>
+                <label class="text-white">Students Name</label>
                  <input type="text" class="form-control border-primary mt-1" style="background-color: #113c56;" placeholder="Enter Business name">
               </div>
               <div class="col-md-4">
-                <label class="text-white">Business Name</label>
+                <label class="text-white">School's Name</label>
                  <input type="text" class="form-control border-primary mt-1" style="background-color: #113c56;" placeholder="Enter Business name">
               </div>
               <div class="col-md-4">
-                <label class="text-white">Business Name</label>
+                <label class="text-white">Class</label>
                  <input type="text" class="form-control border-primary mt-1" style="background-color: #113c56;" placeholder="Enter Business name">
               </div>
               <div class="col-md-4">
-                <label class="text-white">Business Name</label>
+                <label class="text-white">School Reports</label>
                  <input type="text" class="form-control border-primary mt-1" style="background-color: #113c56;" placeholder="Enter Business name">
               </div>
               <div class="col-md-4">
-                <label class="text-white">Business Name</label>
+                <label class="text-white">First Parent</label>
                  <input type="text" class="form-control border-primary mt-1" style="background-color: #113c56;" placeholder="Enter Business name">
               </div>
               <div class="col-md-4">
-                <label class="text-white">Business Name</label>
+                <label class="text-white">Second Parent</label>
                  <input type="text" class="form-control border-primary mt-1" style="background-color: #113c56;" placeholder="Enter Business name">
               </div>
               <div class="col-md-4">
-                <label class="text-white">Business Name</label>
+                <label class="text-white">Term</label>
                  <input type="text" class="form-control border-primary mt-1" style="background-color: #113c56;" placeholder="Enter Business name">
               </div>
               <div class="col-md-4">

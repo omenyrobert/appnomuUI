@@ -25,7 +25,7 @@
     <link href="https://demos.wrappixel.com/premium-admin-templates/bootstrap/materialpro-bootstrap/package/dist/css/style.min.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-   @include('auth.styles')
+
    <style>
     #title-appnomu{
       font-size: 35px; margin-left: 20%; margin-top: 20px; font-weight: bold;
@@ -78,18 +78,15 @@
       <div id="div-signin"  class="signinDiv">
         <h3 class="signin-title">
         <center><h1 style="color: #fff; font-weight: bold;">AppNomu</h1><br/>  SignIn Now To Get Yourself A Loan</center></h3>
-        @include('auth.partials.forms.signin')
-      </div>
-	  <div id="div-signup" class="signinDiv" hidden>
-    <h3 class="signin-title">
-        <center>  SignUp Now To Get Yourself A Loan</center></h3>
-	  </div>
-	 
-	  @include('auth.partials.modals.forgot_modal')
-	  @include('auth.partials.modals.email_modal')
-	  @include('auth.partials.modals.sms_modal')
-	  @include('auth.partials.modals.reset_password_modal')
-         
+        <form class="p-5">
+
+    <label class="text-white mt-3">Confirm Email</label>
+    <input type="email" class="form-control border-primary" style="background-color: #202A44;" placeholder="Confirm Email">
+  
+    <button class="btn btn-primary mt-4 form-control">Confrim Email</button>
+  </form>
+
+      </div>         
 
       </div>
       </div>

@@ -9,10 +9,6 @@
                     <label>Select Category</label>
                     <select class="form-control mt-2" name="category">
                         <option value="select">select Category</option>
-                        @foreach($categories as $category)
-                            <option value="{{$category->id}}">UGX {{$category->savingCategory->lowerlimit}} - UGX {{$category->savingCategory->upperlimit}}  for {{$category->Saving_Period}} days @ {{$category->Interest}}</option>
-
-                        @endforeach
                     </select>
                 </div>
                 <div class="col-sm-12">

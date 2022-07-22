@@ -16,10 +16,6 @@
           <div class="row">
      
             @include('layouts.partials.stats.news_letter_chart')
-        </div>
-        <div class="row">
-        @include('layouts.partials.stats.top_paid_loans')
-        </div>
-         
+        </div>         
     </div>
 @endsection

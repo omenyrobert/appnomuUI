@@ -32,32 +32,93 @@ use App\Models\Country;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-
-// Route::get('/dashboard',[HomeController::class,'dashboard'])->name('dashboard');
-// Route::get('/dashboard/admin',[HomeController::class,'adminDashboard'])->name('dashboard.admin');
-// Route::get('/dashboard/client',[HomeController::class,'clientDashboard'])->name('dashboard.client');
-// Route::get('/login', function () {
-//     view()->share('page','Login');
-//     $countries = Country::all();
-//     return view('auth.login',['countries'=>$countries]);
-// })->name('login');
 
 // dashboard route
 Route::get('/dashboard-admin', function () {
     return view('dashboard');
 })->name('/dashboard-admin');
 
-// dashbarod client
+// accounts
 Route::get('/accounts-page', function () {
-    return view('alliances.index');
+    return view('accounts.index');
 })->name('/accounts-page');
 
+//accounts
+// client accounts
+Route::get('/clientt', function () {
+    return view('accounts.client_index');
+})->name('/clientt');
+
+// allience
+Route::get('/allience', function () {
+    return view('alliances.index');
+})->name('/allience');
 
 
+// login
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('/login');
+
+// sign up
+Route::get('/signup', function () {
+    return view('auth.signup');
+})->name('/signup');
+
+// confirm Password
+Route::get('/confirm', function () {
+    return view('auth.confirmEmail');
+})->name('/confirm');
+
+
+// resset password
+Route::get('/resset', function () {
+    return view('auth.resetpassword');
+})->name('/resset');
+
+
+// business loans
+Route::get('/withdraws', function () {
+    return view('withdraws.index');
+})->name('/withdraws');
+
+// soma loans
+Route::get('/soma', function () {
+    return view('soma.index2');
+})->name('/soma');
+
+// payments
+Route::get('/payments', function () {
+    return view('payments.utilities.index');
+})->name('/payments');
+
+// airtime
+Route::get('/airtime', function () {
+    return view('payments.airtime.index');
+})->name('/airtime');
+
+// withraws
+Route::get('/business', function () {
+    return view('business_loans.index');
+})->name('/business');
+
+// withraws
+Route::get('/savings', function () {
+    return view('savings.index');
+})->name('/savings');
+
+// dashbarod client
+
+
+// create business loan
+Route::get('/business-create', function () {
+    return view('business_loans.create');
+})->name('/business-create');
+
+// loans
+Route::get('/loans', function () {
+    return view('loans.index');
+})->name('/loans');
 
 
 Route::post('/forgot',[LoginController::class,'forgotPassword']);
@@ -173,7 +234,7 @@ Route::post('/article', [AuthenticationController::class, 'giveknowlegebase']);
 //Website routes
 
 Route::get('/', function () {
-    return view('view.home');
+    return view('auth.login');
 });
 
 Route::get('/about', function () {

@@ -1,19 +1,13 @@
 <!-- <div class="p-5 bg-white  col-sm-12 col-md-6 mx-auto"> -->
-<form action="" class="my-auto mx-auto border border-1 my-2 modal-forms">
+<form action="" style="background-color: #04273d; color: #fff;">
             <div class="row mt-5 ">
                 <div class="col-sm-12">
                     <label>Enter Amount</label>
-                    <input type="number" name="amount"class="form-control mt-2" placeholder="Enter valid amount" />
+                    <input style="background-color: #04273d; color: #fff;" type="number" name="amount"class="form-control mt-2" placeholder="Enter valid amount" />
                 </div>
                 <div class="col-sm-12">
                     <label>Select Category</label>
-                    <select class="form-control mt-2" name="category">
-                        <option value="select">select Category</option>
-                        @foreach($categories as $category)
-                            <option value="{{$category->id}}">UGX {{$category->savingCategory->lowerlimit}} - UGX {{$category->savingCategory->upperlimit}}  for {{$category->Saving_Period}} days @ {{$category->Interest}}</option>
-
-                        @endforeach
-                    </select>
+                    <select style="background-color: #04273d; color: #fff;" class="form-control mt-2" name="category">
                 </div>
                 <div class="col-sm-12">
                     <br/>
